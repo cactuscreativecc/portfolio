@@ -277,4 +277,21 @@ export default async function Home({
             </p>
             <div className="flex gap-12">
               <a href="#" className="text-white hover:text-primary transition-colors">{t.Footer.legal}</a>
-              <a href="#" className="text-whit
+              <a href="#" className="text-white hover:text-primary transition-colors">{t.Footer.status}</a>
+            </div>
+          </div>
+        </div>
+
+        {/* Massive Background Watermark */}
+        <div className="absolute bottom-0 left-0 w-full select-none pointer-events-none overflow-hidden opacity-[0.04] flex justify-center translate-y-1/2">
+          <h2 className="font-headline text-[18vw] font-black tracking-tighter leading-none whitespace-nowrap uppercase">
+            STUDIOCACTUS
+          </h2>
+        </div>
+      </footer>
+
+      {/* Global Command: Scroll to Top Unit [Off-Standard] */}
+      <ScrollToTop />
+    </div>
+  );
+}
