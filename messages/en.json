@@ -1,0 +1,136 @@
+{
+    "Navigation": {
+        "work": "WORK",
+        "services": "SERVICES",
+        "tech": "TECH",
+        "about": "ABOUT",
+        "start_project": "START PROJECT"
+    },
+    "Hero": {
+        "badge": "Digital Performance Foundry",
+        "headline": "STOP <span class='text-primary'>EXISTING</span>. <br/>START <span class='text-primary'>DOMINATING</span>.",
+        "description": "Tired of trying to fit your business rules into off-the-shelf platforms? We create premium, custom-made applications, systems, and digital platforms to multiply your results.",
+        "trusted_us": "They trusted us",
+        "cta_primary": "START MY PROJECT",
+        "cta_secondary": "HOW IT WORKS",
+        "stat_roi": "GROWTH DELTA",
+        "stat_roi_val": "400%+",
+        "stat_roi_desc": "Avg. Revenue Increase Year-on-Year",
+        "stat_revenue": "INFRASTRUCTURE",
+        "stat_revenue_val": "$12M+",
+        "stat_revenue_desc": "Revenue Generated & Managed"
+    },
+    "Capabilities": {
+        "label": "CAPABILITIES",
+        "headline": "OUR ARCHITECTURAL <br/><span class='text-primary'>CORE STRENGTHS</span>",
+        "tech": {
+            "title": "ENGINEERED TECH",
+            "description": "Custom conversion-focused software, CRM integrations, and high-load backend systems designed for scalability."
+        },
+        "ads": {
+            "title": "PERFORMANCE ADS",
+            "description": "Surgical media buying across Meta, Google, and LinkedIn with a focus on immediate CAC reduction.",
+            "learn_more": "LEARN MORE"
+        },
+        "retention": {
+            "title": "RETENTION RATE",
+            "description": "We don't do 'monthly retainers'. We build long-term partnerships based on strictly enforced KPI benchmarks."
+        },
+        "design": {
+            "title": "CONVERSION DESIGN",
+            "description": "Visual identities and UI/UX flows engineered to reduce friction and maximize user trust."
+        }
+    },
+    "Highlights": {
+        "label": "HIGHLIGHTS",
+        "headline": "GOALS <span class='text-primary'>ACHIEVED</span>, <br/>DOMINATION REACHED.",
+        "cta": "MORE ABOUT US",
+        "item1": {
+            "val": "80+",
+            "label": "PROJECTS COMPLETED"
+        },
+        "item2": {
+            "val": "12+",
+            "label": "YEARS EXPERIENCE"
+        },
+        "item3": {
+            "val": "95%",
+            "label": "CLIENT RETENTION RATE"
+        },
+        "item4": {
+            "val": "32%",
+            "label": "INCREASED CONVERSIONS"
+        }
+    },
+    "CaseStudies": {
+        "label": "SELECTED PROJECTS",
+        "headline": "CASE STUDIES <br/><span class='text-primary'>THAT GENERATE DOMINANCE</span>",
+        "case1": {
+            "label": "CASE STUDY 01: AETHERA SYSTEMS",
+            "title": "SCALING REVENUE BY 400% IN 6 MONTHS.",
+            "description": "Implementing a custom lead-gen engine and unified design language that transformed a legacy hardware company into a digital-first market leader.",
+            "stat1_label": "CONVERSION RATE",
+            "stat2_label": "OPEX REDUCTION",
+            "cta": "EXPLORE SYSTEM"
+        },
+        "case2": {
+            "label": "CASE STUDY 02: NEXUS GLOBAL",
+            "title": "DOMINATING SEARCH WITH TECH PRECISION.",
+            "description": "How our technical SEO infrastructure and high-intent advertising framework secured a 22x return on ad spend for an international logistics giant.",
+            "stat1_label": "ROAS",
+            "stat2_label": "MONTHLY USERS",
+            "cta": "EXPLORE SYSTEM"
+        }
+    },
+    "Testimonials": {
+        "badge": "STORIES OF SUCCESS",
+        "headline": "HEAR IT <br/><span class='text-primary'>FROM OUR CLIENTS</span>",
+        "cta": "HEAR MORE STORIES",
+        "item1": {
+            "text": "Studiocactus delivered a stunning e-commerce website design with custom inventory management for our fashion brand. Their UI/UX design expertise and web development skills streamlined our operations beautifully.",
+            "author": "Mircea M.",
+            "role": "Founder @ SKIDOLive"
+        },
+        "item2": {
+            "text": "The conversion-focused software and high-load infrastructure designed for scale by Studiocactus transformed our company into a digital-first leader in record time.",
+            "author": "Mihaela L.",
+            "role": "Co-founder @ Volare"
+        },
+        "item3": {
+            "text": "Working with StudioCactus was a game-changer for our data architecture. The custom CRM system reduced lead time by 40% in the first week.",
+            "author": "Ricardo S.",
+            "role": "CTO @ Nova Arch"
+        },
+        "item4": {
+            "text": "The best decision we made for our infrastructure. The lead generation engine is the heart of our current growth.",
+            "author": "Juliana F.",
+            "role": "CEO @ Hyperion"
+        },
+        "item5": {
+            "text": "Brutalist design with soul. They understand that performance and aesthetics must go hand-in-hand to convert in the premium market.",
+            "author": "Felipe K.",
+            "role": "Creative Director @ Aethera"
+        },
+        "item6": {
+            "text": "Our retention rate jumped to 95% after implementing the new client portal. StudioCactus delivered beyond expectations.",
+            "author": "Amanda R.",
+            "role": "Product Manager @ Nexus Global"
+        }
+    },
+    "CTA": {
+        "headline": "READY TO ENGINEER <br/>YOUR GROWTH?",
+        "button_start": "START PROJECT",
+        "button_audit": "BOOK AUDIT"
+    },
+    "Footer": {
+        "agency_tag": "WEB DESIGN AGENCY",
+        "description": "Transform ideas into impactful digital experiences that captivate your audience and fuel business growth.",
+        "built_with": "Built with ♡ in São Paulo ® 2024 - 2026",
+        "menu": "Menu",
+        "services": "Services",
+        "follow_us": "Follow us",
+        "legal": "Legal",
+        "status": "Status",
+        "system_active": "Operational"
+    }
+}

@@ -1,0 +1,136 @@
+{
+    "Navigation": {
+        "work": "PROJETOS",
+        "services": "SERVIÇOS",
+        "tech": "TECNOLOGIA",
+        "about": "SOBRE",
+        "start_project": "INICIAR PROJETO"
+    },
+    "Hero": {
+        "badge": "Digital Performance Foundry",
+        "headline": "PARE DE <span class='text-primary'>EXISTIR</span>. <br/>COMECE A <span class='text-primary'>DOMINAR</span>.",
+        "description": "Cansado de tentar encaixar sua regra de negócio em plataformas prontas? Nós criamos aplicativos, sistemas e plataformas digitais premium sob medida para multiplicar seus resultados.",
+        "trusted_us": "Eles confiaram em nós",
+        "cta_primary": "QUERO MEU PROJETO",
+        "cta_secondary": "COMO FUNCIONA",
+        "stat_roi": "DELTA DE CRESCIMENTO",
+        "stat_roi_val": "400%+",
+        "stat_roi_desc": "Aumento Médio de ROI Year-over-Year",
+        "stat_revenue": "INFRAESTRUTURA",
+        "stat_revenue_val": "$12M+",
+        "stat_revenue_desc": "Receita Gerada e Gerenciada pelo Sistema"
+    },
+    "Capabilities": {
+        "label": "CAPACIDADES",
+        "headline": "NOSSAS <span class='text-primary'>FORÇAS</span> <br/>ARQUITETÔNICAS CORE",
+        "tech": {
+            "title": "TECNOLOGIA ENGENHARADA",
+            "description": "Software focado em conversão, integrações CRM e sistemas backend de alta carga projetados para escala."
+        },
+        "ads": {
+            "title": "ANÚNCIOS DE ALTA PERFORMANCE",
+            "description": "Compra cirúrgica de mídia em Meta, Google e LinkedIn com foco na redução imediata do CAC.",
+            "learn_more": "SAIBA MAIS"
+        },
+        "retention": {
+            "title": "TAXA DE RETENÇÃO",
+            "description": "Não fazemos 'mensalidades'. Construímos parcerias de longo prazo baseadas em benchmarks de KPI rigorosamente aplicados."
+        },
+        "design": {
+            "title": "DESIGN DE CONVERSÃO",
+            "description": "Identidades visuais e fluxos de UI/UX projetados para reduzir o atrito e maximizar a confiança do usuário."
+        }
+    },
+    "Highlights": {
+        "label": "HIGHLIGHTS",
+        "headline": "METAS <span class='text-primary'>ATINGIDAS</span>, <br/>DOMÍNIO ALCANÇADO.",
+        "cta": "SABER MAIS SOBRE NÓS",
+        "item1": {
+            "val": "80+",
+            "label": "PROJETOS CONCLUÍDOS"
+        },
+        "item2": {
+            "val": "12+",
+            "label": "ANOS DE EXPERIÊNCIA"
+        },
+        "item3": {
+            "val": "95%",
+            "label": "TAXA DE RETENÇÃO DE CLIENTES"
+        },
+        "item4": {
+            "val": "32%",
+            "label": "AUMENTO DE CONVERSÕES"
+        }
+    },
+    "CaseStudies": {
+        "label": "PROJETOS SELECIONADOS",
+        "headline": "ESTUDOS DE CASO <br/><span class='text-primary'>QUE GERARAM DOMÍNIO</span>",
+        "case1": {
+            "label": "ESTUDO DE CASO 01: AETHERA SYSTEMS",
+            "title": "ESCALANDO RECEITA EM 400% EM 6 MESES.",
+            "description": "Implementação de um motor de geração de leads customizado e um sistema de design unificado que transformou uma empresa de hardware legada em uma líder de mercado digital-first.",
+            "stat1_label": "TAXA DE CONVERSÃO",
+            "stat2_label": "REDUÇÃO DE OPEX",
+            "cta": "EXPLORAR SISTEMA"
+        },
+        "case2": {
+            "label": "ESTUDO DE CASO 02: NEXUS GLOBAL",
+            "title": "DOMINANDO A BUSCA COM PRECISÃO TÉCNICA.",
+            "description": "Como nossa infraestrutura de SEO técnico e framework de anúncios de alta intenção garantiram um retorno sobre investimento publicitário de 22x para um gigante logístico internacional.",
+            "stat1_label": "ROAS",
+            "stat2_label": "USUÁRIOS MENSAIS",
+            "cta": "EXPLORAR SISTEMA"
+        }
+    },
+    "Testimonials": {
+        "badge": "HISTÓRIAS DE SUCESSO",
+        "headline": "O QUE DIZEM <br/><span class='text-primary'>NOSSOS CLIENTES</span>",
+        "cta": "VER MAIS HISTÓRIAS",
+        "item1": {
+            "text": "A StudioCactus entregou um design de e-commerce deslumbrante com gestão de inventário customizada para nossa marca. Sua expertise em UI/UX e desenvolvimento simplificou nossas operações magnificamente.",
+            "author": "Mircea M.",
+            "role": "Fundador @ SKIDOLive"
+        },
+        "item2": {
+            "text": "O software focado em conversão e a infraestrutura de alta carga projetada para escala pela StudioCactus transformaram nossa empresa numa líder digital-first em tempo recorde.",
+            "author": "Mihaela L.",
+            "role": "Co-Fundadora @ Volare"
+        },
+        "item3": {
+            "text": "Trabalhar com a StudioCactus foi uma virada de chave para nossa arquitetura de dados. O sistema de CRM customizado reduziu o lead time em 40% na primeira semana.",
+            "author": "Ricardo S.",
+            "role": "CTO @ Nova Arch"
+        },
+        "item4": {
+            "text": "A melhor decisão que tomamos para nossa infraestrutura. O motor de geração de leads é o coração do nosso crescimento atual.",
+            "author": "Juliana F.",
+            "role": "CEO @ Hyperion"
+        },
+        "item5": {
+            "text": "Design brutalista com alma. Eles entendem que performance e estética devem andar juntas para converter no mercado premium.",
+            "author": "Felipe K.",
+            "role": "Diretor Criativo @ Aethera"
+        },
+        "item6": {
+            "text": "Nossa taxa de retenção saltou para 95% após a implementação do novo portal do cliente. A StudioCactus entregou além das expectativas.",
+            "author": "Amanda R.",
+            "role": "Product Manager @ Nexus Global"
+        }
+    },
+    "CTA": {
+        "headline": "PRONTO PARA ENGENHAR <br/>SEU CRESCIMENTO?",
+        "button_start": "INICIAR PROJETO",
+        "button_audit": "AGENDAR AUDITORIA"
+    },
+    "Footer": {
+        "agency_tag": "AGÊNCIA DE WEB DESIGN",
+        "description": "Transformamos ideias em experiências digitais impactantes que cativam o seu público e impulsionam o crescimento do seu negócio.",
+        "built_with": "Construído com ♡ em São Paulo ® 2024 - 2026",
+        "menu": "Menu",
+        "services": "Serviços",
+        "follow_us": "Siga-nos",
+        "legal": "Legal",
+        "status": "Status",
+        "system_active": "Operacional"
+    }
+}
