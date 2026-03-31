@@ -25,8 +25,8 @@ export default async function Home({
         <div className="max-w-7xl mx-auto px-8 h-full flex items-center justify-between">
           <div className="text-2xl font-bold tracking-tighter text-white">STUDIOCACTUS</div>
           <div className="hidden md:flex gap-12 font-label text-[10px] tracking-[0.3em] text-neutral-400 uppercase">
-            <a href="#work" className="hover:text-primary transition-colors">{t.Navigation.work}</a>
             <a href="#services" className="hover:text-primary transition-colors">{t.Navigation.services}</a>
+            <a href="#work" className="hover:text-primary transition-colors">{t.Navigation.work}</a>
             <a href="#tech" className="hover:text-primary transition-colors">{t.Navigation.tech}</a>
             <a href="#about" className="hover:text-primary transition-colors">{t.Navigation.about}</a>
           </div>
@@ -54,13 +54,13 @@ export default async function Home({
               <h1 className="font-headline text-[10vw] md:text-[5vw] font-black leading-[0.95] tracking-tighter uppercase mb-16 text-white overflow-hidden">
                 {lang === 'en' ? (
                   <>
-                    STOP <span className="text-primary italic"><FlipWord text="EXISTING" /></span>. <br />
-                    START <span className="text-primary italic"><FlipWord text="DOMINATING" /></span>.
+                    STOP <span className="text-primary"><FlipWord text="EXISTING" /></span>. <br />
+                    START <span className="text-primary"><FlipWord text="DOMINATING" /></span>.
                   </>
                 ) : (
                   <>
-                    PARE DE <span className="text-primary italic"><FlipWord text="EXISTIR" /></span>. <br />
-                    COMECE A <span className="text-primary italic"><FlipWord text="DOMINAR" /></span>.
+                    PARE DE <span className="text-primary"><FlipWord text="EXISTIR" /></span>. <br />
+                    COMECE A <span className="text-primary"><FlipWord text="DOMINAR" /></span>.
                   </>
                 )}
               </h1>
@@ -69,10 +69,14 @@ export default async function Home({
                 {t.Hero.description}
               </p>
 
-              <div className="mt-20 flex gap-4">
+              <div className="mt-20 flex flex-wrap gap-6">
                 <button className="group relative overflow-hidden bg-white text-black px-12 py-6 font-bold text-base tracking-widest transition-all">
                   <span className="relative z-10 uppercase">{t.Hero.cta_primary}</span>
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                </button>
+
+                <button className="group relative border-2 border-primary text-primary px-12 py-6 font-bold text-base tracking-widest transition-all hover:bg-primary hover:text-black">
+                  <span className="uppercase">{t.Hero.cta_secondary}</span>
                 </button>
               </div>
             </div>
@@ -85,13 +89,9 @@ export default async function Home({
 
         <ClientMarquee title={t.Hero.trusted_us} />
 
-        <div id="work">
-          <ProjectsSection t={t} />
-        </div>
-
         <div id="services">
           {/* Services - Technical Architecture Grid */}
-          <section className="py-40 px-6 bg-black border-y border-white/5">
+          <section className="py-40 px-6 bg-background border-y border-white/5 relative z-10">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
                 <div className="lg:col-span-12">
@@ -138,11 +138,19 @@ export default async function Home({
           </section>
         </div>
 
+        <div id="work">
+          <ProjectsSection t={t} />
+        </div>
+
         <InteractiveSpotlight />
 
-        <StatsSection t={t.Highlights} />
+        <div id="tech">
+          <StatsSection t={t.Highlights} />
+        </div>
 
-        <SuccessStories t={t} />
+        <div id="about">
+          <SuccessStories t={t} />
+        </div>
 
         {/* Final CTA Section */}
         <section className="py-40 px-6 bg-primary text-on-primary font-space-grotesk relative z-10">
@@ -183,8 +191,8 @@ export default async function Home({
             <div className="md:col-span-2 space-y-6">
               <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold">{t.Footer.menu}</h4>
               <ul className="space-y-4 font-body text-sm text-white">
-                <li><a href="#work" className="hover:text-primary transition-colors uppercase">{t.Navigation.work}</a></li>
                 <li><a href="#services" className="hover:text-primary transition-colors uppercase">{t.Navigation.services}</a></li>
+                <li><a href="#work" className="hover:text-primary transition-colors uppercase">{t.Navigation.work}</a></li>
                 <li><a href="#tech" className="hover:text-primary transition-colors uppercase">{t.Navigation.tech}</a></li>
                 <li><a href="#about" className="hover:text-primary transition-colors uppercase">{t.Navigation.about}</a></li>
               </ul>
@@ -253,8 +261,8 @@ export default async function Home({
 
                     return (
                       <div className={`inline-flex items-center gap-3 px-4 py-2 border transition-all duration-700 ${isWorkingHours
-                          ? "bg-primary/10 border-primary/20 text-primary"
-                          : "bg-white/5 border-white/10 text-neutral-600 grayscale"
+                        ? "bg-primary/10 border-primary/20 text-primary"
+                        : "bg-white/5 border-white/10 text-neutral-600 grayscale"
                         }`}>
                         <div className={`w-2 h-2 rounded-full ${isWorkingHours ? "bg-primary animate-pulse" : "bg-neutral-800"
                           }`} />

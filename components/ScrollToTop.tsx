@@ -1,27 +1,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 
 export default function ScrollToTop() {
     const [isVisible, setIsVisible] = useState(false);
+    const { scrollYProgress, scrollY } = useScroll();
+
+    // Smooth transform for the digital readout
+    const [displayY, setDisplayY] = useState(0);
 
     useEffect(() => {
         const toggleVisibility = () => {
-            if (window.scrollY > 300) {
+            if (window.pageYOffset > 300) {
                 setIsVisible(true);
             } else {
                 setIsVisible(false);
             }
         };
+
+        const updateCoords = () => {
+            setDisplayY(window.pageYOffset);
+        };
+
         window.addEventListener("scroll", toggleVisibility);
-        return () => window.removeEventListener("scroll", toggleVisibility);
+        window.addEventListener("scroll", updateCoords);
+
+        return () => {
+            window.removeEventListener("scroll", toggleVisibility);
+            window.removeEventListener("scroll", updateCoords);
+        };
     }, []);
 
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
-            behavior: "smooth"
+            behavior: "smooth",
         });
     };
 
@@ -29,38 +43,64 @@ export default function ScrollToTop() {
         <AnimatePresence>
             {isVisible && (
                 <motion.button
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 50 }}
+                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 20, scale: 0.9 }}
                     onClick={scrollToTop}
-                    className="fixed bottom-12 right-12 z-[100] group flex flex-col items-center gap-0 pointer-events-auto"
+                    className="fixed bottom-8 right-8 z-[100] group"
                 >
-                    <div className="bg-black/80 backdrop-blur-xl border border-primary/20 p-1 flex flex-col items-center shadow-[0_20px_50px_rgba(0,0,0,1)]">
-                        {/* Technical Coordinates Unit */}
-                        <div className="flex flex-col items-center gap-2 py-4 px-3 border-b border-white/5 transition-all group-hover:border-primary/40">
-                            <span className="text-[10px] font-mono text-neutral-600 group-hover:text-primary transition-colors">COORD_Y</span>
-                            <span className="text-[10px] font-headline font-black text-white tracking-widest uppercase">00.00</span>
-                        </div>
+                    {/* HUD Tactical Container */}
+                    <div className="relative p-4 border border-primary/30 bg-background/80 backdrop-blur-xl flex flex-col items-start gap-3 min-w-[120px] overflow-hidden">
 
-                        {/* Execute Switch */}
-                        <div className="w-full bg-primary hover:bg-white transition-all duration-500 py-6 px-4 flex items-center justify-center text-black">
-                            <span className="material-symbols-outlined text-lg leading-none">north</span>
-                        </div>
-
-                        {/* Label Unit */}
-                        <div className="py-2 w-full text-center">
-                            <span className="text-[7px] font-black tracking-[0.4em] text-neutral-700 uppercase">SYS_UP</span>
-                        </div>
-                    </div>
-
-                    {/* Visual Pulse Base */}
-                    <div className="w-12 h-1 bg-primary/20 mt-2 relative overflow-hidden">
+                        {/* Background Scanning Animation */}
                         <motion.div
-                            className="absolute inset-0 bg-primary shadow-[0_0_10px_#aed500]"
-                            animate={{ x: ["-100%", "100%"] }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 bg-primary/5 -z-10"
+                            animate={{ opacity: [0.1, 0.2, 0.1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
                         />
+
+                        {/* Top Indicator */}
+                        <div className="flex justify-between w-full items-center">
+                            <div className="flex gap-1">
+                                <div className="w-1 h-1 bg-primary" />
+                                <div className="w-1 h-1 bg-primary/20" />
+                            </div>
+                            <span className="font-label text-[8px] text-primary/60 tracking-widest uppercase">UP_NAV</span>
+                        </div>
+
+                        {/* Coordinate Data Area */}
+                        <div className="space-y-1">
+                            <div className="flex items-baseline gap-2">
+                                <span className="font-label text-[8px] text-neutral-600 uppercase">Axis_Y</span>
+                                <span className="font-mono text-xs font-bold text-white tracking-widest">
+                                    {displayY.toFixed(2).padStart(7, '0')}
+                                </span>
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                                <span className="font-label text-[8px] text-neutral-600 uppercase">Depth</span>
+                                <span className="font-mono text-[10px] text-primary font-black">
+                                    {(displayY / 100).toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Interactive Trigger */}
+                        <div className="w-full h-[2px] bg-white/5 relative overflow-hidden">
+                            <motion.div
+                                className="absolute inset-0 bg-primary origin-left"
+                                style={{ scaleX: scrollYProgress }}
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                            <span className="font-headline text-[10px] font-black uppercase tracking-[0.2em] text-white group-hover:text-primary">System Reset</span>
+                            <span className="material-symbols-outlined text-xs">north</span>
+                        </div>
                     </div>
+
+                    {/* Corner Borders [Brutalist Decoration] */}
+                    <div className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-primary" />
+                    <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-primary" />
                 </motion.button>
             )}
         </AnimatePresence>
