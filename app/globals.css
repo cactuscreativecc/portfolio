@@ -49,6 +49,18 @@ html {
   --color-surface-container-low: #141414;
   --color-surface-container-high: #242424;
   --color-surface-container-highest: #2a2a2a;
+
+  --animate-shine: logo-shine 1s linear infinite;
+
+  @keyframes logo-shine {
+    from {
+      background-position: -200% 0;
+    }
+
+    to {
+      background-position: 200% 0;
+    }
+  }
 }
 
 :root {
@@ -98,6 +110,19 @@ html {
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .logo-shine-hover {
+    transition: all 0.3s ease;
+  }
+
+  .logo-shine-hover:hover {
+    color: transparent !important;
+    background: linear-gradient(90deg, #fff 0%, #aed500 50%, #fff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: logo-shine 1.5s linear infinite;
   }
 }
 

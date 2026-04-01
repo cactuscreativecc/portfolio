@@ -140,10 +140,10 @@ export default function ProjectsSection({ t }: { t: any }) {
 
     return (
         <section id="projects" className="py-24 bg-[#141414] relative overflow-hidden transition-colors duration-700">
-            <div className="max-w-7xl mx-auto px-8">
+            <div className="max-w-7xl mx-auto px-6 md:px-8">
 
                 {/* Technical Index Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 mb-24">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 md:gap-12 mb-12 md:mb-24">
                     <div className="max-w-2xl">
                         <div className="inline-flex items-center gap-3 px-4 py-2 border border-white/10 bg-white/5 mb-8">
                             <div className="w-2 h-2 bg-primary animate-pulse" />
@@ -153,7 +153,7 @@ export default function ProjectsSection({ t }: { t: any }) {
                             dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
                     </div>
 
-                    <nav className="flex flex-wrap gap-x-10 gap-y-4 font-label text-[10px] tracking-[0.25em] text-neutral-600">
+                    <nav className="flex flex-wrap gap-x-6 md:gap-x-10 gap-y-4 font-label text-[10px] tracking-[0.25em] text-neutral-600">
                         {filterOptions.map((opt) => (
                             <button
                                 key={opt.label}
@@ -169,7 +169,7 @@ export default function ProjectsSection({ t }: { t: any }) {
                     </nav>
                 </div>
 
-                <div className="relative min-h-[700px]">
+                <div className="relative min-h-0 lg:min-h-[700px]">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={currentProject.id}

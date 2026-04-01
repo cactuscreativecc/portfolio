@@ -21,7 +21,7 @@ export default function ContactForm({ t }: ContactFormProps) {
     if (!t) return null;
 
     return (
-        <div className="bg-[#111] rounded-[2rem] p-8 md:p-16 border border-white/5">
+        <div className="bg-[#111] rounded-3xl p-6 md:p-16 border border-white/5">
             <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
                 {/* Dual Column Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -76,7 +76,7 @@ export default function ContactForm({ t }: ContactFormProps) {
                         <label className="block text-white text-xs font-black uppercase tracking-[0.3em]">
                             {t.help_label} <span className="text-primary">*</span>
                         </label>
-                        <div className="flex flex-wrap gap-8">
+                        <div className="flex flex-wrap gap-4 md:gap-8">
                             {Object.entries(t.help_options || {}).map(([key, label]: [string, any]) => (
                                 <label key={key} className="flex items-center gap-4 cursor-pointer group">
                                     <input type="checkbox" className="hidden peer" />

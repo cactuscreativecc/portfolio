@@ -127,7 +127,14 @@
     },
     "CTA": {
         "badge": "STRATEGIC CONSULTATION",
-        "headline": "READY TO RE-ENGINEER <br/>YOUR <span class='text-primary'>REVENUE TRAJECTORY?</span>",
+        "headline": "PREMIUM DESIGN <br/>PARTNERSHIP. <br/>TRUSTED <span class='text-primary'>DELIVERY</span>",
+        "headline_lines": [
+            "PREMIUM DESIGN",
+            "PARTNERSHIP",
+            "TRUSTED",
+            "DELIVERY"
+        ],
+        "headline_accent_line": 3,
         "button_main": "BOOK STRATEGY CALL",
         "disclaimer": "STRICTLY LIMITED TO 2 NEW CLIENT ENGAGEMENTS PER QUARTER."
     },

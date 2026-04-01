@@ -7,8 +7,8 @@ interface SuccessStoriesProps {
 }
 
 const TestimonialCard = ({ item }: { item: any }) => (
-    <div className="bg-white/[0.03] border border-white/10 rounded-none p-10 flex flex-col items-center text-center group hover:border-primary/40 transition-all duration-500 mb-8 last:mb-0">
-        <p className="font-body text-base md:text-xl text-neutral-300 leading-relaxed mb-10">
+    <div className="bg-white/[0.03] border border-white/10 rounded-none p-6 md:p-10 flex flex-col items-center text-center group hover:border-primary/40 transition-all duration-500 mb-8 last:mb-0">
+        <p className="font-body text-sm md:text-lg text-neutral-300 leading-relaxed mb-6 md:mb-10">
             "{item.text}"
         </p>
         <div className="flex flex-col items-center gap-3">
@@ -16,10 +16,10 @@ const TestimonialCard = ({ item }: { item: any }) => (
                 {item.initial}
             </div>
             <div className="space-y-0.5">
-                <h4 className="font-headline text-sm font-bold text-white uppercase tracking-tight">
+                <h4 className="font-headline text-xs font-bold text-white uppercase tracking-tight">
                     {item.author}
                 </h4>
-                <p className="font-label text-[9px] tracking-[0.2em] text-neutral-500 uppercase">
+                <p className="font-label text-[8px] tracking-[0.2em] text-neutral-500 uppercase">
                     {item.role}
                 </p>
             </div>
@@ -43,8 +43,8 @@ export default function SuccessStories({ t }: SuccessStoriesProps) {
     const col2 = testimonials.filter((_, i) => i % 2 !== 0);
 
     return (
-        <section className="py-40 bg-black relative overflow-hidden border-t border-white/5">
-            <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+        <section className="py-24 md:py-40 bg-black relative overflow-hidden border-t border-white/5">
+            <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
 
                 {/* Left Side: Standardized Header (5 cols) */}
                 <div className="lg:col-span-5 lg:sticky lg:top-40 z-20">
@@ -63,7 +63,7 @@ export default function SuccessStories({ t }: SuccessStoriesProps) {
 
                 {/* Right Side: Dual-Column Vertical Marquee (7 cols) */}
                 <div
-                    className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 h-[900px] overflow-hidden relative group"
+                    className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 h-[500px] md:h-[900px] overflow-hidden relative group"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >

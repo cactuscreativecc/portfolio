@@ -69,6 +69,15 @@ const config: Config = {
                 "sans": ["var(--font-space-grotesk)", "Space Grotesk"]
             },
             borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+            keyframes: {
+                shine: {
+                    "0%": { transform: "translateX(-100%)" },
+                    "100%": { transform: "translateX(100%)" }
+                }
+            },
+            animation: {
+                shine: "shine 1.5s ease-in-out"
+            }
         },
     },
     plugins: [],

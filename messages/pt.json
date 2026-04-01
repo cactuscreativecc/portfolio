@@ -127,7 +127,14 @@
     },
     "CTA": {
         "badge": "CONSULTA ESTRATÉGICA",
-        "headline": "PRONTO PARA RE-ENGENHEIRAR <br/>SUA TRAJETÓRIA DE <span class='text-primary'>RECEITA?</span>",
+        "headline": "PARCERIA DE <br/>DESIGN PREMIUM <br/>CONFIANÇA <span class='text-primary'>NA ENTREGA</span>",
+        "headline_lines": [
+            "PARCERIA DE",
+            "DESIGN PREMIUM",
+            "CONFIANÇA",
+            "NA ENTREGA"
+        ],
+        "headline_accent_line": 3,
         "button_main": "AGENDAR CALL ESTRATÉGICO",
         "disclaimer": "ESTRITAMENTE LIMITADO A 2 NOVOS CLIENTES POR TRIMESTRE."
     },
