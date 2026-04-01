@@ -82,32 +82,75 @@ export default function CustomCursor() {
         };
     }, [hoverState, mouseX, mouseY, cursorWidth, cursorHeight]);
 
+    const trail1X = useSpring(mouseX, { damping: 25, stiffness: 200 });
+    const trail1Y = useSpring(mouseY, { damping: 25, stiffness: 200 });
+    const trail2X = useSpring(mouseX, { damping: 20, stiffness: 100 });
+    const trail2Y = useSpring(mouseY, { damping: 20, stiffness: 100 });
+    const trail3X = useSpring(mouseX, { damping: 15, stiffness: 50 });
+    const trail3Y = useSpring(mouseY, { damping: 15, stiffness: 50 });
+
     if (isMobile) return null;
 
     return (
-        <motion.div
-            className="hidden lg:block fixed top-0 left-0 pointer-events-none z-[9999] border-2 border-primary bg-primary/10"
-            style={{
-                translateX: cursorX,
-                translateY: cursorY,
-                x: "-50%",
-                y: "-50%",
-                width: cursorWidth,
-                height: cursorHeight,
-            }}
-            animate={{
-                opacity: 1,
-                borderRadius: hoverState ? "0px" : "999px",
-            }}
-        >
-            {/* Internal Pulse when in pointer mode */}
+        <>
+            {/* Trail Effects */}
             {!hoverState && (
-                <motion.div
-                    className="absolute inset-0 bg-primary rounded-full"
-                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                />
+                <>
+                    <motion.div
+                        className="fixed top-0 left-0 pointer-events-none z-[9998] w-4 h-4 rounded-full bg-primary/20"
+                        style={{
+                            translateX: trail1X,
+                            translateY: trail1Y,
+                            x: "-50%",
+                            y: "-50%",
+                        }}
+                    />
+                    <motion.div
+                        className="fixed top-0 left-0 pointer-events-none z-[9997] w-3 h-3 rounded-full bg-primary/10"
+                        style={{
+                            translateX: trail2X,
+                            translateY: trail2Y,
+                            x: "-50%",
+                            y: "-50%",
+                        }}
+                    />
+                    <motion.div
+                        className="fixed top-0 left-0 pointer-events-none z-[9996] w-2 h-2 rounded-full bg-primary/5"
+                        style={{
+                            translateX: trail3X,
+                            translateY: trail3Y,
+                            x: "-50%",
+                            y: "-50%",
+                        }}
+                    />
+                </>
             )}
-        </motion.div>
+
+            <motion.div
+                className="hidden lg:block fixed top-0 left-0 pointer-events-none z-[9999] border-2 border-primary bg-primary/10"
+                style={{
+                    translateX: cursorX,
+                    translateY: cursorY,
+                    x: "-50%",
+                    y: "-50%",
+                    width: cursorWidth,
+                    height: cursorHeight,
+                }}
+                animate={{
+                    opacity: 1,
+                    borderRadius: hoverState ? "0px" : "999px",
+                }}
+            >
+                {/* Internal Pulse when in pointer mode */}
+                {!hoverState && (
+                    <motion.div
+                        className="absolute inset-0 bg-primary rounded-full transition-transform"
+                        animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                    />
+                )}
+            </motion.div>
+        </>
     );
 }
+
