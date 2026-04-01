@@ -23,51 +23,51 @@
     },
     "Capabilities": {
         "label": "CAPACIDADES",
-        "headline": "NOSSAS <span class='text-primary'>FORÇAS</span> <br/>ARQUITETÔNICAS CORE",
+        "headline": "ARQUITETURA DE <span class='text-primary'>ALTO IMPACTO</span> <br/>PARA QUEM NÃO ACEITA O PADRÃO",
         "tech_partner": {
             "title": "TECH PARTNER (SUSTENTAÇÃO)",
-            "description": "Atuação como seu desenvolvedor dedicado. Melhorias contínuas, novas features e blindagem de segurança para seu negócio não parar."
+            "description": "Atuação como seu braço tecnológico dedicado. Evolução constante, segurança blindada e suporte estratégico para seu negócio nunca parar de crescer."
         },
         "web_apps": {
-            "title": "WEB APPS (PWA)",
-            "description": "Sistemas feitos sob medida com visual de aplicativo que funcionam direto no navegador de qualquer celular."
+            "title": "WEB APPS & SOFTWARES",
+            "description": "Sistemas robustos criados sob medida com estética premium e performance de elite. Feitos para quem precisa de resultados, não apenas de um site."
         },
         "data_integration": {
-            "title": "INTEGRAÇÃO DE DADOS",
-            "description": "Conexão entre sistemas, APIs e bancos de dados para fluxos inteligentes e automatizados."
+            "title": "SISTEMAS CONECTADOS",
+            "description": "Orquestramos APIs e infraestruturas complexas para criar ecossistemas inteligentes que trabalham sozinhos para sua rentabilidade."
         },
         "digital_platforms": {
-            "title": "PLATAFORMAS DIGITAIS",
-            "description": "E-commerce, marketplaces e portais com experiência de usuário impecável."
+            "title": "PLATAFORMAS DE ESCALA",
+            "description": "E-commerce e Marketplaces projetados para suportar o topo do mercado. Experiência de usuário que transforma cliques em faturamento real."
         },
         "bespoke_solutions": {
-            "title": "SOLUÇÕES SOB MEDIDA",
-            "description": "Software personalizado para resolver desafios específicos do seu negócio."
+            "title": "ENGENHARIA SOB MEDIDA",
+            "description": "Desenvolvimento especializado para desafios que nenhuma plataforma pronta consegue resolver. Onde nasce o diferencial competitivo do seu negócio."
         },
         "automation_ai": {
-            "title": "AUTOMAÇÃO & IA",
-            "description": "Processos automatizados e inteligência artificial aplicada para escalar resultados."
+            "title": "AUTOMAÇÃO & IA APLICADA",
+            "description": "Implementamos inteligência artificial para eliminar gargalos operacionais e escalar seu ROI através de processos automatizados."
         }
     },
     "Highlights": {
         "label": "HIGHLIGHTS",
-        "headline": "METAS <span class='text-primary'>ATINGIDAS</span>, <br/>DOMÍNIO ALCANÇADO.",
-        "cta": "SABER MAIS SOBRE NÓS",
+        "headline": "NÚMEROS QUE <span class='text-primary'>FALAM</span> <br/>MAIS ALTO QUE PROMESSAS.",
+        "cta": "EXPLORE NOSSA METODOLOGIA",
         "item1": {
             "val": "80+",
-            "label": "PROJETOS CONCLUÍDOS"
+            "label": "DOMÍNIOS DIGITAIS CONCLUÍDOS"
         },
         "item2": {
             "val": "12+",
-            "label": "ANOS DE EXPERIÊNCIA"
+            "label": "ANOS DE ENGENHARIA DE ELITE"
         },
         "item3": {
             "val": "95%",
-            "label": "TAXA DE RETENÇÃO DE CLIENTES"
+            "label": "TAXA DE RETENÇÃO (LOYALTY)"
         },
         "item4": {
             "val": "32%",
-            "label": "AUMENTO DE CONVERSÕES"
+            "label": "AUMENTO MÉDIO EM CONVERSÕES"
         }
     },
     "CaseStudies": {
@@ -175,16 +175,16 @@
     },
     "CTA": {
         "badge": "CONSULTA ESTRATÉGICA",
-        "headline": "PARCERIA DE <br/>DESIGN PREMIUM <br/>CONFIANÇA <span class='text-primary'>NA ENTREGA</span>",
+        "headline": "TRANSFORME SUA <br/>VISAO EM UMA <br/>MAQUINA DE <span class='text-primary'>RESULTADOS</span>",
         "headline_lines": [
-            "PARCERIA DE",
-            "DESIGN PREMIUM",
-            "CONFIANÇA",
-            "NA ENTREGA"
+            "TRANSFORME SUA",
+            "VISAO EM UMA",
+            "MAQUINA DE",
+            "RESULTADOS"
         ],
         "headline_accent_line": 3,
-        "button_main": "AGENDAR CALL ESTRATÉGICO",
-        "disclaimer": "ESTRITAMENTE LIMITADO A 2 NOVOS CLIENTES POR TRIMESTRE."
+        "button_main": "AGENDAR CONSULTA DE ALTO IMPACTO",
+        "disclaimer": "DISPONIBILIDADE LIMITADA: 2 NOVAS PARCERIAS POR TRIMESTRE."
     },
     "Footer": {
         "agency_tag": "AGÊNCIA DE WEB DESIGN",

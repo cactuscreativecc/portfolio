@@ -22,52 +22,52 @@
         "stat_revenue_desc": "Revenue Generated & Managed"
     },
     "Capabilities": {
-        "label": "CAPABILITIES",
-        "headline": "OUR ARCHITECTURAL <br/><span class='text-primary'>CORE STRENGTHS</span>",
+        "label": "CAPACIDADES",
+        "headline": "HIGH-IMPACT <span class='text-primary'>ARCHITECTURE</span> <br/>FOR THOSE WHO REFUSE THE ORDINARY",
         "tech_partner": {
-            "title": "TECH PARTNER (MAINTENANCE)",
-            "description": "Acting as your dedicated developer. Continuous improvements, new features, and security shielding so your business never stops."
+            "title": "TECH PARTNER (SUPPORT)",
+            "description": "Acting as your dedicated technological arm. Constant evolution, ironclad security, and strategic support to keep your business growing."
         },
         "web_apps": {
-            "title": "WEB APPS (PWA)",
-            "description": "Tailor-made systems with an app-like look that work directly in any mobile browser."
+            "title": "WEB APPS & SOFTWARE",
+            "description": "Robust systems custom-built with premium aesthetics and elite performance. Made for those who need results, not just a website."
         },
         "data_integration": {
-            "title": "DATA INTEGRATION",
-            "description": "Connecting systems, APIs, and databases for intelligent and automated workflows."
+            "title": "CONNECTED SYSTEMS",
+            "description": "We orchestrate APIs and complex infrastructures to create intelligent ecosystems that work autonomously for your profitability."
         },
         "digital_platforms": {
-            "title": "DIGITAL PLATFORMS",
-            "description": "E-commerce, marketplaces, and portals with flawless user experience."
+            "title": "SCALE PLATFORMS",
+            "description": "E-commerce and Marketplaces designed to support the top of the market. User experience that turns clicks into real revenue."
         },
         "bespoke_solutions": {
-            "title": "BESPOKE SOLUTIONS",
-            "description": "Custom software engineered to solve your business's specific challenges."
+            "title": "BESPOKE ENGINEERING",
+            "description": "Specialized development for challenges that no ready-made platform can solve. Where your business's competitive edge is born."
         },
         "automation_ai": {
-            "title": "AUTOMATION & AI",
-            "description": "Automated processes and artificial intelligence applied to scale results effortlessly."
+            "title": "AUTOMATION & APPLIED AI",
+            "description": "We implement artificial intelligence to eliminate operational bottlenecks and scale your ROI through automated processes."
         }
     },
     "Highlights": {
         "label": "HIGHLIGHTS",
-        "headline": "GOALS <span class='text-primary'>ACHIEVED</span>, <br/>DOMINATION REACHED.",
-        "cta": "MORE ABOUT US",
+        "headline": "NUMBERS THAT <span class='text-primary'>SPEAK</span> <br/>LOUDER THAN PROMISES.",
+        "cta": "EXPLORE OUR METHODOLOGY",
         "item1": {
             "val": "80+",
-            "label": "PROJECTS COMPLETED"
+            "label": "DIGITAL DOMAINS DELIVERED"
         },
         "item2": {
             "val": "12+",
-            "label": "YEARS EXPERIENCE"
+            "label": "YEARS OF ELITE ENGINEERING"
         },
         "item3": {
             "val": "95%",
-            "label": "CLIENT RETENTION RATE"
+            "label": "CUSTOMER LOYALTY RATE"
         },
         "item4": {
             "val": "32%",
-            "label": "INCREASED CONVERSIONS"
+            "label": "AVG CONVERSION INCREASE"
         }
     },
     "CaseStudies": {
@@ -175,16 +175,16 @@
     },
     "CTA": {
         "badge": "STRATEGIC CONSULTATION",
-        "headline": "PREMIUM DESIGN <br/>PARTNERSHIP. <br/>TRUSTED <span class='text-primary'>DELIVERY</span>",
+        "headline": "TURN YOUR <br/>VISION INTO A <br/>REVENUE <span class='text-primary'>ENGINE</span>",
         "headline_lines": [
-            "PREMIUM DESIGN",
-            "PARTNERSHIP",
-            "TRUSTED",
-            "DELIVERY"
+            "TURN YOUR",
+            "VISION INTO A",
+            "REVENUE",
+            "ENGINE"
         ],
         "headline_accent_line": 3,
-        "button_main": "BOOK STRATEGY CALL",
-        "disclaimer": "STRICTLY LIMITED TO 2 NEW CLIENT ENGAGEMENTS PER QUARTER."
+        "button_main": "SCHEDULE HIGH-IMPACT CONSULTATION",
+        "disclaimer": "LIMITED AVAILABILITY: 2 NEW PARTNERSHIPS PER QUARTER."
     },
     "Footer": {
         "agency_tag": "WEB DESIGN AGENCY",
