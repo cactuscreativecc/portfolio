@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useRef, useMemo } from "react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 interface Project {
@@ -17,255 +17,301 @@ interface Project {
     image: string;
     tags: string[];
     href?: string;
+    cta?: string;
 }
 
 export default function ProjectsSection({ t }: { t: any }) {
     const [activeCategory, setActiveCategory] = useState("ALL");
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    // Safeguard
-    if (!t.CaseStudies) return <div className="py-20 text-center text-white/20 uppercase tracking-widest">[ ENGINE OFFLINE / DATA ERROR ]</div>;
-
-    const allProjects: Project[] = [
-        // TECH Projects (4)
+    // Dynamic counts from translation data
+    const allProjects: Project[] = useMemo(() => [
         {
             id: "tech1", category: "TECH", index: "01",
             title: t.CaseStudies.case1?.title || "AYU PILATES",
-            description: t.CaseStudies.case1?.description || "",
-            stat1_val: "400%", stat1_label: t.CaseStudies.case1?.stat1_label || "GROWTH",
-            stat2_val: "60%", stat2_label: t.CaseStudies.case1?.stat2_label || "OPEX",
+            description: t.CaseStudies.case1?.description,
+            stat1_val: "400%", stat1_label: t.CaseStudies.case1?.stat1_label,
+            stat2_val: "60%", stat2_label: t.CaseStudies.case1?.stat2_label,
             image: "/jobs/1.png",
             tags: ["PERFORMANCE", "UI/UX", "SYSTEM"],
-            href: "https://ayupilates.com.br"
+            cta: t.CaseStudies.case1?.cta
         },
         {
             id: "tech2", category: "TECH", index: "02",
-            title: t.CaseStudies.case2?.title || "NEXUS GLOBAL",
-            description: t.CaseStudies.case2?.description || "",
-            stat1_val: "22X", stat1_label: t.CaseStudies.case2?.stat1_label || "ROAS",
-            stat2_val: "1.2M", stat2_label: t.CaseStudies.case2?.stat2_label || "USERS",
+            title: t.CaseStudies.case2?.title || "MULTINTERCÂMBIO",
+            description: t.CaseStudies.case2?.description,
+            stat1_val: "22X", stat1_label: t.CaseStudies.case2?.stat1_label,
+            stat2_val: "1.2M", stat2_label: t.CaseStudies.case2?.stat2_label,
             image: "/jobs/2.png",
-            tags: ["SEO", "ADS", "INFRA"]
+            tags: ["SEO", "ADS", "INFRA"],
+            cta: t.CaseStudies.case2?.cta
         },
         {
             id: "tech3", category: "TECH", index: "03",
-            title: t.CaseStudies.case3?.title || "QUANTUM CORE",
-            description: t.CaseStudies.case3?.description || "",
-            stat1_val: "99.99%", stat1_label: t.CaseStudies.case3?.stat1_label || "UPTIME",
-            stat2_val: "2ms", stat2_label: t.CaseStudies.case3?.stat2_label || "LATENCY",
+            title: t.CaseStudies.case3?.title || "MULTINTERCÂMBIO CMS",
+            description: t.CaseStudies.case3?.description,
+            stat1_val: "99.99%", stat1_label: t.CaseStudies.case3?.stat1_label,
+            stat2_val: "2ms", stat2_label: t.CaseStudies.case3?.stat2_label,
             image: "/jobs/3.png",
-            tags: ["BACKEND", "SECURITY", "FINTECH"]
+            tags: ["BACKEND", "SECURITY", "FINTECH"],
+            cta: t.CaseStudies.case3?.cta
         },
         {
             id: "tech4", category: "TECH", index: "04",
-            title: t.CaseStudies.case4?.title || "NEURAL ENGINE",
-            description: t.CaseStudies.case4?.description || "",
-            stat1_val: "15X", stat1_label: t.CaseStudies.case4?.stat1_label || "SPEED",
-            stat2_val: "32TB", stat2_label: t.CaseStudies.case4?.stat2_label || "DATA",
+            title: t.CaseStudies.case4?.title || "CORREZERO13 LP",
+            description: t.CaseStudies.case4?.description,
+            stat1_val: "15X", stat1_label: t.CaseStudies.case4?.stat1_label,
+            stat2_val: "32TB", stat2_label: t.CaseStudies.case4?.stat2_label,
             image: "/jobs/4.png",
-            tags: ["AI", "ML", "AUTOMATION"]
+            tags: ["AI", "ML", "AUTOMATION"],
+            cta: t.CaseStudies.case4?.cta
         },
-        // DESIGN Projects (4)
         {
             id: "design1", category: "DESIGN", index: "05",
-            title: t.CaseStudies.case5?.title || "LUX ARCANA",
-            description: t.CaseStudies.case5?.description || "",
-            stat1_val: "88%", stat1_label: t.CaseStudies.case5?.stat1_label || "REACH",
-            stat2_val: "3.5X", stat2_label: t.CaseStudies.case5?.stat2_label || "AOV",
+            title: t.CaseStudies.case5?.title || "CORREZERO13 PLATFORM",
+            description: t.CaseStudies.case5?.description,
+            stat1_val: "88%", stat1_label: t.CaseStudies.case5?.stat1_label,
+            stat2_val: "3.5X", stat2_label: t.CaseStudies.case5?.stat2_label,
             image: "/jobs/5.png",
-            tags: ["BRUTALISM", "FASHION", "UX"]
+            tags: ["BRUTALISM", "FASHION", "UX"],
+            cta: t.CaseStudies.case5?.cta
         },
         {
             id: "design2", category: "DESIGN", index: "06",
-            title: t.CaseStudies.case6?.title || "KINETIC BRAND",
-            description: t.CaseStudies.case6?.description || "",
-            stat1_val: "1.2M", stat1_label: t.CaseStudies.case6?.stat1_label || "REACH",
-            stat2_val: "450%", stat2_label: t.CaseStudies.case6?.stat2_label || "RATING",
+            title: t.CaseStudies.case6?.title || "CAMPEDELLI",
+            description: t.CaseStudies.case6?.description,
+            stat1_val: "1.2M", stat1_label: t.CaseStudies.case6?.stat1_label,
+            stat2_val: "450%", stat2_label: t.CaseStudies.case6?.stat2_label,
             image: "/jobs/6.png",
-            tags: ["IDENTITY", "MOTION", "VISUAL"]
+            tags: ["IDENTITY", "MOTION", "VISUAL"],
+            cta: t.CaseStudies.case6?.cta
         },
         {
             id: "design3", category: "DESIGN", index: "07",
-            title: t.CaseStudies.case7?.title || "CRYPTO CANVAS",
-            description: t.CaseStudies.case7?.description || "",
-            stat1_val: "20ms", stat1_label: t.CaseStudies.case7?.stat1_label || "SYNC",
-            stat2_val: "0.01", stat2_label: t.CaseStudies.case7?.stat2_label || "FRICTION",
+            title: t.CaseStudies.case7?.title || "GOSAFE",
+            description: t.CaseStudies.case7?.description,
+            stat1_val: "20ms", stat1_label: t.CaseStudies.case7?.stat1_label,
+            stat2_val: "0.01", stat2_label: t.CaseStudies.case7?.stat2_label,
             image: "/jobs/7.png",
-            tags: ["CRYPTO", "WEB3", "MINIMALISM"]
+            tags: ["CRYPTO", "WEB3", "MINIMALISM"],
+            cta: t.CaseStudies.case7?.cta
         },
         {
             id: "design4", category: "DESIGN", index: "08",
-            title: t.CaseStudies.case8?.title || "OASIS INTERFACE",
-            description: t.CaseStudies.case8?.description || "",
-            stat1_val: "32%", stat1_label: t.CaseStudies.case8?.stat1_label || "RETENTION",
-            stat2_val: "4.8", stat2_label: t.CaseStudies.case8?.stat2_label || "RATING",
+            title: t.CaseStudies.case8?.title || "LALABABY",
+            description: t.CaseStudies.case8?.description,
+            stat1_val: "32%", stat1_label: t.CaseStudies.case8?.stat1_label,
+            stat2_val: "4.8", stat2_label: t.CaseStudies.case8?.stat2_label,
             image: "/jobs/8.png",
-            tags: ["BIOPHILIC", "WORKSPACE", "APPS"]
+            tags: ["BIOPHILIC", "WORKSPACE", "APPS"],
+            cta: t.CaseStudies.case8?.cta
         }
-    ];
-
-    const techCount = allProjects.filter(p => p.category === "TECH").length;
-    const designCount = allProjects.filter(p => p.category === "DESIGN").length;
-    const totalCount = allProjects.length;
+    ], [t]);
 
     const filteredProjects = activeCategory === "ALL"
         ? allProjects
         : allProjects.filter(p => p.category === activeCategory);
 
     const filterOptions = [
-        { label: "ALL", count: totalCount },
-        { label: "TECH", count: techCount },
-        { label: "DESIGN", count: designCount },
+        { label: "ALL", count: allProjects.length },
+        { label: "TECH", count: allProjects.filter(p => p.category === "TECH").length },
+        { label: "DESIGN", count: allProjects.filter(p => p.category === "DESIGN").length },
     ];
 
-    return (
-        <section id="projects" className="py-24 bg-[#141414] relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-6 md:px-8">
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"]
+    });
 
-                {/* Technical Index Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 md:gap-12 mb-12 md:mb-24">
-                    <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
-                            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
+    // Smooth scroll configuration
+    const smoothProgress = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
+    // Horizontal translation based on SMOOTH progress
+    const x = useTransform(smoothProgress, [0, 1], ["0%", `-${(filteredProjects.length - 1) * 100}%`]);
+
+    // Title Fade: persistent zero opacity using smooth scroll
+    const titleOpacity = useTransform(smoothProgress, [0, 0.05, 1], [1, 0, 0]);
+    const titleY = useTransform(smoothProgress, [0, 0.05, 1], [0, -40, -40]);
+
+    const pageIndex = useTransform(smoothProgress,
+        filteredProjects.map((_, i) => i / (filteredProjects.length - 1)),
+        filteredProjects.map((_, i) => i)
+    );
+
+    const [currentPage, setCurrentPage] = useState(0);
+
+    useTransform(pageIndex, (latest) => {
+        const rounded = Math.round(latest);
+        if (rounded !== currentPage) setCurrentPage(rounded);
+        return latest;
+    });
+
+    return (
+        <section ref={containerRef} id="projects" className="relative bg-[#141414] overflow-visible">
+            {/* Desktop View */}
+            <div className="hidden md:block" style={{ height: `${filteredProjects.length * 100}vh` }}>
+                <div className="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+
+                    {/* Fixed Header */}
+                    <div className="absolute top-0 left-0 w-full px-12 pt-24 z-[100] flex justify-between items-start pointer-events-none">
+                        <div className="max-w-2xl pointer-events-auto">
+                            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
+                                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                                <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
+                            </div>
+
+                            <motion.div style={{ opacity: titleOpacity, y: titleY }}>
+                                <h2 className="font-headline text-4xl lg:text-7xl font-bold tracking-tight uppercase text-white leading-[0.9]"
+                                    dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
+                            </motion.div>
                         </div>
-                        <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white"
-                            dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
+
+                        <nav className="flex gap-x-12 font-label text-[11px] tracking-[0.25em] text-neutral-600 pointer-events-auto pt-14">
+                            {filterOptions.map((opt) => (
+                                <button
+                                    key={opt.label}
+                                    onClick={() => setActiveCategory(opt.label)}
+                                    className={`group flex items-center gap-4 transition-all hover:text-white ${activeCategory === opt.label ? "text-white" : ""}`}
+                                >
+                                    <span className={`transition-colors font-black ${activeCategory === opt.label ? "text-primary" : "text-neutral-800"}`}>
+                                        [{opt.count < 10 ? `0${opt.count}` : opt.count}]
+                                    </span>
+                                    <span className="uppercase font-black">{opt.label}</span>
+                                </button>
+                            ))}
+                        </nav>
                     </div>
 
-                    <nav className="flex flex-wrap gap-x-6 md:gap-x-10 gap-y-4 font-label text-[10px] tracking-[0.25em] text-neutral-600">
+                    {/* Sliding Slides Container (Reduced top gap) */}
+                    <motion.div style={{ x }} className="flex h-full w-full relative z-10 transition-transform duration-75">
+                        {filteredProjects.map((project) => (
+                            <div key={project.id} className="min-w-full h-full flex items-center justify-center p-12 lg:p-24 pt-[10vh] pb-[10vh]">
+                                <ProjectSlide project={project} />
+                            </div>
+                        ))}
+                    </motion.div>
+
+                    {/* Horizontal Pagination Indicator Footer */}
+                    <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 z-50 flex justify-center bg-gradient-to-t from-black/80 to-transparent">
+
+                        <div className="flex items-center gap-x-16 lg:gap-x-32">
+                            {/* Left part: Progress indicator */}
+                            <div className="flex flex-col gap-3">
+                                <span className="text-[9px] font-black tracking-[0.5em] text-white/40 uppercase">NAVIGATE PROJECTS</span>
+                                <div className="w-48 lg:w-80 h-[2px] bg-white/5 relative overflow-hidden">
+                                    <motion.div
+                                        style={{ scaleX: smoothProgress }}
+                                        className="absolute inset-0 bg-primary origin-left shadow-[0_0_15px_#00ff00]"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Right part: Horizontal Numbering */}
+                            <div className="flex items-end gap-x-6">
+                                <div className="flex items-baseline gap-3">
+                                    <span className="font-headline text-5xl lg:text-7xl font-black text-white leading-none">
+                                        {(currentPage + 1).toString().padStart(2, "0")}
+                                    </span>
+                                    <span className="text-xl lg:text-2xl text-white/20 font-black">/</span>
+                                    <span className="text-xl lg:text-2xl text-white/40 font-black">
+                                        {filteredProjects.length.toString().padStart(2, "0")}
+                                    </span>
+                                </div>
+                                <span className="text-[9px] font-black tracking-[0.4em] text-primary uppercase mb-2 opacity-60 hidden lg:block">SELECTION ARCHIVE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile View */}
+            <div className="block md:hidden py-16 px-6">
+                <div className="mb-12">
+                    <div className="inline-flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/10 mb-6">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                        <span className="text-[8px] font-black tracking-[0.3em] text-neutral-400 uppercase">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
+                    </div>
+                    <h2 className="font-headline text-3xl font-bold tracking-tight uppercase text-white mb-6"
+                        dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
+                    <nav className="flex gap-4 overflow-x-auto no-scrollbar">
                         {filterOptions.map((opt) => (
                             <button
                                 key={opt.label}
                                 onClick={() => setActiveCategory(opt.label)}
-                                className={`group flex items-center gap-4 transition-all hover:text-white ${activeCategory === opt.label ? "text-white" : ""}`}
+                                className={`text-[10px] font-black tracking-widest uppercase pb-2 border-b-2 transition-all ${activeCategory === opt.label ? "border-primary text-white" : "border-transparent text-neutral-600"}`}
                             >
-                                <span className={`transition-colors ${activeCategory === opt.label ? "text-primary" : "text-neutral-800"}`}>
-                                    [{opt.count < 10 ? `0${opt.count}` : opt.count}]
-                                </span>
-                                <span className="uppercase">{opt.label}</span>
+                                [{opt.count < 10 ? `0${opt.count}` : opt.count}] {opt.label}
                             </button>
                         ))}
                     </nav>
                 </div>
-
-                {/* Technical Expanding Archives Grid */}
-                <div className="flex flex-col border-t border-white/5">
-                    <AnimatePresence mode="popLayout">
-                        {filteredProjects.map((project) => (
-                            <ProjectItem key={project.id} project={project} t={t} />
-                        ))}
-                    </AnimatePresence>
+                <div className="space-y-12">
+                    {filteredProjects.map((project) => (
+                        <ProjectSlide key={project.id} project={project} isMobile={true} />
+                    ))}
                 </div>
             </div>
         </section>
     );
 }
 
-function ProjectItem({ project, t }: { project: Project, t: any }) {
-    const [isHovered, setIsHovered] = useState(false);
-
+function ProjectSlide({ project, isMobile = false }: { project: Project; isMobile?: boolean }) {
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="group relative border-b border-white/5 overflow-hidden transition-colors duration-500 hover:bg-white/[0.02]"
-        >
-            {/* Minimal State (Row) */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-6 md:py-10 px-4 md:px-0 transition-all duration-500 gap-4 md:gap-0">
-                <div className="flex items-center gap-4 md:gap-16 group-hover:translate-x-8 transition-transform duration-700 ease-out">
-                    <span className="font-headline text-xl md:text-5xl font-black text-white/5 group-hover:text-primary transition-colors duration-500">
-                        {project.index}
-                    </span>
-                    <h3 className="font-headline text-2xl md:text-5xl font-bold uppercase tracking-tighter text-white transition-all duration-700 ease-out">
-                        {project.title}
-                    </h3>
-                </div>
+        <div className={`flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-16 items-center w-full max-w-[1600px] ${isMobile ? "" : "h-full"}`}>
+            {/* Image Section */}
+            <div className="lg:col-span-7 w-full h-[60vh] lg:h-full lg:max-h-[60vh] relative group overflow-hidden border border-white/5">
+                <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-[1.01] group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60" />
 
-                <div className="flex items-center gap-10">
-                    <div className="hidden md:flex flex-col items-end opacity-40 group-hover:opacity-100 transition-opacity duration-500">
-                        <span className="font-label text-[10px] tracking-[0.2em] text-primary">{project.category}</span>
-                        <span className="font-label text-[10px] tracking-[0.2em] text-neutral-500 uppercase">{project.tags[0]}</span>
+                {/* Visual Stats overlay */}
+                <div className="absolute bottom-8 left-8 flex gap-12">
+                    <div>
+                        <div className="text-xl lg:text-3xl font-black text-primary leading-none tracking-tighter">{project.stat1_val}</div>
+                        <div className="text-[9px] text-white/50 uppercase tracking-[0.3em] font-black mt-2">{project.stat1_label}</div>
                     </div>
-                    <div className={`hidden lg:flex w-12 h-12 border items-center justify-center transition-all duration-500 ${project.href
-                        ? "bg-primary border-primary text-black"
-                        : "opacity-20 grayscale border-white/10 text-neutral-500"
-                        }`}>
-                        <span className={`material-symbols-outlined text-sm transition-transform duration-500 ${project.href
-                                ? "rotate-[-45deg] group-hover:rotate-0"
-                                : "rotate-0"
-                            }`}>
-                            {project.href ? "arrow_forward" : "lock"}
-                        </span>
+                    <div>
+                        <div className="text-xl lg:text-3xl font-black text-primary leading-none tracking-tighter">{project.stat2_val}</div>
+                        <div className="text-[9px] text-white/50 uppercase tracking-[0.3em] font-black mt-2">{project.stat2_label}</div>
                     </div>
                 </div>
             </div>
 
-            {/* Expanded Content (Accordion) */}
-            <motion.div
-                initial={false}
-                animate={{
-                    height: isHovered ? "auto" : 0,
-                    opacity: isHovered ? 1 : 0
-                }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="overflow-hidden"
-            >
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 pb-12 md:pb-20 pt-4 px-4 md:px-12">
-                    {/* Visual Portal */}
-                    <div className="lg:col-span-7 relative aspect-[16/9] overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 bg-neutral-900 border border-white/5">
-                        <motion.img
-                            animate={{ scale: isHovered ? 1 : 1.15 }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            src={project.image}
-                            alt={project.title}
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-
-                        {/* Floating Stats on Image - Adjusted for mobile breath */}
-                        <div className="md:absolute bottom-8 right-8 flex gap-2 md:gap-8 flex-row justify-end p-4 md:p-0">
-                            <div className="flex-1 md:flex-initial md:min-w-[120px]">
-                                <div className="text-sm md:text-xl font-bold text-primary">{project.stat1_val}</div>
-                                <div className="text-[8px] md:text-[9px] text-neutral-400 uppercase tracking-widest leading-none mt-1">{project.stat1_label}</div>
-                            </div>
-                            <div className="flex-1 md:flex-initial md:min-w-[120px]">
-                                <div className="text-sm md:text-xl font-bold text-primary">{project.stat2_val}</div>
-                                <div className="text-[8px] md:text-[9px] text-neutral-400 uppercase tracking-widest leading-none mt-1">{project.stat2_label}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Metadata Recap */}
-                    <div className="lg:col-span-5 flex flex-col justify-center space-y-8">
-                        <div className="space-y-4">
-                            <div className="inline-block px-3 py-1 border border-primary/20 bg-primary/5 text-primary text-[10px] font-bold tracking-widest uppercase mb-4">
-                                PROJECT SPECIFICATIONS
-                            </div>
-                            <p className="font-body text-neutral-400 text-lg md:text-xl leading-relaxed uppercase tracking-tight">
-                                {project.description}
-                            </p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-x-6 gap-y-2">
-                            {project.tags.map((tag: string) => (
-                                <span key={tag} className="text-[10px] text-primary font-black tracking-[0.2em] uppercase border-b border-primary/20 pb-1">
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-
-                        <button className="flex items-center gap-4 group/btn w-fit pt-8 translate-y-4 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards delay-300">
-                            <div className="relative overflow-hidden bg-white text-black px-10 py-5 font-bold text-[10px] tracking-widest uppercase transition-all group-hover/btn:bg-primary group-hover/btn:px-12">
-                                <span className="relative z-10">{t.CaseStudies.case1?.cta || "VIEW CASE STUDY"}</span>
-                            </div>
-                        </button>
-                    </div>
+            {/* Content Section */}
+            <div className="lg:col-span-5 flex flex-col justify-center space-y-6 lg:space-y-10">
+                <div className="space-y-2 lg:space-y-4">
+                    <span className="text-primary text-[10px] lg:text-[12px] font-black tracking-[0.5em] uppercase">[{project.category}]</span>
+                    <h3 className="font-headline text-4xl lg:text-7xl font-bold uppercase tracking-tighter text-white leading-[0.9]">
+                        {project.title}
+                    </h3>
                 </div>
-            </motion.div>
-        </motion.div>
+
+                <p className="font-body text-neutral-400 text-base lg:text-xl leading-relaxed uppercase tracking-tight max-w-xl">
+                    {project.description}
+                </p>
+
+                <div className="flex flex-wrap gap-x-8 gap-y-4 pt-4">
+                    {project.tags.map((tag) => (
+                        <span key={tag} className="text-[10px] text-primary/60 font-black tracking-[0.3em] uppercase">
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
+
+                <div className="pt-8">
+                    <button className="group relative overflow-hidden bg-white text-black px-12 py-5 font-bold text-[11px] tracking-[0.3em] uppercase transition-all hover:bg-primary">
+                        <span className="relative z-10">{project.cta || "VIEW CASE STUDY"}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
