@@ -29,7 +29,7 @@ export default async function Home({
 
       <main>
         {/* HERO - Ultra Modern Digital Architecture */}
-        <section className="relative min-h-screen pt-32 flex flex-col justify-center overflow-hidden">
+        <section id="home" className="relative min-h-screen pt-32 flex flex-col justify-center overflow-hidden">
           <InteractiveWaves />
           <div className="max-w-7xl mx-auto px-8 relative z-10 w-full">
             <div className="max-w-4xl">

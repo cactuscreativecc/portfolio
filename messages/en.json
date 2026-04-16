@@ -1,5 +1,6 @@
 {
     "Navigation": {
+        "home": "HOME",
         "work": "WORK",
         "services": "SERVICES",
         "tech": "TECH",
