@@ -32,7 +32,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case1?.description,
             stat1_val: "400%", stat1_label: t.CaseStudies.case1?.stat1_label,
             stat2_val: "60%", stat2_label: t.CaseStudies.case1?.stat2_label,
-            image: "/jobs/1.png",
+            image: "/jobs/1.jpg",
             tags: ["PERFORMANCE", "UI/UX", "SYSTEM"],
             cta: t.CaseStudies.case1?.cta
         },
@@ -42,7 +42,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case2?.description,
             stat1_val: "22X", stat1_label: t.CaseStudies.case2?.stat1_label,
             stat2_val: "1.2M", stat2_label: t.CaseStudies.case2?.stat2_label,
-            image: "/jobs/2.png",
+            image: "/jobs/2.jpg",
             tags: ["SEO", "ADS", "INFRA"],
             cta: t.CaseStudies.case2?.cta
         },
@@ -52,7 +52,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case3?.description,
             stat1_val: "99.99%", stat1_label: t.CaseStudies.case3?.stat1_label,
             stat2_val: "2ms", stat2_label: t.CaseStudies.case3?.stat2_label,
-            image: "/jobs/3.png",
+            image: "/jobs/3.jpg",
             tags: ["BACKEND", "SECURITY", "FINTECH"],
             cta: t.CaseStudies.case3?.cta
         },
@@ -62,7 +62,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case4?.description,
             stat1_val: "15X", stat1_label: t.CaseStudies.case4?.stat1_label,
             stat2_val: "32TB", stat2_label: t.CaseStudies.case4?.stat2_label,
-            image: "/jobs/4.png",
+            image: "/jobs/4.jpg",
             tags: ["AI", "ML", "AUTOMATION"],
             cta: t.CaseStudies.case4?.cta
         },
@@ -72,7 +72,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case5?.description,
             stat1_val: "88%", stat1_label: t.CaseStudies.case5?.stat1_label,
             stat2_val: "3.5X", stat2_label: t.CaseStudies.case5?.stat2_label,
-            image: "/jobs/5.png",
+            image: "/jobs/5.jpg",
             tags: ["BRUTALISM", "FASHION", "UX"],
             cta: t.CaseStudies.case5?.cta
         },
@@ -82,7 +82,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case6?.description,
             stat1_val: "1.2M", stat1_label: t.CaseStudies.case6?.stat1_label,
             stat2_val: "450%", stat2_label: t.CaseStudies.case6?.stat2_label,
-            image: "/jobs/6.png",
+            image: "/jobs/6.jpg",
             tags: ["IDENTITY", "MOTION", "VISUAL"],
             cta: t.CaseStudies.case6?.cta
         },
@@ -92,7 +92,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case7?.description,
             stat1_val: "20ms", stat1_label: t.CaseStudies.case7?.stat1_label,
             stat2_val: "0.01", stat2_label: t.CaseStudies.case7?.stat2_label,
-            image: "/jobs/7.png",
+            image: "/jobs/7.jpg",
             tags: ["CRYPTO", "WEB3", "MINIMALISM"],
             cta: t.CaseStudies.case7?.cta
         },
@@ -102,7 +102,7 @@ export default function ProjectsSection({ t }: { t: any }) {
             description: t.CaseStudies.case8?.description,
             stat1_val: "32%", stat1_label: t.CaseStudies.case8?.stat1_label,
             stat2_val: "4.8", stat2_label: t.CaseStudies.case8?.stat2_label,
-            image: "/jobs/8.png",
+            image: "/jobs/8.jpg",
             tags: ["BIOPHILIC", "WORKSPACE", "APPS"],
             cta: t.CaseStudies.case8?.cta
         }
@@ -268,6 +268,8 @@ function ProjectSlide({ project, isMobile = false }: { project: Project; isMobil
                     src={project.image}
                     alt={project.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={project.index === "01"}
                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-[1.01] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60" />
