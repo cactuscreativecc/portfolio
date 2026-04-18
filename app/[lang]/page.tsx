@@ -105,7 +105,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">01</div>
-                            <div className="px-2 py-0.5 border border-white/10 bg-white/5 text-[9px] text-neutral-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/40">ASSINATURA MENSAL</div>
+                            <div className="px-2 py-0.5 border border-white/10 bg-white/5 text-[9px] text-neutral-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/40">{t.Capabilities.tags.subscription}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.tech_partner.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
@@ -127,7 +127,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">02</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">DISPONÍVEL</div>
+                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.web_apps.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
@@ -149,7 +149,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">03</div>
-                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">EM DESENVOLVIMENTO</div>
+                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.development}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.data_integration.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
@@ -174,7 +174,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">04</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">DISPONÍVEL</div>
+                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.digital_platforms.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
@@ -196,7 +196,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">05</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">DISPONÍVEL</div>
+                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.bespoke_solutions.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
@@ -218,7 +218,7 @@ export default async function Home({
                         <div>
                           <div className="flex justify-between items-start mb-6">
                             <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">06</div>
-                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">EM DESENVOLVIMENTO</div>
+                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.development}</div>
                           </div>
                           <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.automation_ai.title}</h3>
                           <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">

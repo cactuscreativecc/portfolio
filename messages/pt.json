@@ -26,6 +26,11 @@
     "Capabilities": {
         "label": "CAPACIDADES",
         "headline": "ARQUITETURA DE <span class='text-primary'>ALTO IMPACTO</span> <br/>PARA QUEM NÃO ACEITA O PADRÃO",
+        "tags": {
+            "subscription": "ASSINATURA MENSAL",
+            "available": "DISPONÍVEL",
+            "development": "EM DESENVOLVIMENTO"
+        },
         "tech_partner": {
             "title": "TECH PARTNER (SUSTENTAÇÃO)",
             "description": "Atuação como seu braço tecnológico dedicado. Evolução constante, segurança blindada e suporte estratégico para seu negócio nunca parar de crescer."

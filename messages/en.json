@@ -24,8 +24,13 @@
         "stat_revenue_desc": "Revenue Generated & Managed"
     },
     "Capabilities": {
-        "label": "CAPACIDADES",
+        "label": "CAPABILITIES",
         "headline": "HIGH-IMPACT <span class='text-primary'>ARCHITECTURE</span> <br/>FOR THOSE WHO REFUSE THE ORDINARY",
+        "tags": {
+            "subscription": "MONTHLY SUBSCRIPTION",
+            "available": "AVAILABLE",
+            "development": "IN DEVELOPMENT"
+        },
         "tech_partner": {
             "title": "TECH PARTNER (SUPPORT)",
             "description": "Acting as your dedicated technological arm. Constant evolution, ironclad security, and strategic support to keep your business growing."
