@@ -283,7 +283,7 @@ export default async function Home({
         <div className="max-w-7xl mx-auto px-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-32">
             <div className="md:col-span-4 space-y-8">
-              <div className="text-3xl font-bold tracking-tighter text-white">STUDIOCACTUS</div>
+              <div className="text-3xl font-bold tracking-tighter text-white">CACTUSCREATIVE</div>
               <p className="font-body text-neutral-500 leading-relaxed max-w-sm uppercase">
                 {t.Footer.description}
               </p>
@@ -291,7 +291,7 @@ export default async function Home({
                 <a href="#" className="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all">
                   <span className="material-symbols-outlined text-sm">share</span>
                 </a>
-                <a href="mailto:contact@studiocactus.com" className="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all">
+                <a href="mailto:contact@cactuscreative.com" className="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all">
                   <span className="material-symbols-outlined text-sm">mail</span>
                 </a>
               </div>
@@ -321,12 +321,12 @@ export default async function Home({
               <div>
                 <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold mb-6">CONTACT</h4>
                 <div className="space-y-4 font-headline text-2xl font-bold text-white tracking-tighter">
-                  <a href="mailto:contact@studiocactus.com" className="block hover:text-primary transition-colors">contact@studiocactus.com</a>
+                  <a href="mailto:contact@cactuscreative.com" className="block hover:text-primary transition-colors">contact@cactuscreative.com</a>
 
                   {/* Global Phone Channels */}
                   <div className="space-y-4 pt-4">
                     <a
-                      href="https://wa.me/5511999999999?text=Ol%C3%A1%20StudioCactus!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20de%20engenharia%20digital."
+                      href="https://wa.me/5511999999999?text=Ol%C3%A1%20CactusCreative!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20de%20engenharia%20digital."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-4 hover:text-primary transition-all"
@@ -335,7 +335,7 @@ export default async function Home({
                       <span>+55 11 99999-9999</span>
                     </a>
                     <a
-                      href="https://wa.me/16045555555?text=Hello%20StudioCactus!%20I'd%20like%20to%20know%20more%20about%20your%20digital%20engineering%20solutions."
+                      href="https://wa.me/16045555555?text=Hello%20CactusCreative!%20I'd%20like%20to%20know%20more%20about%20your%20digital%20engineering%20solutions."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-4 hover:text-primary transition-all"
@@ -403,7 +403,7 @@ export default async function Home({
         {/* Massive Background Watermark */}
         <div className="absolute bottom-0 left-0 w-full select-none pointer-events-none overflow-hidden opacity-[0.04] flex justify-center translate-y-1/2">
           <h2 className="font-headline text-[18vw] font-black tracking-tighter leading-none whitespace-nowrap uppercase">
-            STUDIOCACTUS
+            CACTUSCREATIVE
           </h2>
         </div>
       </footer>

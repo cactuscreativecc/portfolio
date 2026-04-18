@@ -74,7 +74,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                 <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
                     {/* Logo */}
                     <a href="#home" className="text-xl md:text-2xl font-black tracking-tighter text-white group">
-                        STUDIO<span className="text-primary group-hover:text-white transition-colors">CACTUS</span>
+                        CACTUS<span className="text-primary group-hover:text-white transition-colors">CREATIVE</span>
                     </a>
 
                     {/* Desktop Nav */}
@@ -194,7 +194,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             >
                                 <DictionarySwitcher currentLocale={lang} />
                                 <div className="text-[10px] font-bold tracking-widest text-neutral-600 uppercase">
-                                    © 2026 StudioCactus
+                                    © 2026 CactusCreative
                                 </div>
                             </motion.div>
                         </div>

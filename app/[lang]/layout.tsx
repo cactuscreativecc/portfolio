@@ -11,7 +11,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "STUDIOCACTUS | Digital Systems Engineered for Revenue",
+  title: "CACTUSCREATIVE | Digital Systems Engineered for Revenue",
   description: "High-precision digital growth engine for revenue-focused companies.",
 };
 
