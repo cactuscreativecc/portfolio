@@ -2,7 +2,7 @@ import React from "react";
 import { getDictionary } from "@/lib/get-dictionary";
 import { Locale } from "@/i18n-config";
 import InteractiveSpotlight from "@/components/InteractiveSpotlight";
-import StatsSection from "@/components/StatsSection";
+import StatsSection from "@/components/sections/StatsSection";
 import FlipWord from "@/components/FlipWord";
 import ClientMarquee from "@/components/ClientMarquee";
 import ProjectsSection from "@/components/ProjectsSection";
