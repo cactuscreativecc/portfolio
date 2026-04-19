@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
-import "../globals.css";
-import { Locale, i18n } from "../../i18n-config";
-import CustomCursor from "../../components/CustomCursor";
+import "@/app/globals.css";
+import { Locale, i18n } from "@/i18n-config";
+import CustomCursor from "@/components/CustomCursor";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
