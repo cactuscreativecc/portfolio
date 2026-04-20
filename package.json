@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.8.2",
+    "@supabase/supabase-js": "^2.104.0",
     "@tailwindcss/postcss": "^4.2.2",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.8.0",
