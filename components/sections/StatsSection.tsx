@@ -24,6 +24,7 @@ interface StatsSectionProps {
         item3: StatItem;
         item4: StatItem;
     };
+    siteContent?: any;
 }
 
 const colorMap: Record<number, string> = {
@@ -38,8 +39,9 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [hasStarted, setHasStarted] = useState(false);
 
-    const numericPart = parseInt(value.replace(/[^0-9]/g, "")) || 0;
-    const suffix = value.replace(/[0-9]/g, "");
+    const safeValue = String(value || "0");
+    const numericPart = parseInt(safeValue.replace(/[^0-9]/g, "")) || 0;
+    const suffix = safeValue.replace(/[0-9]/g, "");
 
     const count = useMotionValue(0);
 
@@ -91,8 +93,8 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
     );
 }
 
-export default function StatsSection({ t }: StatsSectionProps) {
-    const stats = [t.item1, t.item2, t.item3, t.item4];
+export default function StatsSection({ t, siteContent }: StatsSectionProps) {
+    const stats = (siteContent?.highlights && Array.isArray(siteContent.highlights)) ? siteContent.highlights : [t.item1, t.item2, t.item3, t.item4];
 
     return (
         <section className="relative py-32 md:py-48 bg-black overflow-hidden selection:bg-primary selection:text-black">
@@ -155,11 +157,11 @@ export default function StatsSection({ t }: StatsSectionProps) {
                                     className={`w-3 h-3 ${colorMap[idx]} flex-shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.1)]`}
                                 />
                                 {/* Sequence trigger: 0s, 0.4s, 0.8s, 1.2s etc */}
-                                <AnimatedNumber value={item.val} delay={idx * 0.4} />
+                                <AnimatedNumber value={item.val || item.value || '?'} delay={idx * 0.4} />
                             </div>
 
                             <p className="font-label text-xs md:text-[13px] text-neutral-500 font-bold uppercase tracking-[0.3em] leading-relaxed pl-9 group-hover:text-neutral-300 transition-colors">
-                                {item.label}
+                                {item.label || "INFO"}
                             </p>
 
                             <div className="absolute top-0 left-0 w-1/4 h-[1px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />

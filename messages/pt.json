@@ -226,5 +226,33 @@
             "development": "Desenvolvimento"
         },
         "button_send": "Enviar mensagem"
+    },
+    "Portal": {
+        "login_subtitle": "ÁREA DO CLIENTE & ADMIN",
+        "email_label": "E-MAIL",
+        "password_label": "SENHA",
+        "login_button": "ENTRAR NO SISTEMA",
+        "error_invalid": "Credenciais inválidas. Tente novamente.",
+        "welcome": "Bem-vindo de volta,",
+        "dashboard_title": "DASHBOARD",
+        "projects_title": "PROJETOS",
+        "new_projects": "NOVOS PROJETOS",
+        "old_projects": "ARQUIVADOS",
+        "profile_title": "MEU PERFIL",
+        "files_title": "ARQUIVOS & ANEXOS",
+        "status_label": "STATUS DO PROJETO",
+        "logout": "SAIR DO PORTAL",
+        "save_changes": "SALVAR ALTERAÇÕES",
+        "change_password": "ALTERAR SENHA",
+        "name_label": "NOME COMPLETO",
+        "phone_label": "TELEFONE DE CONTATO",
+        "project_email_label": "E-MAIL DO PROJETO",
+        "project_progress": "PASSO A PASSO DO PROJETO",
+        "admin_clients": "CLIENTES",
+        "admin_projects": "PROJETOS",
+        "admin_customization": "CUSTOMIZAÇÃO",
+        "admin_notifications": "NOTIFICAÇÕES",
+        "no_notifications": "SEM NOVAS NOTIFICAÇÕES",
+        "view_all": "VER TODOS"
     }
 }

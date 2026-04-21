@@ -4,6 +4,7 @@ import React, { useState } from "react";
 
 interface SuccessStoriesProps {
     t: any;
+    siteContent?: any;
 }
 
 const TestimonialCard = ({ item }: { item: any }) => (
@@ -27,10 +28,15 @@ const TestimonialCard = ({ item }: { item: any }) => (
     </div>
 );
 
-export default function SuccessStories({ t }: SuccessStoriesProps) {
+export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) {
     const [isPaused, setIsPaused] = useState(false);
 
-    const testimonials = [
+    const testimonials = (siteContent?.success_stories && Array.isArray(siteContent.success_stories)) ? siteContent.success_stories.map((s: any) => ({
+        text: s.comment || "",
+        author: s.name || "CLIENTE",
+        role: s.profession || "PROJETO",
+        initial: (s.name && typeof s.name === 'string') ? s.name.substring(0, 1).toUpperCase() : "C"
+    })) : [
         { ...t.Testimonials.item1, initial: "MM" },
         { ...t.Testimonials.item2, initial: "ML" },
         { ...t.Testimonials.item3, initial: "RS" },

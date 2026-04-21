@@ -1,5 +1,6 @@
 import React from "react";
 import { getDictionary } from "@/lib/get-dictionary";
+import { supabase } from "@/lib/supabase";
 import { Locale } from "@/i18n-config";
 import InteractiveSpotlight from "@/components/InteractiveSpotlight";
 import StatsSection from "@/components/sections/StatsSection";
@@ -22,6 +23,15 @@ export default async function Home({
 }) {
   const { lang } = await params;
   const t: any = await getDictionary(lang as Locale);
+
+  // Fetch Dynamic Site Content from Supabase
+  const { data } = await supabase
+    .from('site_content')
+    .select('*')
+    .eq('slug', 'landing-page')
+    .single();
+
+  const siteContent = data?.content || null;
 
   return (
     <div className="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
@@ -97,142 +107,73 @@ export default async function Home({
 
                 <div className="lg:col-span-12 flex flex-col gap-4 lg:gap-px bg-transparent lg:bg-white/5">
 
-                  {/* First Row: 01-03 */}
-                  <div className="flex flex-col lg:flex-row gap-4 lg:gap-px h-auto lg:h-[300px]">
-                    {/* 01: Tech Partner */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">01</div>
-                            <div className="px-2 py-0.5 border border-white/10 bg-white/5 text-[9px] text-neutral-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/40">{t.Capabilities.tags.subscription}</div>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.tech_partner.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.tech_partner.description}
-                          </p>
-                        </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">shield</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
+                  <div className="lg:col-span-12 flex flex-col gap-4 lg:gap-px bg-transparent lg:bg-white/5">
+                    {(() => {
+                      const rawCaps = (siteContent?.capabilities && Array.isArray(siteContent.capabilities) && siteContent.capabilities.length > 0) ? siteContent.capabilities : [1, 2, 3, 4, 5, 6];
 
-                    {/* 02: Web Apps */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">02</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.web_apps.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.web_apps.description}
-                          </p>
-                        </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">smartphone</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
+                      const processedCaps = Array.from({ length: 6 }).map((_, idx) => {
+                        const cap = rawCaps[idx] || (idx + 1);
+                        const isPlaceholder = typeof cap === "number";
+                        const number = String(idx + 1).padStart(2, '0');
 
-                    {/* 03: Data Integration */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">03</div>
-                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.development}</div>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.data_integration.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.data_integration.description}
-                          </p>
-                        </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">database</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
-                  </div>
+                        const data = isPlaceholder ? { title: '', text: '', tag: '' } : { ...cap };
 
-                  {/* Second Row: 04-06 */}
-                  <div className="flex flex-col lg:flex-row gap-4 lg:gap-px h-auto lg:h-[300px]">
-                    {/* 04: Digital Platforms */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">04</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.digital_platforms.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.digital_platforms.description}
-                          </p>
-                        </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">shopping_bag</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
+                        if (isPlaceholder) {
+                          const keys = ['tech_partner', 'web_apps', 'data_integration', 'digital_platforms', 'bespoke_solutions', 'automation_ai'];
+                          const key = keys[idx];
+                          if (key && t?.Capabilities?.[key]) {
+                            data.title = t.Capabilities[key].title;
+                            data.text = t.Capabilities[key].description;
+                          }
+                          data.tag = (idx === 0) ? t?.Capabilities?.tags?.subscription :
+                            (idx === 2 || idx === 5) ? t?.Capabilities?.tags?.development :
+                              t?.Capabilities?.tags?.available;
+                        }
 
-                    {/* 05: Bespoke Solutions */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">05</div>
-                            <div className="px-2 py-0.5 border border-primary/20 bg-primary/5 text-[9px] text-primary font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.available}</div>
-                          </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.bespoke_solutions.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.bespoke_solutions.description}
-                          </p>
-                        </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">public</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
+                        const icons = ['shield', 'smartphone', 'database', 'shopping_bag', 'public', 'bolt'];
+                        return { ...data, number, icon: icons[idx], idx };
+                      });
 
-                    {/* 06: Automation & IA */}
-                    <div className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
-                      <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div>
-                          <div className="flex justify-between items-start mb-6">
-                            <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">06</div>
-                            <div className="px-2 py-0.5 border border-yellow-500/20 bg-yellow-500/5 text-[9px] text-yellow-500 font-black tracking-widest uppercase group-hover:border-black/20 group-hover:text-black/60">{t.Capabilities.tags.development}</div>
+                      const row1 = processedCaps.slice(0, 3);
+                      const row2 = processedCaps.slice(3, 6);
+
+                      const renderCard = (c: any) => (
+                        <div key={c.idx} className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
+                          <div className="relative z-10 flex flex-col h-full justify-between">
+                            <div>
+                              <div className="flex justify-between items-start mb-6">
+                                <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">{c.number}</div>
+                                <div className={`px-2 py-0.5 border text-[9px] font-black tracking-widest uppercase transition-colors ${c.idx === 0 ? "border-white/10 bg-white/5 text-neutral-500 group-hover:border-black/20 group-hover:text-black/40" :
+                                  c.idx === 2 || c.idx === 5 ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                    "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
+                                  }`}>{c.tag || "INFO"}</div>
+                              </div>
+                              <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
+                              <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
+                                {c.text || "Description not available."}
+                              </p>
+                            </div>
+                            <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
+                              <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
+                                <span className="material-symbols-outlined text-sm">{c.icon}</span>
+                              </div>
+                            </div>
                           </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{t.Capabilities.automation_ai.title}</h3>
-                          <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
-                            {t.Capabilities.automation_ai.description}
-                          </p>
+                          <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
                         </div>
-                        <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
-                          <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
-                            <span className="material-symbols-outlined text-sm">bolt</span>
+                      );
+
+                      return (
+                        <>
+                          <div className="flex flex-col lg:flex-row gap-4 lg:gap-px h-auto lg:h-[300px]">
+                            {row1.map(renderCard)}
                           </div>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent opacity-0 group-hover:opacity-20 transition-opacity" />
-                    </div>
+                          <div className="flex flex-col lg:flex-row gap-4 lg:gap-px h-auto lg:h-[300px]">
+                            {row2.map(renderCard)}
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -241,17 +182,17 @@ export default async function Home({
         </div>
 
         <div id="work">
-          <ProjectsSection t={t} />
+          <ProjectsSection t={t} siteContent={siteContent} />
         </div>
 
         <InteractiveSpotlight />
 
         <div id="tech">
-          <StatsSection t={t.Highlights} />
+          <StatsSection t={t.Highlights} siteContent={siteContent} />
         </div>
 
         <div id="about">
-          <SuccessStories t={t} />
+          <SuccessStories t={t} siteContent={siteContent} />
         </div>
 
         {/* Strategic Consultation - High Impact Scroll Reveal */}

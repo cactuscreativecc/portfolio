@@ -226,5 +226,33 @@
             "development": "Development"
         },
         "button_send": "Send message"
+    },
+    "Portal": {
+        "login_subtitle": "CLIENT & ADMIN AREA",
+        "email_label": "EMAIL",
+        "password_label": "PASSWORD",
+        "login_button": "ENTER SYSTEM",
+        "error_invalid": "Invalid credentials. Try again.",
+        "welcome": "Welcome back,",
+        "dashboard_title": "DASHBOARD",
+        "projects_title": "PROJECTS",
+        "new_projects": "NEW PROJECTS",
+        "old_projects": "ARCHIVED",
+        "profile_title": "MY PROFILE",
+        "files_title": "FILES & ATTACHMENTS",
+        "status_label": "PROJECT STATUS",
+        "logout": "LOGOUT",
+        "save_changes": "SAVE CHANGES",
+        "change_password": "CHANGE PASSWORD",
+        "name_label": "FULL NAME",
+        "phone_label": "CONTACT NUMBER",
+        "project_email_label": "PROJECT EMAIL",
+        "project_progress": "PROJECT STEP-BY-STEP",
+        "admin_clients": "CLIENTS",
+        "admin_projects": "PROJECTS",
+        "admin_customization": "CUSTOMIZATION",
+        "admin_notifications": "NOTIFICATIONS",
+        "no_notifications": "NO NEW NOTIFICATIONS",
+        "view_all": "VIEW ALL"
     }
 }

@@ -92,12 +92,12 @@ export default function Navbar({ t, lang }: NavbarProps) {
 
                     {/* Right Side Tools */}
                     <div className="hidden lg:flex items-center gap-8">
-                        <a
-                            href="#"
+                        <Link
+                            href={`/${lang}/portal`}
                             className="font-label text-[10px] font-bold tracking-[0.3em] text-neutral-400 hover:text-white uppercase transition-colors"
                         >
                             {t.Navigation.portal}
-                        </a>
+                        </Link>
                         <DictionarySwitcher currentLocale={lang} />
                         <a
                             href="#contact"
@@ -164,13 +164,13 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 variants={linkVariants}
                                 custom={navLinks.length}
                             >
-                                <a
-                                    href="#"
+                                <Link
+                                    href={`/${lang}/portal`}
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full border border-white/20 text-white py-6 text-center font-black text-xs tracking-[0.4em] uppercase hover:bg-white/5"
                                 >
                                     {t.Navigation.portal}
-                                </a>
+                                </Link>
                             </motion.div>
 
                             <motion.div

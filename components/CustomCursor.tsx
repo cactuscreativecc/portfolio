@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { motion, useSpring, useMotionValue } from "framer-motion";
 
+import { usePathname } from "next/navigation";
+
 interface HoverState {
     x: number;
     y: number;
@@ -11,6 +13,7 @@ interface HoverState {
 }
 
 export default function CustomCursor() {
+    const pathname = usePathname();
     const [hoverState, setHoverState] = useState<HoverState | null>(null);
     const [isMobile, setIsMobile] = useState(true); // Default to true to prevent glitch on hydration
 
@@ -25,6 +28,11 @@ export default function CustomCursor() {
         checkMobile();
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    useEffect(() => {
+        // Cleanup old effect body classes in case they stuck around
+        document.body.classList.remove('has-custom-cursor');
     }, []);
 
     const mouseX = useMotionValue(-100);
@@ -89,10 +97,32 @@ export default function CustomCursor() {
     const trail3X = useSpring(mouseX, { damping: 15, stiffness: 50 });
     const trail3Y = useSpring(mouseY, { damping: 15, stiffness: 50 });
 
+    const isPortal = pathname?.includes("/portal");
+
     if (isMobile) return null;
+
+    if (isPortal) {
+        return (
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                html, body, *, a, button, [role="button"], .cursor-pointer, input {
+                    cursor: auto !important;
+                }
+                a, button, [role="button"], .cursor-pointer {
+                    cursor: pointer !important;
+                }
+            `}} />
+        );
+    }
 
     return (
         <>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                *, a, button, [role="button"], .cursor-pointer, input {
+                    cursor: none !important;
+                }
+            `}} />
             {/* Trail Effects */}
             {!hoverState && (
                 <>

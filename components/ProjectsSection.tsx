@@ -20,93 +20,99 @@ interface Project {
     cta?: string;
 }
 
-export default function ProjectsSection({ t }: { t: any }) {
+export default function ProjectsSection({ t, siteContent }: { t: any, siteContent?: any }) {
     const [activeCategory, setActiveCategory] = useState("ALL");
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Dynamic counts from translation data
-    const allProjects: Project[] = useMemo(() => [
-        {
-            id: "tech1", category: "TECH", index: "01",
-            title: t.CaseStudies.case1?.title || "AYU PILATES",
-            description: t.CaseStudies.case1?.description,
-            stat1_val: "400%", stat1_label: t.CaseStudies.case1?.stat1_label,
-            stat2_val: "60%", stat2_label: t.CaseStudies.case1?.stat2_label,
-            image: "/jobs/1.jpg",
-            tags: ["PERFORMANCE", "UI/UX", "SYSTEM"],
-            cta: t.CaseStudies.case1?.cta
-        },
-        {
-            id: "tech2", category: "TECH", index: "02",
-            title: t.CaseStudies.case2?.title || "MULTINTERCÂMBIO",
-            description: t.CaseStudies.case2?.description,
-            stat1_val: "22X", stat1_label: t.CaseStudies.case2?.stat1_label,
-            stat2_val: "1.2M", stat2_label: t.CaseStudies.case2?.stat2_label,
-            image: "/jobs/2.jpg",
-            tags: ["SEO", "ADS", "INFRA"],
-            cta: t.CaseStudies.case2?.cta
-        },
-        {
-            id: "tech3", category: "TECH", index: "03",
-            title: t.CaseStudies.case3?.title || "MULTINTERCÂMBIO CMS",
-            description: t.CaseStudies.case3?.description,
-            stat1_val: "99.99%", stat1_label: t.CaseStudies.case3?.stat1_label,
-            stat2_val: "2ms", stat2_label: t.CaseStudies.case3?.stat2_label,
-            image: "/jobs/3.jpg",
-            tags: ["BACKEND", "SECURITY", "FINTECH"],
-            cta: t.CaseStudies.case3?.cta
-        },
-        {
-            id: "tech4", category: "TECH", index: "04",
-            title: t.CaseStudies.case4?.title || "CORREZERO13 LP",
-            description: t.CaseStudies.case4?.description,
-            stat1_val: "15X", stat1_label: t.CaseStudies.case4?.stat1_label,
-            stat2_val: "32TB", stat2_label: t.CaseStudies.case4?.stat2_label,
-            image: "/jobs/4.jpg",
-            tags: ["AI", "ML", "AUTOMATION"],
-            cta: t.CaseStudies.case4?.cta
-        },
-        {
-            id: "design1", category: "DESIGN", index: "05",
-            title: t.CaseStudies.case5?.title || "CORREZERO13 PLATFORM",
-            description: t.CaseStudies.case5?.description,
-            stat1_val: "88%", stat1_label: t.CaseStudies.case5?.stat1_label,
-            stat2_val: "3.5X", stat2_label: t.CaseStudies.case5?.stat2_label,
-            image: "/jobs/5.jpg",
-            tags: ["BRUTALISM", "FASHION", "UX"],
-            cta: t.CaseStudies.case5?.cta
-        },
-        {
-            id: "design2", category: "DESIGN", index: "06",
-            title: t.CaseStudies.case6?.title || "CAMPEDELLI",
-            description: t.CaseStudies.case6?.description,
-            stat1_val: "1.2M", stat1_label: t.CaseStudies.case6?.stat1_label,
-            stat2_val: "450%", stat2_label: t.CaseStudies.case6?.stat2_label,
-            image: "/jobs/6.jpg",
-            tags: ["IDENTITY", "MOTION", "VISUAL"],
-            cta: t.CaseStudies.case6?.cta
-        },
-        {
-            id: "design3", category: "DESIGN", index: "07",
-            title: t.CaseStudies.case7?.title || "GOSAFE",
-            description: t.CaseStudies.case7?.description,
-            stat1_val: "20ms", stat1_label: t.CaseStudies.case7?.stat1_label,
-            stat2_val: "0.01", stat2_label: t.CaseStudies.case7?.stat2_label,
-            image: "/jobs/7.jpg",
-            tags: ["CRYPTO", "WEB3", "MINIMALISM"],
-            cta: t.CaseStudies.case7?.cta
-        },
-        {
-            id: "design4", category: "DESIGN", index: "08",
-            title: t.CaseStudies.case8?.title || "LALABABY",
-            description: t.CaseStudies.case8?.description,
-            stat1_val: "32%", stat1_label: t.CaseStudies.case8?.stat1_label,
-            stat2_val: "4.8", stat2_label: t.CaseStudies.case8?.stat2_label,
-            image: "/jobs/8.jpg",
-            tags: ["BIOPHILIC", "WORKSPACE", "APPS"],
-            cta: t.CaseStudies.case8?.cta
+    // Dynamic counts from translation data or CMS
+    const allProjects: Project[] = useMemo(() => {
+        if (siteContent?.featured_projects && Array.isArray(siteContent.featured_projects)) {
+            return siteContent.featured_projects;
         }
-    ], [t]);
+
+        return [
+            {
+                id: "tech1", category: "TECH", index: "01",
+                title: t.CaseStudies.case1?.title || "AYU PILATES",
+                description: t.CaseStudies.case1?.description,
+                stat1_val: "400%", stat1_label: t.CaseStudies.case1?.stat1_label,
+                stat2_val: "60%", stat2_label: t.CaseStudies.case1?.stat2_label,
+                image: "/jobs/1.jpg",
+                tags: ["PERFORMANCE", "UI/UX", "SYSTEM"],
+                cta: t.CaseStudies.case1?.cta
+            },
+            {
+                id: "tech2", category: "TECH", index: "02",
+                title: t.CaseStudies.case2?.title || "MULTINTERCÂMBIO",
+                description: t.CaseStudies.case2?.description,
+                stat1_val: "22X", stat1_label: t.CaseStudies.case2?.stat1_label,
+                stat2_val: "1.2M", stat2_label: t.CaseStudies.case2?.stat2_label,
+                image: "/jobs/2.jpg",
+                tags: ["SEO", "ADS", "INFRA"],
+                cta: t.CaseStudies.case2?.cta
+            },
+            {
+                id: "tech3", category: "TECH", index: "03",
+                title: t.CaseStudies.case3?.title || "MULTINTERCÂMBIO CMS",
+                description: t.CaseStudies.case3?.description,
+                stat1_val: "99.99%", stat1_label: t.CaseStudies.case3?.stat1_label,
+                stat2_val: "2ms", stat2_label: t.CaseStudies.case3?.stat2_label,
+                image: "/jobs/3.jpg",
+                tags: ["BACKEND", "SECURITY", "FINTECH"],
+                cta: t.CaseStudies.case3?.cta
+            },
+            {
+                id: "tech4", category: "TECH", index: "04",
+                title: t.CaseStudies.case4?.title || "CORREZERO13 LP",
+                description: t.CaseStudies.case4?.description,
+                stat1_val: "15X", stat1_label: t.CaseStudies.case4?.stat1_label,
+                stat2_val: "32TB", stat2_label: t.CaseStudies.case4?.stat2_label,
+                image: "/jobs/4.jpg",
+                tags: ["AI", "ML", "AUTOMATION"],
+                cta: t.CaseStudies.case4?.cta
+            },
+            {
+                id: "design1", category: "DESIGN", index: "05",
+                title: t.CaseStudies.case5?.title || "CORREZERO13 PLATFORM",
+                description: t.CaseStudies.case5?.description,
+                stat1_val: "88%", stat1_label: t.CaseStudies.case5?.stat1_label,
+                stat2_val: "3.5X", stat2_label: t.CaseStudies.case5?.stat2_label,
+                image: "/jobs/5.jpg",
+                tags: ["BRUTALISM", "FASHION", "UX"],
+                cta: t.CaseStudies.case5?.cta
+            },
+            {
+                id: "design2", category: "DESIGN", index: "06",
+                title: t.CaseStudies.case6?.title || "CAMPEDELLI",
+                description: t.CaseStudies.case6?.description,
+                stat1_val: "1.2M", stat1_label: t.CaseStudies.case6?.stat1_label,
+                stat2_val: "450%", stat2_label: t.CaseStudies.case6?.stat2_label,
+                image: "/jobs/6.jpg",
+                tags: ["IDENTITY", "MOTION", "VISUAL"],
+                cta: t.CaseStudies.case6?.cta
+            },
+            {
+                id: "design3", category: "DESIGN", index: "07",
+                title: t.CaseStudies.case7?.title || "GOSAFE",
+                description: t.CaseStudies.case7?.description,
+                stat1_val: "20ms", stat1_label: t.CaseStudies.case7?.stat1_label,
+                stat2_val: "0.01", stat2_label: t.CaseStudies.case7?.stat2_label,
+                image: "/jobs/7.jpg",
+                tags: ["CRYPTO", "WEB3", "MINIMALISM"],
+                cta: t.CaseStudies.case7?.cta
+            },
+            {
+                id: "design4", category: "DESIGN", index: "08",
+                title: t.CaseStudies.case8?.title || "LALABABY",
+                description: t.CaseStudies.case8?.description,
+                stat1_val: "32%", stat1_label: t.CaseStudies.case8?.stat1_label,
+                stat2_val: "4.8", stat2_label: t.CaseStudies.case8?.stat2_label,
+                image: "/jobs/8.jpg",
+                tags: ["BIOPHILIC", "WORKSPACE", "APPS"],
+                cta: t.CaseStudies.case8?.cta
+            }
+        ];
+    }, [t, siteContent]);
 
     const filteredProjects = activeCategory === "ALL"
         ? allProjects
@@ -188,8 +194,8 @@ export default function ProjectsSection({ t }: { t: any }) {
 
                     {/* Sliding Slides Container (Reduced top gap) */}
                     <motion.div style={{ x }} className="flex h-full w-full relative z-10 transition-transform duration-75">
-                        {filteredProjects.map((project) => (
-                            <div key={project.id} className="min-w-full h-full flex items-center justify-center p-12 lg:p-24 pt-[10vh] pb-[10vh]">
+                        {filteredProjects.map((project, idx) => (
+                            <div key={project.id || idx} className="min-w-full h-full flex items-center justify-center p-12 lg:p-24 pt-[10vh] pb-[10vh]">
                                 <ProjectSlide project={project} />
                             </div>
                         ))}
@@ -250,8 +256,8 @@ export default function ProjectsSection({ t }: { t: any }) {
                     </nav>
                 </div>
                 <div className="space-y-12">
-                    {filteredProjects.map((project) => (
-                        <ProjectSlide key={project.id} project={project} isMobile={true} />
+                    {filteredProjects.map((project, idx) => (
+                        <ProjectSlide key={project.id || idx} project={project} isMobile={true} />
                     ))}
                 </div>
             </div>
@@ -265,8 +271,8 @@ function ProjectSlide({ project, isMobile = false }: { project: Project; isMobil
             {/* Image Section */}
             <div className="lg:col-span-7 w-full h-[60vh] lg:h-full lg:max-h-[60vh] relative group overflow-hidden border border-white/5">
                 <Image
-                    src={project.image}
-                    alt={project.title}
+                    src={project.image || "/jobs/1.jpg"}
+                    alt={project.title || "PROJECT IMAGE"}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority={project.index === "01"}

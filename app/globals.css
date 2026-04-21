@@ -149,12 +149,4 @@ html {
   animation: pulse-fast 2s infinite ease-in-out;
 }
 
-/* Custom Cursor Masking: Hide OS Cursor globally on clickables */
-a,
-button,
-[role="button"],
-.cursor-pointer,
-input[type="submit"],
-input[type="button"] {
-  cursor: none !important;
-}
+/* Removed Custom Cursor Masking from globals.css to avoid stale CSS issues */

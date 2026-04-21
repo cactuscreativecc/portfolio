@@ -3,6 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 import "@/app/globals.css";
 import { Locale, i18n } from "@/i18n-config";
 import CustomCursor from "@/components/CustomCursor";
+import { Toaster } from "sonner";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -37,6 +38,19 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${spaceGrotesk.variable} antialiased`}>
+        <Toaster theme="dark" position="top-right" toastOptions={{
+          style: {
+            background: '#0e0e0e',
+            color: '#fff',
+            border: '2px solid #aed500',
+            borderRadius: '0px',
+            fontFamily: 'var(--font-space-grotesk)',
+            textTransform: 'uppercase',
+            fontSize: '10px',
+            fontWeight: '900',
+            letterSpacing: '0.1em'
+          }
+        }} />
         <CustomCursor />
         {children}
       </body>
