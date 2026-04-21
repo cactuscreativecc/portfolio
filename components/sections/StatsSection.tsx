@@ -135,7 +135,7 @@ export default function StatsSection({ t, siteContent }: StatsSectionProps) {
 
                 {/* Sequential Stats Bar - Cinematic single row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-12">
-                    {stats.map((item, idx) => (
+                    {stats.map((item: any, idx: number) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 50 }}

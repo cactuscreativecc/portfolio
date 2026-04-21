@@ -88,7 +88,23 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
         }
     };
 
-    const markAsRead = async () => {
+    const markSingleAsRead = async (notificationId: string) => {
+        if (!profile?.id) return;
+
+        const { error } = await supabase
+            .from('notifications')
+            .update({ is_read: true })
+            .eq('id', notificationId);
+
+        if (!error) {
+            setNotifications(prev =>
+                prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
+            );
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        }
+    };
+
+    const markAllAsRead = async () => {
         if (!profile?.id) return;
         await supabase
             .from('notifications')
@@ -132,7 +148,6 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
                         <button
                             onClick={() => {
                                 setShowNotifications(!showNotifications);
-                                if (!showNotifications) markAsRead();
                             }}
                             className="flex items-center justify-center w-12 h-full text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
                         >
@@ -155,8 +170,17 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
                                     <h3 className="font-black text-[10px] tracking-widest uppercase text-primary mb-4">NOTIFICAÇÕES</h3>
                                     <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                         {notifications.length > 0 ? notifications.map((n) => (
-                                            <div key={n.id} className="p-3 bg-background border-l-2 border-primary hover:bg-white/5 transition-colors">
-                                                <p className="text-[10px] font-black uppercase text-white mb-1">{n.title}</p>
+                                            <div
+                                                key={n.id}
+                                                onClick={() => !n.is_read && markSingleAsRead(n.id)}
+                                                className={`p-3 border-l-2 transition-all cursor-pointer ${n.is_read
+                                                    ? 'bg-transparent border-neutral-800 opacity-50'
+                                                    : 'bg-white/5 border-primary hover:bg-white/10'}`}
+                                            >
+                                                <div className="flex justify-between items-start mb-1">
+                                                    <p className={`text-[10px] font-black uppercase ${n.is_read ? 'text-neutral-500' : 'text-white'}`}>{n.title}</p>
+                                                    {!n.is_read && <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />}
+                                                </div>
                                                 <p className="text-[9px] text-neutral-500 uppercase leading-relaxed">{n.message}</p>
                                             </div>
                                         )) : (

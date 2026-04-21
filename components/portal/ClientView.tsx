@@ -19,7 +19,9 @@ import {
     Send,
     Download,
     Trash2,
-    AlertCircle
+    AlertCircle,
+    Settings,
+    Edit
 } from "lucide-react";
 import { Locale } from "@/i18n-config";
 import { supabase } from "@/lib/supabase";
@@ -259,7 +261,7 @@ export default function ClientView({ lang, t, profile }: ClientViewProps) {
                                 onClick={() => handleToggleProject(proj.id)}
                             >
                                 <div className="flex justify-between items-start mb-4">
-                                    <div>
+                                    <div className="flex-1 overflow-hidden pr-8">
                                         <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-[8px] font-black tracking-widest uppercase mb-3">
                                             {proj.status}
                                         </span>

@@ -8,7 +8,7 @@ export default async function PortalLayout({
     params,
 }: {
     children: React.ReactNode;
-    params: Promise<{ lang: Locale }>;
+    params: Promise<{ lang: string }>;
 }) {
     const { lang } = await params;
 

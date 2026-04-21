@@ -45,8 +45,8 @@ export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) 
         { ...t.Testimonials.item6, initial: "AR" },
     ];
 
-    const col1 = testimonials.filter((_, i) => i % 2 === 0);
-    const col2 = testimonials.filter((_, i) => i % 2 !== 0);
+    const col1 = testimonials.filter((_: any, i: number) => i % 2 === 0);
+    const col2 = testimonials.filter((_: any, i: number) => i % 2 !== 0);
 
     return (
         <section className="py-24 md:py-40 bg-black relative overflow-hidden border-t border-white/5">
@@ -84,7 +84,7 @@ export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) 
                             animationPlayState: isPaused ? 'paused' : 'running'
                         }}
                     >
-                        {[...col1, ...col1].map((item, idx) => (
+                        {[...col1, ...col1].map((item: any, idx: number) => (
                             <TestimonialCard key={idx} item={item} />
                         ))}
                     </div>
@@ -96,7 +96,7 @@ export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) 
                             animationPlayState: isPaused ? 'paused' : 'running'
                         }}
                     >
-                        {[...col2, ...col2].map((item, idx) => (
+                        {[...col2, ...col2].map((item: any, idx: number) => (
                             <TestimonialCard key={idx} item={item} />
                         ))}
                     </div>

@@ -19,7 +19,8 @@ import {
     Send,
     Download,
     Trash2,
-    MessageSquare
+    MessageSquare,
+    Edit
 } from "lucide-react";
 import { Locale } from "@/i18n-config";
 import { toast } from "sonner";
@@ -280,6 +281,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         const status = (document.getElementById(`proj-status-${projId}`) as HTMLSelectElement)?.value;
         const currentStep = (document.getElementById(`proj-step-${projId}`) as HTMLInputElement)?.value;
         const productionLink = (document.getElementById(`proj-link-${projId}`) as HTMLInputElement)?.value;
+        const name = (document.getElementById(`proj-name-${projId}`) as HTMLInputElement)?.value;
+        const description = (document.getElementById(`proj-desc-${projId}`) as HTMLTextAreaElement)?.value;
 
         try {
             const { error } = await supabase
@@ -287,7 +290,9 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 .update({
                     status,
                     current_step: parseInt(currentStep),
-                    production_link: productionLink
+                    production_link: productionLink,
+                    name,
+                    description
                 })
                 .eq('id', projId);
 
@@ -304,7 +309,9 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 ...p,
                 status,
                 current_step: parseInt(currentStep),
-                production_link: productionLink
+                production_link: productionLink,
+                name,
+                description
             } : p));
 
             setClientData(prev => {
@@ -312,19 +319,38 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 for (const clientId in newData) {
                     if (newData[clientId].projects) {
                         newData[clientId].projects = newData[clientId].projects.map((p: any) =>
-                            p.id === projId ? {
-                                ...p,
-                                status,
-                                current_step: parseInt(currentStep),
-                                production_link: productionLink
-                            } : p
+                            p.id === projId ? { ...p, status, current_step: parseInt(currentStep), name, description, production_link: productionLink } : p
                         );
                     }
                 }
                 return newData;
             });
-        } catch (e: any) {
-            toast.error('Erro ao atualizar: ' + e.message);
+        } catch (err: any) {
+            toast.error('Erro ao salvar: ' + err.message);
+        }
+    };
+
+    const deleteProject = async (projId: string) => {
+        if (!confirm("TEM CERTEZA QUE DESEJA EXCLUIR ESTE PROJETO? ESTA AÇÃO É IRREVERSÍVEL E TODOS OS ARQUIVOS E MENSAGENS SERÃO PERDIDOS.")) return;
+
+        try {
+            const { error } = await supabase.from('projects').delete().eq('id', projId);
+            if (error) throw error;
+
+            toast.success('Projeto excluído com sucesso.');
+            setAllProjects(prev => prev.filter(p => p.id !== projId));
+            setClientData(prev => {
+                const newData = { ...prev };
+                for (const clientId in newData) {
+                    if (newData[clientId].projects) {
+                        newData[clientId].projects = newData[clientId].projects.filter((p: any) => p.id !== projId);
+                    }
+                }
+                return newData;
+            });
+            setExpandedProject(null);
+        } catch (err: any) {
+            toast.error('Erro ao excluir: ' + err.message);
         }
     };
 
@@ -482,7 +508,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                         >
                             <div className="flex justify-between items-center border-b border-white/5 pb-6">
                                 <div>
-                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase italic">GESTÃO DE CLIENTES</h2>
+                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase">GESTÃO DE CLIENTES</h2>
                                     <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Visualize e edite os perfis dos seus parceiros</p>
                                 </div>
                                 <button className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all">
@@ -576,6 +602,13 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     </div>
                                                                     <span className="text-[10px] text-white font-bold tracking-widest">PROGRESSO: {proj.current_step}%</span>
                                                                 </div>
+
+                                                                <button
+                                                                    onClick={() => { setActiveTab('projects'); setExpandedProject(proj.id); }}
+                                                                    className="w-full mt-6 bg-white/5 border border-white/10 text-white py-3 text-[8px] font-black tracking-widest uppercase hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center justify-center gap-2"
+                                                                >
+                                                                    <Edit size={12} /> GERENCIAR ESTE PROJETO
+                                                                </button>
                                                             </div>
                                                         )) : (
                                                             <p className="text-[10px] text-neutral-600 uppercase font-black tracking-widest py-4 border border-dashed border-white/10 w-full text-center">NENHUM PROJETO ENCONTRADO</p>
@@ -740,7 +773,14 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-6 items-center">
+                                                <div className="flex gap-4 items-center">
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); deleteProject(proj.id); }}
+                                                        className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                                                        title="Excluir Projeto"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
                                                     <div className="text-right hidden md:block">
                                                         <p className="text-[8px] font-black text-neutral-600 uppercase">STATUS</p>
                                                         <p className="text-xs font-bold text-primary tracking-widest uppercase">{proj.status}</p>
@@ -757,7 +797,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                             CONTROLES DO PROJETO
                                                         </h5>
                                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                            <div>
+                                                            <div className="md:col-span-1">
                                                                 <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">STATUS DO PROJETO</label>
                                                                 <select id={`proj-status-${proj.id}`} defaultValue={proj.status} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors appearance-none">
                                                                     <option value="Briefing & Estratégia">BRIEFING & ESTRATÉGIA</option>
@@ -774,6 +814,20 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                             <div>
                                                                 <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">LINK DE PRODUÇÃO / URL</label>
                                                                 <input id={`proj-link-${proj.id}`} defaultValue={proj.production_link || ''} placeholder="https://..." className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div className="md:col-span-2">
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME DO PROJETO</label>
+                                                                <input id={`proj-name-${proj.id}`} defaultValue={proj.name} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div className="md:col-span-1">
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">AÇÕES CRÍTICAS</label>
+                                                                <button onClick={() => deleteProject(proj.id)} className="w-full bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2">
+                                                                    <Trash2 size={14} /> EXCLUIR PROJETO
+                                                                </button>
+                                                            </div>
+                                                            <div className="md:col-span-3">
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">DESCRIÇÃO DO PROJETO</label>
+                                                                <textarea id={`proj-desc-${proj.id}`} defaultValue={proj.description} rows={3} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors resize-none custom-scrollbar" />
                                                             </div>
                                                         </div>
                                                         <div className="flex justify-end mt-4">
@@ -836,8 +890,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                         return (
                                                                             <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end pl-16' : 'items-start pr-16'}`}>
                                                                                 <div className={`relative px-5 py-4 border-l-2 transition-all duration-300 ${isMe
-                                                                                        ? 'bg-primary/5 border-primary text-primary shadow-[10px_0_30px_-5px_rgba(174,213,0,0.05)]'
-                                                                                        : 'bg-white/5 border-neutral-700 text-neutral-300'
+                                                                                    ? 'bg-primary/5 border-primary text-primary shadow-[10px_0_30px_-5px_rgba(174,213,0,0.05)]'
+                                                                                    : 'bg-white/5 border-neutral-700 text-neutral-300'
                                                                                     }`}>
                                                                                     <p className="text-[11px] font-medium leading-relaxed tracking-wide">{msg.content}</p>
                                                                                 </div>
@@ -1224,6 +1278,6 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                     )}
                 </AnimatePresence>
             </main>
-        </div>
+        </div >
     );
 }

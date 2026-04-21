@@ -5,14 +5,14 @@ import DashboardContent from "@/components/portal/DashboardContent";
 export default async function DashboardPage({
     params,
 }: {
-    params: Promise<{ lang: Locale }>;
+    params: Promise<{ lang: string }>;
 }) {
     const { lang } = await params;
-    const t = await getDictionary(lang);
+    const t = await getDictionary(lang as Locale);
 
     return (
         <div className="min-h-screen bg-background">
-            <DashboardContent lang={lang} t={t} />
+            <DashboardContent lang={lang as Locale} t={t} />
         </div>
     );
 }
