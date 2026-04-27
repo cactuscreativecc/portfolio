@@ -114,13 +114,13 @@ export default async function Home({
                       const processedCaps = Array.from({ length: 6 }).map((_, idx) => {
                         const number = String(idx + 1).padStart(2, '0');
                         const key = keys[idx];
+                        const scCap = siteContent?.capabilities?.[idx];
 
-                        // Title & text ALWAYS from dictionary (respects language)
-                        const title = t?.Capabilities?.[key]?.title || '';
-                        const text = t?.Capabilities?.[key]?.description || '';
+                        // Title & text from siteContent (bilingual) with fallback to dictionary
+                        const title = (lang === 'en' && scCap?.title_en) ? scCap.title_en : (scCap?.title || t?.Capabilities?.[key]?.title || '');
+                        const text = (lang === 'en' && scCap?.text_en) ? scCap.text_en : (scCap?.text || t?.Capabilities?.[key]?.description || '');
 
                         // Tag can come from siteContent if overridden, else from dictionary
-                        const scCap = siteContent?.capabilities?.[idx];
                         const tag = scCap?.tag ||
                           ((idx === 0) ? t?.Capabilities?.tags?.subscription :
                             (idx === 2 || idx === 5) ? t?.Capabilities?.tags?.development :

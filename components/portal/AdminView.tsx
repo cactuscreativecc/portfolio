@@ -557,6 +557,55 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         toast.success("10 depoimentos restaurados!");
     };
 
+    const restoreOriginalCapabilities = () => {
+        if (!confirm("Isso irá substituir os serviços atuais pelos originais do sistema. Tem certeza?")) return;
+        updateSection('capabilities', [
+            {
+                tag: "ASSINATURA MENSAL",
+                title: "TECH PARTNER (SUSTENTAÇÃO)",
+                text: "Atuação como seu braço tecnológico dedicado. Evolução constante, segurança blindada e suporte estratégico para seu negócio nunca parar de crescer.",
+                title_en: "TECH PARTNER (SUPPORT)",
+                text_en: "Acting as your dedicated technological arm. Constant evolution, ironclad security, and strategic support to keep your business growing."
+            },
+            {
+                tag: "DISPONÍVEL",
+                title: "SITES & LANDING PAGES",
+                text: "Páginas institucionais e de vendas com estética ultra-premium e foco total em conversão. Sua melhor vitrine digital.",
+                title_en: "SITES & LANDING PAGES",
+                text_en: "Institutional and sales pages with ultra-premium aesthetics and total focus on conversion. Your best digital storefront."
+            },
+            {
+                tag: "EM DESENVOLVIMENTO",
+                title: "WEB APPS & SISTEMAS",
+                text: "Engenharia de software personalizada. Dashboards, CRMs e plataformas complexas que automatizam e gerenciam seu negócio com maestria.",
+                title_en: "WEB APPS & SYSTEMS",
+                text_en: "Custom software engineering. Dashboards, CRMs, and complex platforms that automate and manage your business with mastery."
+            },
+            {
+                tag: "DISPONÍVEL",
+                title: "APRESENTAÇÕES DE IMPACTO",
+                text: "Design estratégico para apresentações comerciais e institucionais. Transformamos dados e argumentos em narrativas visuais que fecham negócios.",
+                title_en: "IMPACT PRESENTATIONS",
+                text_en: "Strategic design for commercial and institutional presentations. We transform data and arguments into visual narratives that close deals."
+            },
+            {
+                tag: "DISPONÍVEL",
+                title: "MÍDIAS SOCIAIS & DESIGN",
+                text: "Direção de arte e estratégia de conteúdo para redes sociais. Construímos autoridade visual e conexão real com sua audiência.",
+                title_en: "SOCIAL MEDIA & DESIGN",
+                text_en: "Art direction and content strategy for social networks. We build visual authority and real connection with your audience."
+            },
+            {
+                tag: "EM DESENVOLVIMENTO",
+                title: "AUTOMAÇÃO & IA APLICADA",
+                text: "Implementamos inteligência artificial para eliminar gargalos operacionais e escalar seu ROI através de processos automatizados.",
+                title_en: "AUTOMATION & APPLIED AI",
+                text_en: "We implement artificial intelligence to eliminate operational bottlenecks and scale your ROI through automated processes."
+            }
+        ]);
+        toast.success("Serviços originais restaurados e prontos para salvar!");
+    };
+
     return (
         <div className="flex min-h-[calc(100vh-100px)] gap-8">
             {/* Sidebar Navigation */}
@@ -1102,7 +1151,15 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
                                         {activeCustomTab === 'capabilities' && (
                                             <section className="animate-in fade-in slide-in-from-right-4">
-                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">NOSSOS SERVIÇOS (CARDS)</h3>
+                                                <div className="flex justify-between items-center mb-8">
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase border-l-2 border-primary pl-4">NOSSOS SERVIÇOS (CARDS)</h3>
+                                                    <button
+                                                        onClick={restoreOriginalCapabilities}
+                                                        className="flex items-center gap-2 text-[9px] font-black tracking-widest text-neutral-400 hover:text-white transition-all bg-white/5 border border-white/10 px-4 py-2 hover:bg-white/10"
+                                                    >
+                                                        <Sparkles size={12} className="text-primary" /> Restaurar Originais
+                                                    </button>
+                                                </div>
                                                 <div className="grid grid-cols-1 gap-6">
                                                     {siteContent.capabilities.map((cap: any, idx: number) => (
                                                         <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6 group hover:border-primary/20 transition-all">
@@ -1122,7 +1179,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                 <span className="text-[10px] text-neutral-800 font-black tracking-tighter">#[{idx + 1}]</span>
                                                             </div>
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DO SERVIÇO</label>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DO SERVIÇO (PT)</label>
                                                                 <input
                                                                     value={cap.title}
                                                                     onChange={(e) => {
@@ -1132,9 +1189,20 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-3 font-black text-white uppercase text-sm tracking-tighter focus:border-primary focus:outline-none transition-all"
                                                                 />
+                                                                <label className="text-[8px] font-black text-blue-400/60 uppercase mt-4 mb-2 block tracking-widest">TÍTULO DO SERVIÇO (EN)</label>
+                                                                <input
+                                                                    value={cap.title_en || ''}
+                                                                    placeholder="English title..."
+                                                                    onChange={(e) => {
+                                                                        const newCaps = [...siteContent.capabilities];
+                                                                        newCaps[idx].title_en = e.target.value;
+                                                                        updateSection('capabilities', newCaps);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-3 font-black text-blue-400/60 uppercase text-sm tracking-tighter focus:border-blue-400/40 focus:outline-none transition-all placeholder:text-neutral-800"
+                                                                />
                                                             </div>
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DESCRIÇÃO DETALHADA</label>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DESCRIÇÃO DETALHADA (PT)</label>
                                                                 <textarea
                                                                     value={cap.text}
                                                                     onChange={(e) => {
@@ -1143,6 +1211,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                         updateSection('capabilities', newCaps);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none custom-scrollbar resize-none transition-all"
+                                                                    rows={3}
+                                                                />
+                                                                <label className="text-[8px] font-black text-blue-400/60 uppercase mt-4 mb-2 block tracking-widest">DESCRIÇÃO DETALHADA (EN)</label>
+                                                                <textarea
+                                                                    value={cap.text_en || ''}
+                                                                    placeholder="English description..."
+                                                                    onChange={(e) => {
+                                                                        const newCaps = [...siteContent.capabilities];
+                                                                        newCaps[idx].text_en = e.target.value;
+                                                                        updateSection('capabilities', newCaps);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-4 text-[12px] text-blue-400/60 font-medium leading-relaxed focus:border-blue-400/40 focus:outline-none custom-scrollbar resize-none transition-all placeholder:text-neutral-800"
                                                                     rows={3}
                                                                 />
                                                             </div>
