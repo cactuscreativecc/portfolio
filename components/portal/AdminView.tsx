@@ -598,6 +598,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         updateSection('capabilities', [
             {
                 tag: "ASSINATURA MENSAL",
+                tag_en: "MONTHLY SUBSCRIPTION",
+                tag_color: "neutral",
                 title: "TECH PARTNER (SUSTENTAÇÃO)",
                 text: "Atuação como seu braço tecnológico dedicado. Evolução constante, segurança blindada e suporte estratégico para seu negócio nunca parar de crescer.",
                 title_en: "TECH PARTNER (SUPPORT)",
@@ -605,6 +607,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             },
             {
                 tag: "DISPONÍVEL",
+                tag_en: "AVAILABLE",
+                tag_color: "primary",
                 title: "SITES & LANDING PAGES",
                 text: "Páginas institucionais e de vendas com estética ultra-premium e foco total em conversão. Sua melhor vitrine digital.",
                 title_en: "SITES & LANDING PAGES",
@@ -612,6 +616,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             },
             {
                 tag: "EM DESENVOLVIMENTO",
+                tag_en: "IN DEVELOPMENT",
+                tag_color: "yellow",
                 title: "WEB APPS & SISTEMAS",
                 text: "Engenharia de software personalizada. Dashboards, CRMs e plataformas complexas que automatizam e gerenciam seu negócio com maestria.",
                 title_en: "WEB APPS & SYSTEMS",
@@ -619,6 +625,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             },
             {
                 tag: "DISPONÍVEL",
+                tag_en: "AVAILABLE",
+                tag_color: "primary",
                 title: "APRESENTAÇÕES DE IMPACTO",
                 text: "Design estratégico para apresentações comerciais e institucionais. Transformamos dados e argumentos em narrativas visuais que fecham negócios.",
                 title_en: "IMPACT PRESENTATIONS",
@@ -626,6 +634,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             },
             {
                 tag: "DISPONÍVEL",
+                tag_en: "AVAILABLE",
+                tag_color: "primary",
                 title: "MÍDIAS SOCIAIS & DESIGN",
                 text: "Direção de arte e estratégia de conteúdo para redes sociais. Construímos autoridade visual e conexão real com sua audiência.",
                 title_en: "SOCIAL MEDIA & DESIGN",
@@ -633,6 +643,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             },
             {
                 tag: "EM DESENVOLVIMENTO",
+                tag_en: "IN DEVELOPMENT",
+                tag_color: "yellow",
                 title: "AUTOMAÇÃO & IA APLICADA",
                 text: "Implementamos inteligência artificial para eliminar gargalos operacionais e escalar seu ROI através de processos automatizados.",
                 title_en: "AUTOMATION & APPLIED AI",
@@ -1289,19 +1301,52 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                     {siteContent.capabilities.map((cap: any, idx: number) => (
                                                         <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6 group hover:border-primary/20 transition-all">
                                                             <div className="flex justify-between items-center">
-                                                                <div className="flex-1 max-w-[200px]">
-                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TAG DO CARD</label>
-                                                                    <input
-                                                                        value={cap.tag}
-                                                                        onChange={(e) => {
-                                                                            const newCaps = [...siteContent.capabilities];
-                                                                            newCaps[idx].tag = e.target.value;
-                                                                            updateSection('capabilities', newCaps);
-                                                                        }}
-                                                                        className="w-full bg-primary/5 text-primary text-[10px] font-black tracking-widest border border-primary/20 p-2 focus:outline-none uppercase focus:bg-primary/10 transition-all"
-                                                                    />
+                                                                <div className="flex flex-col md:flex-row gap-4 w-full">
+                                                                    <div className="flex-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TAG DO CARD (PT)</label>
+                                                                        <input
+                                                                            value={cap.tag}
+                                                                            onChange={(e) => {
+                                                                                const newCaps = [...siteContent.capabilities];
+                                                                                newCaps[idx].tag = e.target.value;
+                                                                                updateSection('capabilities', newCaps);
+                                                                            }}
+                                                                            className="w-full bg-primary/5 text-primary text-[10px] font-black tracking-widest border border-primary/20 p-2 focus:outline-none uppercase focus:bg-primary/10 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest">TAG DO CARD (EN)</label>
+                                                                        <input
+                                                                            value={cap.tag_en || ''}
+                                                                            placeholder="English tag..."
+                                                                            onChange={(e) => {
+                                                                                const newCaps = [...siteContent.capabilities];
+                                                                                newCaps[idx].tag_en = e.target.value;
+                                                                                updateSection('capabilities', newCaps);
+                                                                            }}
+                                                                            className="w-full bg-blue-400/5 text-blue-400 border border-blue-400/20 p-2 text-[10px] font-black tracking-widest uppercase focus:bg-blue-400/10 focus:outline-none transition-all placeholder:text-blue-900"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="flex-1 max-w-[150px]">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">COR DA TAG</label>
+                                                                        <select
+                                                                            value={cap.tag_color || 'primary'}
+                                                                            onChange={(e) => {
+                                                                                const newCaps = [...siteContent.capabilities];
+                                                                                newCaps[idx].tag_color = e.target.value;
+                                                                                updateSection('capabilities', newCaps);
+                                                                            }}
+                                                                            className="w-full bg-background text-white border border-white/5 p-2 text-[10px] font-black tracking-widest uppercase focus:border-primary focus:outline-none transition-all"
+                                                                        >
+                                                                            <option value="primary">Cactus Green</option>
+                                                                            <option value="yellow">Yellow</option>
+                                                                            <option value="neutral">Neutral White</option>
+                                                                            <option value="blue">Blue</option>
+                                                                            <option value="red">Red</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <span className="text-[10px] text-neutral-800 font-black tracking-tighter mt-6 md:mt-0 md:ml-4 self-center">#[{idx + 1}]</span>
                                                                 </div>
-                                                                <span className="text-[10px] text-neutral-800 font-black tracking-tighter">#[{idx + 1}]</span>
                                                             </div>
                                                             <div>
                                                                 <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DO SERVIÇO (PT)</label>

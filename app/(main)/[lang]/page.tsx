@@ -121,13 +121,18 @@ export default async function Home({
                         const text = (lang === 'en' && scCap?.text_en) ? scCap.text_en : (scCap?.text || t?.Capabilities?.[key]?.description || '');
 
                         // Tag can come from siteContent if overridden, else from dictionary
-                        const tag = scCap?.tag ||
+                        const tagPT = scCap?.tag ||
                           ((idx === 0) ? t?.Capabilities?.tags?.subscription :
                             (idx === 2 || idx === 5) ? t?.Capabilities?.tags?.development :
                               t?.Capabilities?.tags?.available);
 
+                        const tag = (lang === 'en' && scCap?.tag_en) ? scCap.tag_en : (lang === 'en' ? tagPT /* fallback via dictionary translation potentially */ : (scCap?.tag || tagPT));
+
+                        const defaultColor = idx === 0 ? "neutral" : (idx === 2 || idx === 5) ? "yellow" : "primary";
+                        const tag_color = scCap?.tag_color || defaultColor;
+
                         const icons = ['shield', 'web', 'database', 'present_to_all', 'ads_click', 'bolt'];
-                        return { title, text, tag, number, icon: icons[idx], idx };
+                        return { title, text, tag, tag_color, number, icon: icons[idx], idx };
                       });
 
                       const row1 = processedCaps.slice(0, 3);
@@ -139,9 +144,11 @@ export default async function Home({
                             <div>
                               <div className="flex justify-between items-start mb-6">
                                 <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">{c.number}</div>
-                                <div className={`px-2 py-0.5 border text-[9px] font-black tracking-widest uppercase transition-colors ${c.idx === 0 ? "border-white/10 bg-white/5 text-neutral-500 group-hover:border-black/20 group-hover:text-black/40" :
-                                  c.idx === 2 || c.idx === 5 ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
-                                    "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
+                                <div className={`px-2 py-0.5 border text-[9px] font-black tracking-widest uppercase transition-colors ${c.tag_color === 'neutral' ? "border-white/10 bg-white/5 text-neutral-500 group-hover:border-black/20 group-hover:text-black/40" :
+                                    c.tag_color === 'yellow' ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                      c.tag_color === 'blue' ? "border-blue-500/20 bg-blue-500/5 text-blue-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                        c.tag_color === 'red' ? "border-red-500/20 bg-red-500/5 text-red-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                          "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
                                   }`}>{c.tag || "INFO"}</div>
                               </div>
                               <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
