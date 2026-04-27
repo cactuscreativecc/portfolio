@@ -12,7 +12,7 @@
     "Hero": {
         "badge": "Digital Performance Foundry",
         "headline": "STOP <span class='text-primary'>EXISTING</span>. <br/>START <span class='text-primary'>DOMINATING</span>.",
-        "description": "Tired of trying to fit your business rules into off-the-shelf platforms? We create premium, custom-made applications, systems, and digital platforms to multiply your results.",
+        "description": "FROM DESIGN TO ENGINEERING: WE CREATE SITES, PRESENTATIONS, SOCIAL MEDIA, WEB APPS, AND HIGH-PERFORMANCE SYSTEMS FOR THOSE SEEKING THE TOP OF THE MARKET.",
         "trusted_us": "They trusted us",
         "cta_primary": "START MY PROJECT",
         "cta_secondary": "HOW IT WORKS",
@@ -24,8 +24,8 @@
         "stat_revenue_desc": "Revenue Generated & Managed"
     },
     "Capabilities": {
-        "label": "CAPABILITIES",
-        "headline": "HIGH-IMPACT <span class='text-primary'>ARCHITECTURE</span> <br/>FOR THOSE WHO REFUSE THE ORDINARY",
+        "label": "SERVICES & SOLUTIONS",
+        "headline": "FROM PIXELS TO <span class='text-primary'>SYSTEMS</span> <br/>COMPLETE END-TO-END SOLUTIONS",
         "tags": {
             "subscription": "MONTHLY SUBSCRIPTION",
             "available": "AVAILABLE",
@@ -36,20 +36,20 @@
             "description": "Acting as your dedicated technological arm. Constant evolution, ironclad security, and strategic support to keep your business growing."
         },
         "web_apps": {
-            "title": "WEB APPS & SOFTWARE",
-            "description": "Robust systems custom-built with premium aesthetics and elite performance. Made for those who need results, not just a website."
+            "title": "SITES & LANDING PAGES",
+            "description": "Institutional and sales pages with ultra-premium aesthetics and total focus on conversion. Your best digital storefront."
         },
         "data_integration": {
-            "title": "CONNECTED SYSTEMS",
-            "description": "We orchestrate APIs and complex infrastructures to create intelligent ecosystems that work autonomously for your profitability."
+            "title": "WEB APPS & SYSTEMS",
+            "description": "Custom software engineering. Dashboards, CRMs, and complex platforms that automate and manage your business with mastery."
         },
         "digital_platforms": {
-            "title": "SCALE PLATFORMS",
-            "description": "E-commerce and Marketplaces designed to support the top of the market. User experience that turns clicks into real revenue."
+            "title": "IMPACT PRESENTATIONS",
+            "description": "Strategic design for commercial and institutional presentations. We transform data and arguments into visual narratives that close deals."
         },
         "bespoke_solutions": {
-            "title": "BESPOKE ENGINEERING",
-            "description": "Specialized development for challenges that no ready-made platform can solve. Where your business's competitive edge is born."
+            "title": "SOCIAL MEDIA & DESIGN",
+            "description": "Art direction and content strategy for social networks. We build visual authority and real connection with your audience."
         },
         "automation_ai": {
             "title": "AUTOMATION & APPLIED AI",
@@ -197,7 +197,7 @@
         "description": "Transform ideas into impactful digital experiences that captivate your audience and fuel business growth.",
         "built_with": "Built with ♡ in São Paulo ® 2024 - 2026",
         "menu": "Menu",
-        "services": "Services",
+        "services": "Digital Dominance Agency: Sites, Systems, Apps, and Impact Design.",
         "follow_us": "Follow us",
         "legal": "Legal",
         "status": "Status",

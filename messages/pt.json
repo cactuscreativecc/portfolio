@@ -12,7 +12,7 @@
     "Hero": {
         "badge": "Digital Performance Foundry",
         "headline": "PARE DE <span class='text-primary'>EXISTIR</span>. <br/>COMECE A <span class='text-primary'>DOMINAR</span>.",
-        "description": "Cansado de tentar encaixar sua regra de negócio em plataformas prontas? Nós criamos aplicativos, sistemas e plataformas digitais premium sob medida para multiplicar seus resultados.",
+        "description": "DO DESIGN À ENGENHARIA: CRIAMOS SITES, APRESENTAÇÕES, MÍDIAS SOCIAIS, WEB APPS E SISTEMAS DE ALTA PERFORMANCE PARA QUEM BUSCA O TOPO DO MERCADO.",
         "trusted_us": "Eles confiaram em nós",
         "cta_primary": "QUERO MEU PROJETO",
         "cta_secondary": "COMO FUNCIONA",
@@ -24,8 +24,8 @@
         "stat_revenue_desc": "Receita Gerada e Gerenciada pelo Sistema"
     },
     "Capabilities": {
-        "label": "CAPACIDADES",
-        "headline": "ARQUITETURA DE <span class='text-primary'>ALTO IMPACTO</span> <br/>PARA QUEM NÃO ACEITA O PADRÃO",
+        "label": "SERVIÇOS & SOLUÇÕES",
+        "headline": "DOS PIXELS AOS <span class='text-primary'>SISTEMAS</span> <br/>SOLUÇÕES COMPLETAS DE PONTA A PONTA",
         "tags": {
             "subscription": "ASSINATURA MENSAL",
             "available": "DISPONÍVEL",
@@ -36,20 +36,20 @@
             "description": "Atuação como seu braço tecnológico dedicado. Evolução constante, segurança blindada e suporte estratégico para seu negócio nunca parar de crescer."
         },
         "web_apps": {
-            "title": "WEB APPS & SOFTWARES",
-            "description": "Sistemas robustos criados sob medida com estética premium e performance de elite. Feitos para quem precisa de resultados, não apenas de um site."
+            "title": "SITES & LANDING PAGES",
+            "description": "Páginas institucionais e de vendas com estética ultra-premium e foco total em conversão. Sua melhor vitrine digital."
         },
         "data_integration": {
-            "title": "SISTEMAS CONECTADOS",
-            "description": "Orquestramos APIs e infraestruturas complexas para criar ecossistemas inteligentes que trabalham sozinhos para sua rentabilidade."
+            "title": "WEB APPS & SISTEMAS",
+            "description": "Engenharia de software personalizada. Dashboards, CRMs e plataformas complexas que automatizam e gerenciam seu negócio com maestria."
         },
         "digital_platforms": {
-            "title": "PLATAFORMAS DE ESCALA",
-            "description": "E-commerce e Marketplaces projetados para suportar o topo do mercado. Experiência de usuário que transforma cliques em faturamento real."
+            "title": "APRESENTAÇÕES DE IMPACTO",
+            "description": "Design estratégico para apresentações comerciais e institucionais. Transformamos dados e argumentos em narrativas visuais que fecham negócios."
         },
         "bespoke_solutions": {
-            "title": "ENGENHARIA SOB MEDIDA",
-            "description": "Desenvolvimento especializado para desafios que nenhuma plataforma pronta consegue resolver. Onde nasce o diferencial competitivo do seu negócio."
+            "title": "MÍDIAS SOCIAIS & DESIGN",
+            "description": "Direção de arte e estratégia de conteúdo para redes sociais. Construímos autoridade visual e conexão real com sua audiência."
         },
         "automation_ai": {
             "title": "AUTOMAÇÃO & IA APLICADA",
@@ -197,7 +197,7 @@
         "description": "Transformamos ideias em experiências digitais impactantes que cativam o seu público e impulsionam o crescimento do seu negócio.",
         "built_with": "Construído com ♡ em São Paulo ® 2024 - 2026",
         "menu": "Menu",
-        "services": "Serviços",
+        "services": "Agência de Domínio Digital: Sites, Sistemas, Apps e Design de Impacto.",
         "follow_us": "Siga-nos",
         "legal": "Legal",
         "status": "Status",

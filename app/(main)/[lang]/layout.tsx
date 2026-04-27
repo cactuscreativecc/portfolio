@@ -12,8 +12,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "CACTUSCREATIVE | Digital Systems Engineered for Revenue",
-  description: "High-precision digital growth engine for revenue-focused companies.",
+  title: "CACTUSCREATIVE | Sites, Sistemas, Apps e Design de Impacto",
+  description: "Agência premium especializada em criação de sites, web apps, sistemas sob medida, apresentações corporativas e mídias sociais de alta performance.",
 };
 
 export async function generateStaticParams() {

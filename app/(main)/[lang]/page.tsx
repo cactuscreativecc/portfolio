@@ -130,7 +130,7 @@ export default async function Home({
                               t?.Capabilities?.tags?.available;
                         }
 
-                        const icons = ['shield', 'smartphone', 'database', 'shopping_bag', 'public', 'bolt'];
+                        const icons = ['shield', 'web', 'database', 'present_to_all', 'ads_click', 'bolt'];
                         return { ...data, number, icon: icons[idx], idx };
                       });
 
