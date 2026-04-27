@@ -8,13 +8,13 @@ const IDLE_TIMEOUT_MS = 5000;
 const WA_CHANNELS = [
     {
         label: 'BR',
-        display: '+55 11 99999-9999',
-        href: 'https://wa.me/5511999999999?text=Ol%C3%A1%20CactusCreative!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20de%20engenharia%20digital.',
+        display: '+55 13 99186-2859',
+        href: 'https://wa.me/5513991862859?text=Ol%C3%A1%20CactusCreative!%20Gostaria%20de%20saber%20mais%20sobre%20as%20solu%C3%A7%C3%B5es%20de%20engenharia%20digital.',
     },
     {
         label: 'CA',
-        display: '+1 (604) 555-5555',
-        href: "https://wa.me/16045555555?text=Hello%20CactusCreative!%20I'd%20like%20to%20know%20more%20about%20your%20digital%20engineering%20solutions.",
+        display: '+1 (236) 515-3775',
+        href: "https://wa.me/12365153775?text=Hello%20CactusCreative!%20I'd%20like%20to%20know%20more%20about%20your%20digital%20engineering%20solutions.",
     },
 ];
 

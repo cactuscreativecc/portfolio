@@ -95,6 +95,42 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
+    const handleOGImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0) {
+                return;
+            }
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `og-image-${Date.now()}.${fileExt}`;
+            const filePath = `config/${fileName}`;
+
+            const toastId = toast.loading("Enviando imagem...");
+
+            const { error: uploadError } = await supabase.storage
+                .from('portfolio')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            const { data } = supabase.storage.from('portfolio').getPublicUrl(filePath);
+
+            setSiteContent((prev: any) => ({
+                ...prev,
+                general: {
+                    ...(prev?.general || {}),
+                    og_image: data.publicUrl
+                }
+            }));
+
+            toast.success("Imagem oficial definida!", { id: toastId });
+        } catch (error: any) {
+            toast.error('Erro: ' + error.message);
+        }
+    };
+
     const handleGenerateAIDescription = async (idx: number) => {
         const imageUrl = siteContent.featured_projects[idx].image;
         if (!imageUrl) {
@@ -844,7 +880,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                         >
                             <div className="flex justify-between items-center border-b border-white/5 pb-6">
                                 <div>
-                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase italic">CENTRO DE PROJETOS</h2>
+                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase">CENTRO DE PROJETOS</h2>
                                     <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Controle o status e progresso de cada entrega</p>
                                 </div>
                                 <button
@@ -1096,7 +1132,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                             {/* Customization Header */}
                             <div className="flex justify-between items-center border-b border-white/5 pb-6 mb-8">
                                 <div>
-                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase italic">CUSTOMIZAÇÃO DO SITE</h2>
+                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase">CUSTOMIZAÇÃO DO SITE</h2>
                                     <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Refine a identidade e o conteúdo da sua Landing Page</p>
                                 </div>
                                 <button
@@ -1141,10 +1177,99 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                     {/* Área de Edição */}
                                     <div className="flex-1 space-y-12 pb-20">
                                         {activeCustomTab === 'general' && (
-                                            <section className="animate-in fade-in slide-in-from-right-4">
-                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">CONFIGURAÇÕES GERAIS</h3>
-                                                <div className="bg-surface-container-high border border-white/5 p-8 text-center opacity-50 italic text-[10px] uppercase font-bold tracking-widest">
-                                                    Configurações globais de SEO e Meta-tags em breve...
+                                            <section className="animate-in fade-in slide-in-from-right-4 space-y-12">
+                                                <div>
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">META TAGS & SEO</h3>
+                                                    <div className="bg-surface-container-high border border-white/5 p-8 space-y-6">
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                            <div className="space-y-4">
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DA PÁGINA (PT)</label>
+                                                                    <input
+                                                                        value={siteContent?.general?.meta_title_pt || ''}
+                                                                        placeholder="Ex: CactusCreative | Digital Agency"
+                                                                        onChange={(e) => updateSection('general', { ...siteContent?.general, meta_title_pt: e.target.value })}
+                                                                        className="w-full bg-background border border-white/5 p-3 font-bold text-white text-sm focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">META DESCRIPTION (PT)</label>
+                                                                    <textarea
+                                                                        value={siteContent?.general?.meta_desc_pt || ''}
+                                                                        placeholder="Resumo do que fazemos para aparecer no Google..."
+                                                                        onChange={(e) => updateSection('general', { ...siteContent?.general, meta_desc_pt: e.target.value })}
+                                                                        className="w-full h-24 bg-background border border-white/5 p-3 font-body text-white text-sm focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="space-y-4">
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest">TÍTULO DA PÁGINA (EN)</label>
+                                                                    <input
+                                                                        value={siteContent?.general?.meta_title_en || ''}
+                                                                        placeholder="Ex: CactusCreative | Digital Agency"
+                                                                        onChange={(e) => updateSection('general', { ...siteContent?.general, meta_title_en: e.target.value })}
+                                                                        className="w-full bg-background border border-white/5 p-3 font-bold text-blue-400/60 text-sm focus:border-blue-400/40 focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest">META DESCRIPTION (EN)</label>
+                                                                    <textarea
+                                                                        value={siteContent?.general?.meta_desc_en || ''}
+                                                                        placeholder="Summary of what we do in English..."
+                                                                        onChange={(e) => updateSection('general', { ...siteContent?.general, meta_desc_en: e.target.value })}
+                                                                        className="w-full h-24 bg-background border border-white/5 p-3 font-body text-blue-400/60 text-sm focus:border-blue-400/40 focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">COMPARTILHAMENTO (OPEN GRAPH)</h3>
+                                                    <div className="bg-surface-container-high border border-white/5 p-8 flex gap-8 items-center">
+                                                        <div className="relative w-48 h-28 bg-background border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                                                            {siteContent?.general?.og_image ? (
+                                                                // eslint-disable-next-line @next/next/no-img-element
+                                                                <img src={siteContent.general.og_image} alt="OG Preview" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <span className="text-[10px] text-neutral-600 font-bold tracking-widest uppercase">Sem Imagem</span>
+                                                            )}
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                onChange={handleOGImageUpload}
+                                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <h4 className="text-sm font-bold text-white mb-2">Imagem Oficial de Preview</h4>
+                                                            <p className="text-xs text-neutral-400 font-body mb-4 leading-relaxed">
+                                                                Esta imagem aparecerá quando o site for linkado no WhatsApp, LinkedIn, X, etc. Recomendado: 1200x630px.
+                                                            </p>
+                                                            <button className="flex items-center gap-2 text-[10px] font-black tracking-widest text-primary uppercase border border-primary/20 px-4 py-2 hover:bg-primary/10 transition-all pointer-events-none">
+                                                                <Plus size={12} /> ALTERAR IMAGEM
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">INJEÇÃO DE TRACKING (ANALYTICS & PIXEL)</h3>
+                                                    <div className="bg-surface-container-high border border-white/5 p-8 space-y-6">
+                                                        <div>
+                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">SCRIPTS NO <code>&lt;head&gt;</code></label>
+                                                            <textarea
+                                                                value={siteContent?.general?.tracking_head || ''}
+                                                                placeholder="Cole aqui o seu Google Analytics (gtag), Meta Pixel, ou GTM..."
+                                                                onChange={(e) => updateSection('general', { ...siteContent?.general, tracking_head: e.target.value })}
+                                                                className="w-full h-32 bg-[#0a0a0a] border border-white/5 p-4 font-mono text-[10px] text-primary/80 focus:border-primary focus:outline-none transition-all placeholder:text-neutral-700"
+                                                            />
+                                                            <p className="text-[9px] text-neutral-500 mt-2 font-bold">ATENÇÃO: Inclua as tags &lt;script&gt; e &lt;/script&gt; completas.</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </section>
                                         )}
