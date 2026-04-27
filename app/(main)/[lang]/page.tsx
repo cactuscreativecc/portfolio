@@ -82,7 +82,7 @@ export default async function Home({
 
           <div className="absolute bottom-8 left-0 w-full flex items-center justify-between px-8 gap-6 font-label text-[10px] tracking-[0.4em] text-neutral-800 uppercase pointer-events-none">
             <div className="flex-1 h-[1px] bg-white/10" />
-            <span className="whitespace-nowrap">scroll [ down ] to dive</span>
+            <span className="whitespace-nowrap">{t.Footer.scroll_hint}</span>
             <div className="flex-1 h-[1px] bg-white/10" />
           </div>
         </section>
@@ -109,29 +109,25 @@ export default async function Home({
 
                   <div className="lg:col-span-12 flex flex-col gap-4 lg:gap-px bg-transparent lg:bg-white/5">
                     {(() => {
-                      const rawCaps = (siteContent?.capabilities && Array.isArray(siteContent.capabilities) && siteContent.capabilities.length > 0) ? siteContent.capabilities : [1, 2, 3, 4, 5, 6];
+                      const keys = ['tech_partner', 'web_apps', 'data_integration', 'digital_platforms', 'bespoke_solutions', 'automation_ai'];
 
                       const processedCaps = Array.from({ length: 6 }).map((_, idx) => {
-                        const cap = rawCaps[idx] || (idx + 1);
-                        const isPlaceholder = typeof cap === "number";
                         const number = String(idx + 1).padStart(2, '0');
+                        const key = keys[idx];
 
-                        const data = isPlaceholder ? { title: '', text: '', tag: '' } : { ...cap };
+                        // Title & text ALWAYS from dictionary (respects language)
+                        const title = t?.Capabilities?.[key]?.title || '';
+                        const text = t?.Capabilities?.[key]?.description || '';
 
-                        if (isPlaceholder) {
-                          const keys = ['tech_partner', 'web_apps', 'data_integration', 'digital_platforms', 'bespoke_solutions', 'automation_ai'];
-                          const key = keys[idx];
-                          if (key && t?.Capabilities?.[key]) {
-                            data.title = t.Capabilities[key].title;
-                            data.text = t.Capabilities[key].description;
-                          }
-                          data.tag = (idx === 0) ? t?.Capabilities?.tags?.subscription :
+                        // Tag can come from siteContent if overridden, else from dictionary
+                        const scCap = siteContent?.capabilities?.[idx];
+                        const tag = scCap?.tag ||
+                          ((idx === 0) ? t?.Capabilities?.tags?.subscription :
                             (idx === 2 || idx === 5) ? t?.Capabilities?.tags?.development :
-                              t?.Capabilities?.tags?.available;
-                        }
+                              t?.Capabilities?.tags?.available);
 
                         const icons = ['shield', 'web', 'database', 'present_to_all', 'ads_click', 'bolt'];
-                        return { ...data, number, icon: icons[idx], idx };
+                        return { title, text, tag, number, icon: icons[idx], idx };
                       });
 
                       const row1 = processedCaps.slice(0, 3);
@@ -182,13 +178,13 @@ export default async function Home({
         </div>
 
         <div id="work">
-          <ProjectsSection t={t} siteContent={siteContent} />
+          <ProjectsSection t={t} siteContent={siteContent} lang={lang} />
         </div>
 
         <InteractiveSpotlight />
 
         <div id="tech">
-          <StatsSection t={t.Highlights} siteContent={siteContent} />
+          <StatsSection t={t.Highlights} siteContent={siteContent} lang={lang} />
         </div>
 
         <div id="about">
@@ -238,8 +234,13 @@ export default async function Home({
                     <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" />
                   </svg>
                 </a>
-                <a href="mailto:contact@cactuscreative.cc" className="w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-black transition-all">
-                  <span className="material-symbols-outlined text-sm">mail</span>
+                <a href="mailto:contact@cactuscreative.cc" className="relative group w-12 h-12 border border-white/10 flex items-center justify-center hover:bg-white/[0.02] hover:border-primary/50 transition-all overflow-hidden">
+                  <div className="absolute top-2 left-2 w-1.5 h-1.5 border-t border-l border-white/40 group-hover:border-primary transition-colors" />
+                  <div className="absolute bottom-2 right-2 w-1.5 h-1.5 border-b border-r border-white/40 group-hover:border-primary transition-colors" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5 text-neutral-400 group-hover:text-primary group-hover:scale-110 transition-all duration-500">
+                    <rect x="3" y="5" width="18" height="14" rx="2" strokeWidth="1.5" />
+                    <polyline points="3 7 12 13 21 7" strokeWidth="1.5" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -257,16 +258,16 @@ export default async function Home({
 
             <div className="md:col-span-2 space-y-6">
               <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold">{t.Footer.services}</h4>
-              <ul className="space-y-4 font-body text-sm text-white">
-                <li><a href="#" className="hover:text-primary transition-colors uppercase">WEB SYSTEMS</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors uppercase">PERFORMANCE ADS</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors uppercase">CONVERSION UI/UX</a></li>
+              <ul className="space-y-4 font-body text-sm text-white uppercase">
+                {(t.Footer.services_list || []).map((item: string) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </div>
 
             <div className="md:col-span-4 space-y-8">
               <div>
-                <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold mb-6">CONTACT</h4>
+                <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold mb-6">{t.Footer.contact_title}</h4>
                 <div className="space-y-4 font-headline text-2xl font-bold text-white tracking-tighter">
                   <a href="mailto:contact@cactuscreative.cc" className="block hover:text-primary transition-colors">contact@cactuscreative.cc</a>
 
@@ -296,15 +297,15 @@ export default async function Home({
 
               {/* Operating Hours Box */}
               <div className="space-y-4 pt-4 border-t border-white/5">
-                <h4 className="font-label text-[10px] uppercase tracking-widest text-neutral-600 font-bold">OPERATING HOURS</h4>
+                <h4 className="font-label text-[10px] uppercase tracking-widest text-neutral-600 font-bold">{t.Footer.operating_hours}</h4>
                 <div className="flex justify-between items-end font-mono text-[10px] text-neutral-400">
                   <div className="space-y-1">
-                    <p>MON — FRI</p>
+                    <p>{t.Footer.mon_fri}</p>
                     <p className="text-white">08:00 — 19:00 [BRT]</p>
                   </div>
                   <div className="text-right space-y-1">
-                    <p>SAT — SUN</p>
-                    <p className="text-neutral-700 font-bold">OFFLINE</p>
+                    <p>{t.Footer.sat_sun}</p>
+                    <p className="text-neutral-700 font-bold">{t.Footer.offline}</p>
                   </div>
                 </div>
 
@@ -324,7 +325,7 @@ export default async function Home({
                         <div className={`w-2 h-2 rounded-full ${isWorkingHours ? "bg-primary animate-pulse" : "bg-neutral-800"
                           }`} />
                         <span className="text-[10px] font-black tracking-[0.25em] uppercase leading-none">
-                          {isWorkingHours ? "OPERATIONAL" : "STANDBY MODE"}
+                          {isWorkingHours ? t.Footer.system_active : t.Footer.system_standby}
                         </span>
                       </div>
                     );

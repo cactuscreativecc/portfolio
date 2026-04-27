@@ -197,11 +197,26 @@
         "description": "Transformamos ideias em experiências digitais impactantes que cativam o seu público e impulsionam o crescimento do seu negócio.",
         "built_with": "Construído com ♡ para o mundo todo ® 2024 - 2026",
         "menu": "Menu",
-        "services": "Agência de Domínio Digital: Sites, Sistemas, Apps e Design de Impacto.",
+        "services": "Digital Agency",
         "follow_us": "Siga-nos",
         "legal": "Legal",
         "status": "Status",
-        "system_active": "Operacional"
+        "system_active": "Operacional",
+        "system_standby": "Modo Standby",
+        "contact_title": "CONTATO",
+        "operating_hours": "HORÁRIO DE ATENDIMENTO",
+        "mon_fri": "SEG — SEX",
+        "sat_sun": "SÁB — DOM",
+        "offline": "OFFLINE",
+        "scroll_hint": "role [ para baixo ] para mergulhar",
+        "services_list": [
+            "Websites",
+            "Performance Ads",
+            "Conversion UI/UX",
+            "Systems",
+            "Web Apps",
+            "Impact Designs"
+        ]
     },
     "Contact": {
         "label": "CONTATO",

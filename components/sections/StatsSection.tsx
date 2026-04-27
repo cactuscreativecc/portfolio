@@ -25,6 +25,7 @@ interface StatsSectionProps {
         item4: StatItem;
     };
     siteContent?: any;
+    lang?: string;
 }
 
 const colorMap: Record<number, string> = {
@@ -93,8 +94,14 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
     );
 }
 
-export default function StatsSection({ t, siteContent }: StatsSectionProps) {
-    const stats = (siteContent?.highlights && Array.isArray(siteContent.highlights)) ? siteContent.highlights : [t.item1, t.item2, t.item3, t.item4];
+export default function StatsSection({ t, siteContent, lang }: StatsSectionProps) {
+    // Always use translation labels. siteContent only overrides numeric values (val).
+    const baseStats = [t.item1, t.item2, t.item3, t.item4];
+    const stats = baseStats.map((base, idx) => {
+        const override = siteContent?.highlights?.[idx];
+        const label = (lang === 'en' && override?.label_en) ? override.label_en : (override?.label || base.label);
+        return { val: override?.val || override?.value || base.val, label };
+    });
 
     return (
         <section className="relative py-32 md:py-48 bg-black overflow-hidden selection:bg-primary selection:text-black">

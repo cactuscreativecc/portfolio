@@ -27,7 +27,7 @@ interface Project {
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export default function ProjectsSection({ t, siteContent }: { t: any; siteContent?: any }) {
+export default function ProjectsSection({ t, siteContent, lang }: { t: any; siteContent?: any; lang?: string }) {
     /* eslint-enable @typescript-eslint/no-explicit-any */
     const triggerRef = useRef<HTMLDivElement>(null);
     const headlineRef = useRef<HTMLDivElement>(null);
@@ -35,7 +35,12 @@ export default function ProjectsSection({ t, siteContent }: { t: any; siteConten
 
     const allProjects: Project[] = useMemo(() => {
         if (siteContent?.featured_projects && Array.isArray(siteContent.featured_projects)) {
-            return siteContent.featured_projects;
+            return siteContent.featured_projects.map((proj: any) => ({
+                ...proj,
+                description: (lang === 'en' && proj.description_en) ? proj.description_en : proj.description,
+                stat1_label: (lang === 'en' && proj.stat1_label_en) ? proj.stat1_label_en : proj.stat1_label,
+                stat2_label: (lang === 'en' && proj.stat2_label_en) ? proj.stat2_label_en : proj.stat2_label
+            }));
         }
 
         return [

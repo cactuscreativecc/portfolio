@@ -197,11 +197,26 @@
         "description": "Transform ideas into impactful digital experiences that captivate your audience and fuel business growth.",
         "built_with": "Built with ♡ for the whole world ® 2024 - 2026",
         "menu": "Menu",
-        "services": "Digital Dominance Agency: Sites, Systems, Apps, and Impact Design.",
+        "services": "Digital Agency",
         "follow_us": "Follow us",
         "legal": "Legal",
         "status": "Status",
-        "system_active": "Operational"
+        "system_active": "Operational",
+        "system_standby": "Standby Mode",
+        "contact_title": "CONTACT",
+        "operating_hours": "OPERATING HOURS",
+        "mon_fri": "MON — FRI",
+        "sat_sun": "SAT — SUN",
+        "offline": "OFFLINE",
+        "scroll_hint": "scroll [ down ] to dive",
+        "services_list": [
+            "Websites",
+            "Performance Ads",
+            "Conversion UI/UX",
+            "Systems",
+            "Web Apps",
+            "Impact Designs"
+        ]
     },
     "Contact": {
         "label": "CONTACT",
