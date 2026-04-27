@@ -500,7 +500,22 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             .single();
 
         if (data) {
-            setSiteContent(data.content);
+            let content = data.content;
+            if (!content.success_stories) {
+                content.success_stories = [
+                    { name: "Marcelo Linhares", profession: "CEO", link: "#", comment: "A Cactus Creative entregou muito mais que um site; eles reestruturaram a nossa comunicação digital inteira. O trato que a equipe nos deu foi excepcional do primeiro dia até a entrega, que por sinal ficou impecável." },
+                    { name: "Camila Rodrigues", profession: "Diretora de Marketing", link: "#", comment: "Profissionalismo puro. O processo deles é super transparente, toda quarta-feira sabíamos exatamente em que pé estava o projeto. O resultado final nos trouxe enorme crescimento de leads." },
+                    { name: "Fernando Souza", profession: "CTO", link: "#", comment: "A Cactus Creative pegou um problema técnico gigante nosso e transformou numa plataforma fluida e rápida. A paciência e clareza com que trataram nosso time foi um grande diferencial!" },
+                    { name: "Letícia Monteiro", profession: "Founder", link: "#", comment: "Contratar a Cactus foi a melhor decisão pro nosso reposicionamento. A identidade e a interface refletem a alma do negócio. O atendimento deles? Parece que eles fazem parte da sua própria empresa." },
+                    { name: "Roberto Farias", profession: "Head of Growth", link: "#", comment: "Não é só código e design, é estratégia pura. Mergulharam no briefing e entregaram uma máquina de vendas. Sem falar no acolhimento de toda a equipe que esteve lado a lado." },
+                    { name: "Heloísa Becker", profession: "Product Manager", link: "#", comment: "O que mais me surpreendeu na Cactus Creative foi o absoluto rigor com qualidade, prazos e o cuidado impecável na comunicação de todo o time." },
+                    { name: "Diego Ferreira", profession: "Co-fundador", link: "#", comment: "Transformaram uma ideia extremamente abstrata num portal robusto e lindíssimo em tempo recorde. A capacidade técnica junto ao excelente atendimento faz deles um parceiro vitalício." },
+                    { name: "Carolina Mattos", profession: "Ops Manager", link: "#", comment: "Impecável. Todo o fluxo de aprovação e desenvolvimento do nosso app foi guiado com uma maestria que você só encontra nas maiores agências do mundo. Recomendo sempre." },
+                    { name: "Ricardo Almeida", profession: "Tech Lead", link: "#", comment: "Agência que não te abandona pós-deploy. A Cactus Creative nos abraçou de um jeito que poucos fazem. Estabilidade, design primoroso e muito suporte humano ao longo das sprints." },
+                    { name: "Juliana Silva", profession: "Diretora Operacional", link: "#", comment: "A clareza técnica e o cuidado estético deles são difíceis de encontrar num lugar só. Todo o projeto rodou sem dores de cabeça, me senti muito valorizada o tempo inteiro como cliente. Brilhantes." }
+                ];
+            }
+            setSiteContent(content);
         }
     };
 
@@ -517,6 +532,29 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
     const updateSection = (section: string, data: any) => {
         setSiteContent((prev: any) => ({ ...prev, [section]: data }));
+    };
+
+    const removeSuccessStory = (idx: number) => {
+        const current = [...(siteContent.success_stories || [])];
+        current.splice(idx, 1);
+        updateSection('success_stories', current);
+    };
+
+    const restoreOriginalTestimonials = () => {
+        if (!confirm("Isso irá substituir os depoimentos atuais pelos 10 originais. Tem certeza?")) return;
+        updateSection('success_stories', [
+            { name: "Marcelo Linhares", profession: "CEO", link: "#", comment: "A Cactus Creative entregou muito mais que um site; eles reestruturaram a nossa comunicação digital inteira. O trato que a equipe nos deu foi excepcional do primeiro dia até a entrega, que por sinal ficou impecável." },
+            { name: "Camila Rodrigues", profession: "Diretora de Marketing", link: "#", comment: "Profissionalismo puro. O processo deles é super transparente, toda quarta-feira sabíamos exatamente em que pé estava o projeto. O resultado final nos trouxe enorme crescimento de leads." },
+            { name: "Fernando Souza", profession: "CTO", link: "#", comment: "A Cactus Creative pegou um problema técnico gigante nosso e transformou numa plataforma fluida e rápida. A paciência e clareza com que trataram nosso time foi um grande diferencial!" },
+            { name: "Letícia Monteiro", profession: "Founder", link: "#", comment: "Contratar a Cactus foi a melhor decisão pro nosso reposicionamento. A identidade e a interface refletem a alma do negócio. O atendimento deles? Parece que eles fazem parte da sua própria empresa." },
+            { name: "Roberto Farias", profession: "Head of Growth", link: "#", comment: "Não é só código e design, é estratégia pura. Mergulharam no briefing e entregaram uma máquina de vendas. Sem falar no acolhimento de toda a equipe que esteve lado a lado." },
+            { name: "Heloísa Becker", profession: "Product Manager", link: "#", comment: "O que mais me surpreendeu na Cactus Creative foi o absoluto rigor com qualidade, prazos e o cuidado impecável na comunicação de todo o time." },
+            { name: "Diego Ferreira", profession: "Co-fundador", link: "#", comment: "Transformaram uma ideia extremamente abstrata num portal robusto e lindíssimo em tempo recorde. A capacidade técnica junto ao excelente atendimento faz deles um parceiro vitalício." },
+            { name: "Carolina Mattos", profession: "Ops Manager", link: "#", comment: "Impecável. Todo o fluxo de aprovação e desenvolvimento do nosso app foi guiado com uma maestria que você só encontra nas maiores agências do mundo. Recomendo sempre." },
+            { name: "Ricardo Almeida", profession: "Tech Lead", link: "#", comment: "Agência que não te abandona pós-deploy. A Cactus Creative nos abraçou de um jeito que poucos fazem. Estabilidade, design primoroso e muito suporte humano ao longo das sprints." },
+            { name: "Juliana Silva", profession: "Diretora Operacional", link: "#", comment: "A clareza técnica e o cuidado estético deles são difíceis de encontrar num lugar só. Todo o projeto rodou sem dores de cabeça, me senti muito valorizada o tempo inteiro como cliente. Brilhantes." }
+        ]);
+        toast.success("10 depoimentos restaurados!");
     };
 
     return (
@@ -1413,18 +1451,38 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                             <section className="animate-in fade-in slide-in-from-right-4">
                                                 <div className="flex justify-between items-center mb-8">
                                                     <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase border-l-2 border-primary pl-4">HISTÓRIAS DE SUCESSO (DEPOIMENTOS)</h3>
-                                                    <button
-                                                        onClick={addSuccessStory}
-                                                        className="bg-primary/10 border border-primary/20 text-primary px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-primary hover:text-black transition-all flex items-center gap-2"
-                                                    >
-                                                        <Plus size={14} /> ADICIONAR DEPOIMENTO
-                                                    </button>
+                                                    <div className="flex items-center gap-4">
+                                                        <button
+                                                            onClick={restoreOriginalTestimonials}
+                                                            className="border border-white/20 text-neutral-400 px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-white/5 transition-all text-center"
+                                                        >
+                                                            RESTAURAR 10 ORIGINAIS
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                const newStory = { name: "Novo Cliente", profession: "Cargo", link: "#", comment: "Escreva aqui..." };
+                                                                updateSection('success_stories', [newStory, ...(siteContent.success_stories || [])]);
+                                                            }}
+                                                            className="bg-primary/10 border border-primary/20 text-primary px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-primary hover:text-black transition-all flex items-center gap-2"
+                                                        >
+                                                            <Plus size={14} /> ADICIONAR DEPOIMENTO
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <div className="space-y-6">
-                                                    {siteContent.success_stories.map((story: any, idx: number) => (
+                                                    {(siteContent.success_stories || []).map((story: any, idx: number) => (
                                                         <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6 group hover:border-primary/20 transition-all relative">
-                                                            <div className="absolute top-4 right-4 text-[10px] font-black text-neutral-800">#{idx + 1}</div>
+                                                            <div className="absolute top-4 right-4 flex items-center gap-4">
+                                                                <span className="text-[10px] font-black text-neutral-800">#{idx + 1}</span>
+                                                                <button
+                                                                    onClick={() => removeSuccessStory(idx)}
+                                                                    title="Remover depoimento"
+                                                                    className="text-neutral-500 hover:text-red-500 transition-colors bg-black/20 p-2 border border-white/5 hover:border-red-500/30"
+                                                                >
+                                                                    <Trash2 size={12} />
+                                                                </button>
+                                                            </div>
                                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                                 <div>
                                                                     <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">NOME DO CLIENTE</label>
@@ -1495,7 +1553,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </main>
+            </main >
         </div >
     );
 }

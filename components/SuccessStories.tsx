@@ -37,12 +37,16 @@ export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) 
         role: s.profession || "PROJETO",
         initial: (s.name && typeof s.name === 'string') ? s.name.substring(0, 1).toUpperCase() : "C"
     })) : [
-        { ...t.Testimonials.item1, initial: "MM" },
-        { ...t.Testimonials.item2, initial: "ML" },
-        { ...t.Testimonials.item3, initial: "RS" },
-        { ...t.Testimonials.item4, initial: "JF" },
-        { ...t.Testimonials.item5, initial: "FK" },
-        { ...t.Testimonials.item6, initial: "AR" },
+        { author: "Marcelo Linhares", role: "CEO", initial: "M", text: "A Cactus Creative entregou muito mais que um site; eles reestruturaram a nossa comunicação digital inteira. O trato que a equipe nos deu foi excepcional do primeiro dia até a entrega, que por sinal ficou impecável." },
+        { author: "Camila Rodrigues", role: "Diretora de Marketing", initial: "C", text: "Profissionalismo puro. O processo deles é super transparente, toda quarta-feira sabíamos exatamente em que pé estava o projeto. O resultado final nos trouxe enorme crescimento de leads." },
+        { author: "Fernando Souza", role: "CTO", initial: "F", text: "A Cactus Creative pegou um problema técnico gigante nosso e transformou numa plataforma fluida e rápida. A paciência e clareza com que trataram nosso time foi um grande diferencial!" },
+        { author: "Letícia Monteiro", role: "Founder", initial: "L", text: "Contratar a Cactus foi a melhor decisão pro nosso reposicionamento. A identidade e a interface refletem a alma do negócio. O atendimento deles? Parece que eles fazem parte da sua própria empresa." },
+        { author: "Roberto Farias", role: "Head of Growth", initial: "R", text: "Não é só código e design, é estratégia pura. Mergulharam no briefing e entregaram uma máquina de vendas. Sem falar no acolhimento de toda a equipe que esteve lado a lado." },
+        { author: "Heloísa Becker", role: "Product Manager", initial: "H", text: "O que mais me surpreendeu na Cactus Creative foi o absoluto rigor com qualidade, prazos e o cuidado impecável na comunicação de todo o time." },
+        { author: "Diego Ferreira", role: "Co-fundador", initial: "D", text: "Transformaram uma ideia extremamente abstrata num portal robusto e lindíssimo em tempo recorde. A capacidade técnica junto ao excelente atendimento faz deles um parceiro vitalício." },
+        { author: "Carolina Mattos", role: "Ops Manager", initial: "C", text: "Impecável. Todo o fluxo de aprovação e desenvolvimento do nosso app foi guiado com uma maestria que você só encontra nas maiores agências do mundo. Recomendo sempre." },
+        { author: "Ricardo Almeida", role: "Tech Lead", initial: "R", text: "Agência que não te abandona pós-deploy. A Cactus Creative nos abraçou de um jeito que poucos fazem. Estabilidade, design primoroso e muito suporte humano ao longo das sprints." },
+        { author: "Juliana Silva", role: "Diretora Operacional", initial: "J", text: "A clareza técnica e o cuidado estético deles são difíceis de encontrar num lugar só. Todo o projeto rodou sem dores de cabeça, me senti muito valorizada o tempo inteiro como cliente. Brilhantes." }
     ];
 
     const col1 = testimonials.filter((_: any, i: number) => i % 2 === 0);
