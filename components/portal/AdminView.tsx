@@ -20,7 +20,13 @@ import {
     Download,
     Trash2,
     MessageSquare,
-    Edit
+    Edit,
+    Sparkles,
+    X,
+    Layout,
+    Star,
+    BarChart3,
+    CheckSquare
 } from "lucide-react";
 import { Locale } from "@/i18n-config";
 import { toast } from "sonner";
@@ -40,6 +46,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [siteContent, setSiteContent] = useState<any>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [uploadingImage, setUploadingImage] = useState<number | null>(null);
+    const [activeCustomTab, setActiveCustomTab] = useState<'general' | 'capabilities' | 'projects' | 'stats' | 'stories'>('general');
+    const [isGeneratingAI, setIsGeneratingAI] = useState<number | null>(null);
 
     // Clients State
     const [clients, setClients] = useState<any[]>([]);
@@ -73,15 +81,62 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
             const { data } = supabase.storage.from('portfolio').getPublicUrl(filePath);
 
-            const newProjs = [...siteContent.featured_projects];
-            newProjs[idx].image = data.publicUrl;
-            setSiteContent({ ...siteContent, featured_projects: newProjs });
-            toast.success("Imagem do projeto feito no admin anexada com sucesso!");
+            setSiteContent((prev: any) => {
+                if (!prev) return prev;
+                const newProjs = [...prev.featured_projects];
+                newProjs[idx] = { ...newProjs[idx], image: data.publicUrl };
+                return { ...prev, featured_projects: newProjs };
+            });
+            toast.success("Imagem anexada com sucesso!");
         } catch (error: any) {
             toast.error('Erro ao fazer upload da imagem. Certifique-se de que o bucket "portfolio" existe no Storage e tem políticas públicas. Erro: ' + error.message);
         } finally {
             setUploadingImage(null);
         }
+    };
+
+    const handleGenerateAIDescription = async (idx: number) => {
+        const imageUrl = siteContent.featured_projects[idx].image;
+        if (!imageUrl) {
+            toast.error("Por favor, faça o upload de uma imagem primeiro.");
+            return;
+        }
+
+        setIsGeneratingAI(idx);
+        try {
+            const res = await fetch('/api/admin/generate-description', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ imageUrl })
+            });
+
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            setSiteContent((prev: any) => {
+                if (!prev) return prev;
+                const newProjs = [...prev.featured_projects];
+                newProjs[idx] = { ...newProjs[idx], description: data.description };
+                return { ...prev, featured_projects: newProjs };
+            });
+            toast.success("Descrição gerada com IA!");
+        } catch (error: any) {
+            toast.error("Erro ao gerar descrição: " + error.message);
+        } finally {
+            setIsGeneratingAI(null);
+        }
+    };
+
+    const addSuccessStory = () => {
+        const newStory = {
+            name: "Novo Cliente",
+            profession: "Empresa / Cargo",
+            link: "#",
+            comment: ""
+        };
+        const newStories = [...(siteContent.success_stories || []), newStory];
+        updateSection('success_stories', newStories);
+        toast.success("Nova história adicionada!");
     };
 
     const toggleClientExpand = async (clientId: string) => {
@@ -949,22 +1004,21 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="space-y-12"
+                            className="h-full flex flex-col"
                         >
-                            <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                            {/* Customization Header */}
+                            <div className="flex justify-between items-center border-b border-white/5 pb-6 mb-8">
                                 <div>
                                     <h2 className="text-2xl font-black tracking-tighter text-white uppercase italic">CUSTOMIZAÇÃO DO SITE</h2>
-                                    <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Controle total sobre o conteúdo da Landing Page</p>
+                                    <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Refine a identidade e o conteúdo da sua Landing Page</p>
                                 </div>
-                                <div className="flex gap-4">
-                                    <button
-                                        onClick={saveSiteContent}
-                                        disabled={isSaving}
-                                        className="bg-primary text-black px-10 py-4 font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all disabled:opacity-50"
-                                    >
-                                        {isSaving ? "SALVANDO..." : "PUBLICAR ALTERAÇÕES"}
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={saveSiteContent}
+                                    disabled={isSaving}
+                                    className="bg-primary text-black px-10 py-4 font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all disabled:opacity-50 shadow-[0_0_20px_rgba(174,213,0,0.2)]"
+                                >
+                                    {isSaving ? "SALVANDO..." : "PUBLICAR ALTERAÇÕES"}
+                                </button>
                             </div>
 
                             {!siteContent ? (
@@ -973,305 +1027,469 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                     <div className="h-80 bg-white/5 rounded-none" />
                                 </div>
                             ) : (
-                                <div className="space-y-16">
-                                    {/* SEÇÃO CAPACIDADES */}
-                                    <section>
-                                        <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">01. CAPACIDADES (CARDS)</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {siteContent.capabilities.map((cap: any, idx: number) => (
-                                                <div key={idx} className="bg-surface-container-high border border-white/5 p-6 space-y-4">
-                                                    <div className="flex justify-between items-center">
-                                                        <input
-                                                            value={cap.tag}
-                                                            onChange={(e) => {
-                                                                const newCaps = [...siteContent.capabilities];
-                                                                newCaps[idx].tag = e.target.value;
-                                                                updateSection('capabilities', newCaps);
-                                                            }}
-                                                            className="bg-primary/10 text-primary text-[8px] font-black tracking-widest border-none p-1 focus:outline-none uppercase"
-                                                        />
-                                                        <span className="text-[8px] text-neutral-600 font-black">CARD {idx + 1}</span>
-                                                    </div>
-                                                    <input
-                                                        value={cap.title}
-                                                        onChange={(e) => {
-                                                            const newCaps = [...siteContent.capabilities];
-                                                            newCaps[idx].title = e.target.value;
-                                                            updateSection('capabilities', newCaps);
-                                                        }}
-                                                        className="w-full bg-transparent border-b border-white/5 py-2 font-black text-white uppercase tracking-tighter focus:border-primary focus:outline-none"
-                                                    />
-                                                    <textarea
-                                                        value={cap.text}
-                                                        onChange={(e) => {
-                                                            const newCaps = [...siteContent.capabilities];
-                                                            newCaps[idx].text = e.target.value;
-                                                            updateSection('capabilities', newCaps);
-                                                        }}
-                                                        className="w-full bg-background border border-white/5 p-3 text-[11px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none"
-                                                        rows={3}
-                                                    />
+                                <div className="flex gap-8 items-start">
+                                    {/* Sub-menu Lateral */}
+                                    <nav className="w-48 flex flex-col gap-1 sticky top-0">
+                                        {[
+                                            { id: 'general', label: 'GERAL', icon: Layout },
+                                            { id: 'capabilities', label: 'SERVIÇOS', icon: CheckSquare },
+                                            { id: 'projects', label: 'VITRINE', icon: Layers },
+                                            { id: 'stats', label: 'NÚMEROS', icon: BarChart3 },
+                                            { id: 'stories', label: 'DEPOIMENTOS', icon: Star },
+                                        ].map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => setActiveCustomTab(item.id as any)}
+                                                className={`flex items-center gap-3 px-4 py-3 text-[9px] font-black tracking-widest uppercase transition-all ${activeCustomTab === item.id
+                                                    ? 'bg-primary/10 text-primary border-l-2 border-primary'
+                                                    : 'text-neutral-500 hover:text-white hover:bg-white/5'
+                                                    }`}
+                                            >
+                                                <item.icon size={14} />
+                                                {item.label}
+                                            </button>
+                                        ))}
+                                    </nav>
+
+                                    {/* Área de Edição */}
+                                    <div className="flex-1 space-y-12 pb-20">
+                                        {activeCustomTab === 'general' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">CONFIGURAÇÕES GERAIS</h3>
+                                                <div className="bg-surface-container-high border border-white/5 p-8 text-center opacity-50 italic text-[10px] uppercase font-bold tracking-widest">
+                                                    Configurações globais de SEO e Meta-tags em breve...
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </section>
+                                            </section>
+                                        )}
 
-                                    {/* SEÇÃO PROJETOS SELECIONADOS */}
-                                    <section>
-                                        <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">02. PROJETOS SELECIONADOS</h3>
-                                        <div className="space-y-8">
-                                            {siteContent.featured_projects.map((proj: any, idx: number) => (
-                                                <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6">
-                                                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
-                                                        <span className="text-[10px] font-black text-primary uppercase tracking-widest">PROJETO {proj.index} - {proj.title}</span>
-                                                        <div className="flex gap-2">
-                                                            <button className="p-2 text-red-500 hover:bg-red-500/10 transition-all">
-                                                                <AlertCircle size={14} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TÍTULO</label>
-                                                            <input
-                                                                value={proj.title}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].title = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CATEGORIA</label>
-                                                            <input
-                                                                value={proj.category}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].category = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">IMAGEM URL</label>
-                                                            <div className="flex gap-2">
-                                                                <input
-                                                                    value={proj.image}
-                                                                    onChange={(e) => {
-                                                                        const newProjs = [...siteContent.featured_projects];
-                                                                        newProjs[idx].image = e.target.value;
-                                                                        updateSection('featured_projects', newProjs);
-                                                                    }}
-                                                                    className="w-full bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none"
-                                                                />
-                                                                <label className="bg-primary/10 text-primary border border-primary/20 px-4 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-black transition-all">
-                                                                    <span className="material-symbols-outlined text-sm">{uploadingImage === idx ? 'hourglass_empty' : 'upload'}</span>
+                                        {activeCustomTab === 'capabilities' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">NOSSOS SERVIÇOS (CARDS)</h3>
+                                                <div className="grid grid-cols-1 gap-6">
+                                                    {siteContent.capabilities.map((cap: any, idx: number) => (
+                                                        <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6 group hover:border-primary/20 transition-all">
+                                                            <div className="flex justify-between items-center">
+                                                                <div className="flex-1 max-w-[200px]">
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TAG DO CARD</label>
                                                                     <input
-                                                                        type="file"
-                                                                        accept="image/*"
-                                                                        className="hidden"
-                                                                        onChange={(e) => handleImageUpload(e, idx)}
-                                                                        disabled={uploadingImage === idx}
+                                                                        value={cap.tag}
+                                                                        onChange={(e) => {
+                                                                            const newCaps = [...siteContent.capabilities];
+                                                                            newCaps[idx].tag = e.target.value;
+                                                                            updateSection('capabilities', newCaps);
+                                                                        }}
+                                                                        className="w-full bg-primary/5 text-primary text-[10px] font-black tracking-widest border border-primary/20 p-2 focus:outline-none uppercase focus:bg-primary/10 transition-all"
                                                                     />
-                                                                </label>
+                                                                </div>
+                                                                <span className="text-[10px] text-neutral-800 font-black tracking-tighter">#[{idx + 1}]</span>
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DO SERVIÇO</label>
+                                                                <input
+                                                                    value={cap.title}
+                                                                    onChange={(e) => {
+                                                                        const newCaps = [...siteContent.capabilities];
+                                                                        newCaps[idx].title = e.target.value;
+                                                                        updateSection('capabilities', newCaps);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-3 font-black text-white uppercase text-sm tracking-tighter focus:border-primary focus:outline-none transition-all"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DESCRIÇÃO DETALHADA</label>
+                                                                <textarea
+                                                                    value={cap.text}
+                                                                    onChange={(e) => {
+                                                                        const newCaps = [...siteContent.capabilities];
+                                                                        newCaps[idx].text = e.target.value;
+                                                                        updateSection('capabilities', newCaps);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none custom-scrollbar resize-none transition-all"
+                                                                    rows={3}
+                                                                />
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">STAT 1 VAL</label>
-                                                            <input
-                                                                value={proj.stat1_val}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].stat1_val = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-primary font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">STAT 1 LABEL</label>
-                                                            <input
-                                                                value={proj.stat1_label}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].stat1_label = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">STAT 2 VAL</label>
-                                                            <input
-                                                                value={proj.stat2_val}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].stat2_val = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-primary font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">STAT 2 LABEL</label>
-                                                            <input
-                                                                value={proj.stat2_label}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].stat2_label = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">DESCRIÇÃO CURTA</label>
-                                                        <textarea
-                                                            value={proj.description}
-                                                            onChange={(e) => {
-                                                                const newProjs = [...siteContent.featured_projects];
-                                                                newProjs[idx].description = e.target.value;
-                                                                updateSection('featured_projects', newProjs);
-                                                            }}
-                                                            className="w-full bg-background border border-white/5 p-3 text-neutral-400 text-[10px] font-bold uppercase focus:border-primary focus:outline-none"
-                                                            rows={2}
-                                                        />
-                                                    </div>
-
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">HASHTAGS (SEPARADAS POR VÍRGULA)</label>
-                                                            <input
-                                                                value={proj.tags.join(', ')}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].tags = e.target.value.split(',').map(t => t.trim().toUpperCase()).filter(t => t !== '');
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-primary text-[10px] font-black focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">URL DE DESTINO</label>
-                                                            <input
-                                                                value={proj.url}
-                                                                onChange={(e) => {
-                                                                    const newProjs = [...siteContent.featured_projects];
-                                                                    newProjs[idx].url = e.target.value;
-                                                                    updateSection('featured_projects', newProjs);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                    </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                            <button className="w-full border-2 border-dashed border-white/5 py-6 text-[10px] font-black tracking-widest text-neutral-500 hover:border-primary hover:text-primary transition-all uppercase">
-                                                + ADICIONAR NOVO PROJETO À VITRINE
-                                            </button>
-                                        </div>
-                                    </section>
+                                            </section>
+                                        )}
 
-                                    {/* SEÇÃO HIGHLIGHTS */}
-                                    <section>
-                                        <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">03. HIGHLIGHTS (NÚMEROS)</h3>
-                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                            {siteContent.highlights.map((h: any, idx: number) => (
-                                                <div key={idx} className="bg-surface-container-high border border-white/5 p-6 text-center space-y-2">
-                                                    <input
-                                                        value={h.val || h.value || ''}
-                                                        onChange={(e) => {
-                                                            const newH = [...siteContent.highlights];
-                                                            newH[idx].val = e.target.value; // Prefer using val
-                                                            newH[idx].value = undefined; // Drop 'value' to migrate
-                                                            updateSection('highlights', newH);
+                                        {activeCustomTab === 'projects' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">VITRINE DE PROJETOS SELECIONADOS</h3>
+                                                <div className="space-y-12">
+                                                    {siteContent.featured_projects.map((proj: any, idx: number) => (
+                                                        <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-8 relative group hover:border-primary/20 transition-all">
+                                                            <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-8 h-8 bg-primary/10 flex items-center justify-center font-black text-primary text-[10px]">{idx + 1}</div>
+                                                                    {proj.image && (
+                                                                        <div className="w-10 h-10 border border-white/10 overflow-hidden bg-black shrink-0 animate-in fade-in zoom-in">
+                                                                            <img src={proj.image} className="w-full h-full object-cover" alt="" />
+                                                                        </div>
+                                                                    )}
+                                                                    <span className="text-[10px] font-black text-white uppercase tracking-widest">{proj.title || "PROJETO SEM TÍTULO"}</span>
+                                                                </div>
+                                                                <div className="flex gap-2">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            const newProjs = siteContent.featured_projects.filter((_: any, i: number) => i !== idx);
+                                                                            updateSection('featured_projects', newProjs);
+                                                                        }}
+                                                                        className="p-2 text-neutral-700 hover:text-red-500 transition-all"
+                                                                        title="Remover Projeto"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                                                                {/* Coluna Esquerda: Definições e Links */}
+                                                                <div className="space-y-6">
+                                                                    <div>
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">TÍTULO DO PROJETO</label>
+                                                                        <input
+                                                                            value={proj.title}
+                                                                            onChange={(e) => {
+                                                                                const newProjs = [...siteContent.featured_projects];
+                                                                                newProjs[idx].title = e.target.value;
+                                                                                updateSection('featured_projects', newProjs);
+                                                                            }}
+                                                                            className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                        />
+                                                                    </div>
+
+                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                        <div>
+                                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">CATEGORIA / CONTEXTO</label>
+                                                                            <input
+                                                                                value={proj.category}
+                                                                                onChange={(e) => {
+                                                                                    const newProjs = [...siteContent.featured_projects];
+                                                                                    newProjs[idx].category = e.target.value;
+                                                                                    updateSection('featured_projects', newProjs);
+                                                                                }}
+                                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                            />
+                                                                        </div>
+                                                                        <div>
+                                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">LINK DO PROJETO (URL)</label>
+                                                                            <input
+                                                                                value={proj.url || ''}
+                                                                                onChange={(e) => {
+                                                                                    const newProjs = [...siteContent.featured_projects];
+                                                                                    newProjs[idx].url = e.target.value;
+                                                                                    updateSection('featured_projects', newProjs);
+                                                                                }}
+                                                                                placeholder="https://..."
+                                                                                className="w-full bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">URL DA IMAGEM PRINCIPAL</label>
+                                                                        <div className="flex gap-2">
+                                                                            <input
+                                                                                value={proj.image}
+                                                                                onChange={(e) => {
+                                                                                    const newProjs = [...siteContent.featured_projects];
+                                                                                    newProjs[idx].image = e.target.value;
+                                                                                    updateSection('featured_projects', newProjs);
+                                                                                }}
+                                                                                className="flex-1 bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                            />
+                                                                            <label className="bg-primary/10 text-primary border border-primary/20 px-4 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-black transition-all group/up">
+                                                                                {uploadingImage === idx ? (
+                                                                                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                                ) : (
+                                                                                    <Download className="w-4 h-4 rotate-180" />
+                                                                                )}
+                                                                                <input
+                                                                                    type="file"
+                                                                                    accept="image/*"
+                                                                                    className="hidden"
+                                                                                    onChange={(e) => handleImageUpload(e, idx)}
+                                                                                    disabled={uploadingImage === idx}
+                                                                                />
+                                                                            </label>
+                                                                        </div>
+                                                                        {proj.image && (
+                                                                            <div className="mt-3 relative w-full h-[140px] bg-black border border-white/5 overflow-hidden group/img">
+                                                                                <img src={proj.image} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" />
+                                                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Coluna Direita: Conteúdo e Tags */}
+                                                                <div className="space-y-6">
+                                                                    <div>
+                                                                        <div className="flex justify-between items-end mb-2">
+                                                                            <label className="text-[8px] font-black text-neutral-600 uppercase tracking-widest">DESCRIÇÃO DO PROJETO</label>
+                                                                            <button
+                                                                                onClick={() => handleGenerateAIDescription(idx)}
+                                                                                disabled={isGeneratingAI === idx || !proj.image}
+                                                                                className="flex items-center gap-2 text-[9px] font-black text-primary hover:text-white transition-all disabled:opacity-30"
+                                                                            >
+                                                                                {isGeneratingAI === idx ? (
+                                                                                    <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                                ) : (
+                                                                                    <Sparkles size={12} />
+                                                                                )}
+                                                                                GERAR COM IA
+                                                                            </button>
+                                                                        </div>
+                                                                        <textarea
+                                                                            value={proj.description}
+                                                                            onChange={(e) => {
+                                                                                const newProjs = [...siteContent.featured_projects];
+                                                                                newProjs[idx].description = e.target.value;
+                                                                                updateSection('featured_projects', newProjs);
+                                                                            }}
+                                                                            className="w-full bg-background border border-white/5 p-4 text-[11px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none transition-all resize-none"
+                                                                            rows={6}
+                                                                            placeholder="Descreva o projeto aqui ou use o botão 'Gerar com IA' acima..."
+                                                                        />
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-3 block tracking-widest">HASHTAGS (ENTER PARA ADICIONAR)</label>
+                                                                        <div className="bg-background border border-white/5 p-3 flex flex-wrap gap-2 min-h-[90px] content-start focus-within:border-primary/40 transition-all">
+                                                                            {proj.tags.map((tag: string, tIdx: number) => (
+                                                                                <span key={tIdx} className="bg-primary text-black px-3 py-1 text-[8px] font-black flex items-center gap-2 animate-in zoom-in-50">
+                                                                                    {tag}
+                                                                                    <button
+                                                                                        onClick={() => {
+                                                                                            const newTags = proj.tags.filter((_: any, i: number) => i !== tIdx);
+                                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                                            newProjs[idx].tags = newTags;
+                                                                                            updateSection('featured_projects', newProjs);
+                                                                                        }}
+                                                                                        className="hover:scale-125 transition-transform"
+                                                                                    >
+                                                                                        <X size={10} />
+                                                                                    </button>
+                                                                                </span>
+                                                                            ))}
+                                                                            <input
+                                                                                onKeyDown={(e) => {
+                                                                                    if (e.key === 'Enter') {
+                                                                                        const val = (e.target as HTMLInputElement).value.trim().toUpperCase();
+                                                                                        if (val && !proj.tags.includes(val)) {
+                                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                                            newProjs[idx].tags = [...proj.tags, val];
+                                                                                            updateSection('featured_projects', newProjs);
+                                                                                            (e.target as HTMLInputElement).value = '';
+                                                                                        }
+                                                                                    }
+                                                                                }}
+                                                                                placeholder={proj.tags.length === 0 ? "EX: DESIGN, BRANDING..." : ""}
+                                                                                className="flex-1 bg-transparent border-none text-[10px] font-bold text-white focus:outline-none uppercase min-w-[100px]"
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-white/5 pt-8">
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">STAT 1 VAL</label>
+                                                                    <input
+                                                                        value={proj.stat1_val}
+                                                                        onChange={(e) => {
+                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                            newProjs[idx].stat1_val = e.target.value;
+                                                                            updateSection('featured_projects', newProjs);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-2 text-primary font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">STAT 1 LABEL</label>
+                                                                    <input
+                                                                        value={proj.stat1_label}
+                                                                        onChange={(e) => {
+                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                            newProjs[idx].stat1_label = e.target.value;
+                                                                            updateSection('featured_projects', newProjs);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">STAT 2 VAL</label>
+                                                                    <input
+                                                                        value={proj.stat2_val}
+                                                                        onChange={(e) => {
+                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                            newProjs[idx].stat2_val = e.target.value;
+                                                                            updateSection('featured_projects', newProjs);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-2 text-primary font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">STAT 2 LABEL</label>
+                                                                    <input
+                                                                        value={proj.stat2_label}
+                                                                        onChange={(e) => {
+                                                                            const newProjs = [...siteContent.featured_projects];
+                                                                            newProjs[idx].stat2_label = e.target.value;
+                                                                            updateSection('featured_projects', newProjs);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                    <button
+                                                        onClick={() => {
+                                                            const newProj = {
+                                                                index: siteContent.featured_projects.length + 1,
+                                                                title: "NOVO PROJETO",
+                                                                category: "CATEGORIA",
+                                                                image: "",
+                                                                description: "",
+                                                                tags: [],
+                                                                stat1_val: "0%",
+                                                                stat1_label: "MÉTRICA",
+                                                                stat2_val: "0%",
+                                                                stat2_label: "MÉTRICA",
+                                                                url: "#"
+                                                            };
+                                                            updateSection('featured_projects', [...siteContent.featured_projects, newProj]);
                                                         }}
-                                                        className="w-full bg-transparent text-3xl font-black text-primary text-center focus:outline-none"
-                                                    />
-                                                    <input
-                                                        value={h.label}
-                                                        onChange={(e) => {
-                                                            const newH = [...siteContent.highlights];
-                                                            newH[idx].label = e.target.value;
-                                                            updateSection('highlights', newH);
-                                                        }}
-                                                        className="w-full bg-transparent text-[10px] font-bold text-neutral-500 text-center uppercase tracking-widest focus:outline-none"
-                                                    />
+                                                        className="w-full border-2 border-dashed border-white/5 py-10 text-[10px] font-black tracking-[0.4em] text-neutral-600 hover:border-primary hover:text-primary transition-all uppercase flex items-center justify-center gap-4 group"
+                                                    >
+                                                        <Plus className="group-hover:scale-125 transition-transform" />
+                                                        ADICIONAR NOVO PROJETO À VITRINE
+                                                    </button>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </section>
+                                            </section>
+                                        )}
 
-                                    {/* SEÇÃO SUCESSO */}
-                                    <section>
-                                        <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">04. HISTÓRIAS DE SUCESSO</h3>
-                                        <div className="space-y-6">
-                                            {siteContent.success_stories.map((story: any, idx: number) => (
-                                                <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6">
-                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME DO CLIENTE</label>
-                                                            <input
-                                                                value={story.name}
-                                                                onChange={(e) => {
-                                                                    const newS = [...siteContent.success_stories];
-                                                                    newS[idx].name = e.target.value;
-                                                                    updateSection('success_stories', newS);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
+                                        {activeCustomTab === 'stats' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">NÚMEROS E HIGHLIGHTS</h3>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                                    {siteContent.highlights.map((h: any, idx: number) => (
+                                                        <div key={idx} className="bg-surface-container-high border border-white/5 p-8 text-center space-y-4 group hover:border-primary/20 transition-all">
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest text-left">VALOR</label>
+                                                                <input
+                                                                    value={h.val || h.value || ''}
+                                                                    onChange={(e) => {
+                                                                        const newH = [...siteContent.highlights];
+                                                                        newH[idx].val = e.target.value;
+                                                                        newH[idx].value = undefined;
+                                                                        updateSection('highlights', newH);
+                                                                    }}
+                                                                    className="w-full bg-transparent text-4xl font-black text-primary text-center focus:outline-none focus:scale-110 transition-transform"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest text-left">DESCRIÇÃO CURTA</label>
+                                                                <input
+                                                                    value={h.label}
+                                                                    onChange={(e) => {
+                                                                        const newH = [...siteContent.highlights];
+                                                                        newH[idx].label = e.target.value;
+                                                                        updateSection('highlights', newH);
+                                                                    }}
+                                                                    className="w-full bg-transparent text-[10px] font-black text-neutral-500 text-center uppercase tracking-[0.2em] focus:outline-none focus:text-white transition-colors"
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">PROFISSÃO / CARGO</label>
-                                                            <input
-                                                                value={story.profession}
-                                                                onChange={(e) => {
-                                                                    const newS = [...siteContent.success_stories];
-                                                                    newS[idx].profession = e.target.value;
-                                                                    updateSection('success_stories', newS);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">LINK DO PROJETO</label>
-                                                            <input
-                                                                value={story.link}
-                                                                onChange={(e) => {
-                                                                    const newS = [...siteContent.success_stories];
-                                                                    newS[idx].link = e.target.value;
-                                                                    updateSection('success_stories', newS);
-                                                                }}
-                                                                className="w-full bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">DEPOIMENTO</label>
-                                                        <textarea
-                                                            value={story.comment}
-                                                            onChange={(e) => {
-                                                                const newS = [...siteContent.success_stories];
-                                                                newS[idx].comment = e.target.value;
-                                                                updateSection('success_stories', newS);
-                                                            }}
-                                                            className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-300 leading-relaxed focus:border-primary focus:outline-none"
-                                                            rows={4}
-                                                        />
-                                                    </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </section>
+                                            </section>
+                                        )}
+
+                                        {activeCustomTab === 'stories' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <div className="flex justify-between items-center mb-8">
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase border-l-2 border-primary pl-4">HISTÓRIAS DE SUCESSO (DEPOIMENTOS)</h3>
+                                                    <button
+                                                        onClick={addSuccessStory}
+                                                        className="bg-primary/10 border border-primary/20 text-primary px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-primary hover:text-black transition-all flex items-center gap-2"
+                                                    >
+                                                        <Plus size={14} /> ADICIONAR DEPOIMENTO
+                                                    </button>
+                                                </div>
+
+                                                <div className="space-y-6">
+                                                    {siteContent.success_stories.map((story: any, idx: number) => (
+                                                        <div key={idx} className="bg-surface-container-high border border-white/5 p-8 space-y-6 group hover:border-primary/20 transition-all relative">
+                                                            <div className="absolute top-4 right-4 text-[10px] font-black text-neutral-800">#{idx + 1}</div>
+                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">NOME DO CLIENTE</label>
+                                                                    <input
+                                                                        value={story.name}
+                                                                        onChange={(e) => {
+                                                                            const newS = [...siteContent.success_stories];
+                                                                            newS[idx].name = e.target.value;
+                                                                            updateSection('success_stories', newS);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">PROFISSÃO / CARGO</label>
+                                                                    <input
+                                                                        value={story.profession}
+                                                                        onChange={(e) => {
+                                                                            const newS = [...siteContent.success_stories];
+                                                                            newS[idx].profession = e.target.value;
+                                                                            updateSection('success_stories', newS);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">LINK DO PROJETO</label>
+                                                                    <input
+                                                                        value={story.link}
+                                                                        onChange={(e) => {
+                                                                            const newS = [...siteContent.success_stories];
+                                                                            newS[idx].link = e.target.value;
+                                                                            updateSection('success_stories', newS);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DEPOIMENTO / COMENTÁRIO</label>
+                                                                <textarea
+                                                                    value={story.comment}
+                                                                    onChange={(e) => {
+                                                                        const newS = [...siteContent.success_stories];
+                                                                        newS[idx].comment = e.target.value;
+                                                                        updateSection('success_stories', newS);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-300 leading-relaxed focus:border-primary focus:outline-none custom-scrollbar resize-none transition-all"
+                                                                    rows={4}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+
+                                                    <button
+                                                        onClick={addSuccessStory}
+                                                        className="w-full border-2 border-dashed border-white/5 py-10 text-[10px] font-black tracking-[0.4em] text-neutral-600 hover:border-primary hover:text-primary transition-all uppercase flex items-center justify-center gap-4 group"
+                                                    >
+                                                        <Plus className="group-hover:scale-125 transition-transform" />
+                                                        ADICIONAR NOVA HISTÓRIA DE SUCESSO
+                                                    </button>
+                                                </div>
+                                            </section>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </motion.div>
@@ -1281,3 +1499,4 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         </div >
     );
 }
+

@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useState, useRef, useMemo } from "react";
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import React, { useLayoutEffect, useRef, useMemo } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 interface Project {
     id: string;
@@ -20,11 +25,13 @@ interface Project {
     cta?: string;
 }
 
-export default function ProjectsSection({ t, siteContent }: { t: any, siteContent?: any }) {
-    const [activeCategory, setActiveCategory] = useState("ALL");
-    const containerRef = useRef<HTMLDivElement>(null);
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export default function ProjectsSection({ t, siteContent }: { t: any; siteContent?: any }) {
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const headlineRef = useRef<HTMLDivElement>(null);
+    const panelsRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    // Dynamic counts from translation data or CMS
     const allProjects: Project[] = useMemo(() => {
         if (siteContent?.featured_projects && Array.isArray(siteContent.featured_projects)) {
             return siteContent.featured_projects;
@@ -114,212 +121,230 @@ export default function ProjectsSection({ t, siteContent }: { t: any, siteConten
         ];
     }, [t, siteContent]);
 
-    const filteredProjects = activeCategory === "ALL"
-        ? allProjects
-        : allProjects.filter(p => p.category === activeCategory);
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            // Initial states
+            gsap.set(headlineRef.current, {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                xPercent: -50,
+                yPercent: -50,
+            });
 
-    const filterOptions = [
-        { label: "ALL", count: allProjects.length },
-        { label: "TECH", count: allProjects.filter(p => p.category === "TECH").length },
-        { label: "DESIGN", count: allProjects.filter(p => p.category === "DESIGN").length },
-    ];
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: triggerRef.current,
+                    start: "top top",
+                    end: `+=${(allProjects.length + 1) * 150}%`, // Longer scroll for smoother feel
+                    scrub: 1.5,
+                    pin: true,
+                    anticipatePin: 1,
+                    onUpdate: (self) => {
+                        // Manual update for progress bar if preferred, or include in timeline
+                        gsap.set("#scroll-progress-bar", { height: `${self.progress * 100}%` });
+                    }
+                }
+            });
 
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end end"]
-    });
+            // Step 1: Headline and Progress move
+            tl.to(headlineRef.current, {
+                y: -300,
+                scale: 0.8,
+                opacity: 0,
+                duration: 1.5,
+                ease: "power2.inOut"
+            })
+                .to(".progress-indicator", {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: "power2.out"
+                }, "<");
 
-    // Smooth scroll configuration
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
-    });
+            // Step 2: Sequential reveal of project panels
+            allProjects.forEach((_, i) => {
+                const panel = panelsRefs.current[i];
+                const bg = panel?.querySelector(".project-bg");
+                const items = panel?.querySelectorAll(".stagger-item");
 
-    // Horizontal translation based on SMOOTH progress
-    const x = useTransform(smoothProgress, [0, 1], ["0%", `-${(filteredProjects.length - 1) * 100}%`]);
+                if (!panel) return;
 
-    // Title Fade: persistent zero opacity using smooth scroll
-    const titleOpacity = useTransform(smoothProgress, [0, 0.05, 1], [1, 0, 0]);
-    const titleY = useTransform(smoothProgress, [0, 0.05, 1], [0, -40, -40]);
+                // Bring in current panel
+                tl.fromTo(panel,
+                    { opacity: 0, visibility: "hidden", yPercent: 30 },
+                    { opacity: 1, visibility: "visible", yPercent: 0, duration: 2.5, ease: "slow(0.7, 0.7, false)" }
+                );
 
-    const pageIndex = useTransform(smoothProgress,
-        filteredProjects.map((_, i) => i / (filteredProjects.length - 1)),
-        filteredProjects.map((_, i) => i)
-    );
+                // Entrance parallax for background
+                if (bg) {
+                    tl.fromTo(bg,
+                        { scale: 1.3, transformOrigin: "center center" },
+                        { scale: 1, duration: 3.5, ease: "power2.out" },
+                        "<"
+                    );
+                }
 
-    const [currentPage, setCurrentPage] = useState(0);
+                // Staggered items entrance
+                if (items && items.length > 0) {
+                    tl.fromTo(items,
+                        { opacity: 0, y: 50 },
+                        { opacity: 1, y: 0, stagger: 0.15, duration: 1.5, ease: "power4.out" },
+                        "-=1.5"
+                    );
+                }
 
-    useTransform(pageIndex, (latest) => {
-        const rounded = Math.round(latest);
-        if (rounded !== currentPage) setCurrentPage(rounded);
-        return latest;
-    });
+                // If not last, hold and then move out
+                if (i < allProjects.length - 1) {
+                    tl.to(panel, {
+                        opacity: 0,
+                        yPercent: -30,
+                        duration: 2.5,
+                        delay: 1.5,
+                        ease: "power2.inOut"
+                    });
+                } else {
+                    // Final hold for the last one
+                    tl.to(panel, { duration: 2, delay: 1.5 });
+                }
+            });
+
+            // Background text loop effect (optional, matching "infinite" vibe)
+            // But we'll stick to the focused cinematic sequence first as requested.
+
+        }, triggerRef);
+
+        return () => ctx.revert();
+    }, [allProjects]);
 
     return (
-        <section ref={containerRef} id="projects" className="relative bg-[#141414] overflow-visible">
-            {/* Desktop View */}
-            <div className="hidden md:block" style={{ height: `${filteredProjects.length * 100}vh` }}>
-                <div className="sticky top-0 h-screen w-full flex flex-col overflow-hidden">
+        <section ref={triggerRef} id="projects" className="relative bg-black overflow-hidden select-none">
+            {/* Sticky Container for Animation */}
+            <div className="relative h-screen w-full flex items-center justify-center overflow-hidden">
 
-                    {/* Fixed Header */}
-                    <div className="absolute top-0 left-0 w-full px-12 pt-24 z-[100] flex justify-between items-start pointer-events-none">
-                        <div className="max-w-2xl pointer-events-auto">
-                            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
-                                <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                                <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
-                            </div>
-
-                            <motion.div style={{ opacity: titleOpacity, y: titleY }}>
-                                <h2 className="font-headline text-4xl lg:text-7xl font-bold tracking-tight uppercase text-white leading-[0.9]"
-                                    dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
-                            </motion.div>
-                        </div>
-
-                        <nav className="flex gap-x-12 font-label text-[11px] tracking-[0.25em] text-neutral-600 pointer-events-auto pt-14">
-                            {filterOptions.map((opt) => (
-                                <button
-                                    key={opt.label}
-                                    onClick={() => setActiveCategory(opt.label)}
-                                    className={`group flex items-center gap-4 transition-all hover:text-white ${activeCategory === opt.label ? "text-white" : ""}`}
-                                >
-                                    <span className={`transition-colors font-black ${activeCategory === opt.label ? "text-primary" : "text-neutral-800"}`}>
-                                        [{opt.count < 10 ? `0${opt.count}` : opt.count}]
-                                    </span>
-                                    <span className="uppercase font-black">{opt.label}</span>
-                                </button>
-                            ))}
-                        </nav>
+                {/* 1. Intro Headline (Starting Centered) */}
+                <div ref={headlineRef} className="z-[100] text-center w-full max-w-5xl px-6 pointer-events-none">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8 mx-auto">
+                        <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                        <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
                     </div>
-
-                    {/* Sliding Slides Container (Reduced top gap) */}
-                    <motion.div style={{ x }} className="flex h-full w-full relative z-10 transition-transform duration-75">
-                        {filteredProjects.map((project, idx) => (
-                            <div key={project.id || idx} className="min-w-full h-full flex items-center justify-center p-12 lg:p-24 pt-[10vh] pb-[10vh]">
-                                <ProjectSlide project={project} />
-                            </div>
-                        ))}
-                    </motion.div>
-
-                    {/* Horizontal Pagination Indicator Footer */}
-                    <div className="absolute bottom-0 left-0 w-full p-8 lg:p-12 z-50 flex justify-center bg-gradient-to-t from-black/80 to-transparent">
-
-                        <div className="flex items-center gap-x-16 lg:gap-x-32">
-                            {/* Left part: Progress indicator */}
-                            <div className="flex flex-col gap-3">
-                                <span className="text-[9px] font-black tracking-[0.5em] text-white/40 uppercase">NAVIGATE PROJECTS</span>
-                                <div className="w-48 lg:w-80 h-[2px] bg-white/5 relative overflow-hidden">
-                                    <motion.div
-                                        style={{ scaleX: smoothProgress }}
-                                        className="absolute inset-0 bg-primary origin-left shadow-[0_0_15px_#00ff00]"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Right part: Horizontal Numbering */}
-                            <div className="flex items-end gap-x-6">
-                                <div className="flex items-baseline gap-3">
-                                    <span className="font-headline text-5xl lg:text-7xl font-black text-white leading-none">
-                                        {(currentPage + 1).toString().padStart(2, "0")}
-                                    </span>
-                                    <span className="text-xl lg:text-2xl text-white/20 font-black">/</span>
-                                    <span className="text-xl lg:text-2xl text-white/40 font-black">
-                                        {filteredProjects.length.toString().padStart(2, "0")}
-                                    </span>
-                                </div>
-                                <span className="text-[9px] font-black tracking-[0.4em] text-primary uppercase mb-2 opacity-60 hidden lg:block">SELECTION ARCHIVE</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mobile View */}
-            <div className="block md:hidden py-16 px-6">
-                <div className="mb-12">
-                    <div className="inline-flex items-center gap-3 px-3 py-1.5 bg-white/5 border border-white/10 mb-6">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        <span className="text-[8px] font-black tracking-[0.3em] text-neutral-400 uppercase">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
-                    </div>
-                    <h2 className="font-headline text-3xl font-bold tracking-tight uppercase text-white mb-6"
+                    <h2 className="font-headline text-5xl md:text-8xl font-black tracking-tighter uppercase text-white leading-none whitespace-pre-line"
                         dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
-                    <nav className="flex gap-4 overflow-x-auto no-scrollbar">
-                        {filterOptions.map((opt) => (
-                            <button
-                                key={opt.label}
-                                onClick={() => setActiveCategory(opt.label)}
-                                className={`text-[10px] font-black tracking-widest uppercase pb-2 border-b-2 transition-all ${activeCategory === opt.label ? "border-primary text-white" : "border-transparent text-neutral-600"}`}
-                            >
-                                [{opt.count < 10 ? `0${opt.count}` : opt.count}] {opt.label}
-                            </button>
-                        ))}
-                    </nav>
                 </div>
-                <div className="space-y-12">
-                    {filteredProjects.map((project, idx) => (
-                        <ProjectSlide key={project.id || idx} project={project} isMobile={true} />
+
+                {/* 2. Project Panels (Absolute Stack) */}
+                <div className="absolute inset-0 w-full h-full z-10">
+                    {allProjects.map((project, idx) => (
+                        <div
+                            key={project.id || idx}
+                            ref={(el) => { panelsRefs.current[idx] = el; }}
+                            className="absolute inset-0 w-full h-full opacity-0 invisible"
+                        >
+                            {/* Background Image with stronger overlay for readability */}
+                            <div className="project-bg absolute inset-0 w-full h-full">
+                                <Image
+                                    src={project.image}
+                                    alt={project.title}
+                                    fill
+                                    className="object-cover grayscale brightness-[0.4]"
+                                    priority={idx === 0}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                            </div>
+
+                            {/* Content Over Background */}
+                            <div className="project-content relative h-full w-full flex flex-col justify-end p-8 md:p-20 lg:p-32">
+                                <div className="max-w-4xl space-y-6 md:space-y-10">
+                                    <div className="space-y-4">
+                                        <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
+                                            {project.category}
+                                        </span>
+                                        <h3 className="stagger-item font-headline text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
+                                            {project.title}
+                                        </h3>
+                                    </div>
+
+                                    <p className="stagger-item font-body text-neutral-300 text-lg md:text-xl leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
+                                        {project.description}
+                                    </p>
+
+                                    <div className="stagger-item flex flex-wrap gap-8 pt-4">
+                                        {project.tags.map((tag) => (
+                                            <span key={tag} className="text-[10px] md:text-xs text-primary font-black tracking-[0.3em] uppercase drop-shadow-md">
+                                                #{tag}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    <div className="stagger-item pt-8">
+                                        <button className="group relative overflow-hidden bg-primary text-black px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-white active:scale-95 shadow-[0_0_20px_rgba(174,213,0,0.3)]">
+                                            <span className="relative z-10">{project.cta || "VER ESTUDO DE CASO"}</span>
+                                        </button>
+                                    </div>
+
+                                    {/* Visual Stats overlay - bottom right */}
+                                    <div className="stagger-item pt-12 flex gap-12 border-t border-white/20">
+                                        <div>
+                                            <div className="text-3xl md:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
+                                            <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat1_label}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-3xl md:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
+                                            <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat2_label}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ))}
                 </div>
-            </div>
-        </section>
-    );
-}
 
-function ProjectSlide({ project, isMobile = false }: { project: Project; isMobile?: boolean }) {
-    return (
-        <div className={`flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-16 items-center w-full max-w-[1600px] ${isMobile ? "" : "h-full"}`}>
-            {/* Image Section */}
-            <div className="lg:col-span-7 w-full h-[60vh] lg:h-full lg:max-h-[60vh] relative group overflow-hidden border border-white/5">
-                <Image
-                    src={project.image || "/jobs/1.jpg"}
-                    alt={project.title || "PROJECT IMAGE"}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority={project.index === "01"}
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-[1.01] group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60" />
-
-                {/* Visual Stats overlay */}
-                <div className="absolute bottom-8 left-8 flex gap-12">
-                    <div>
-                        <div className="text-xl lg:text-3xl font-black text-primary leading-none tracking-tighter">{project.stat1_val}</div>
-                        <div className="text-[9px] text-white/50 uppercase tracking-[0.3em] font-black mt-2">{project.stat1_label}</div>
+                {/* 3. Refined Progress Indicator (Tactical HUD Style) */}
+                <div className="progress-indicator absolute bottom-20 left-12 z-[110] flex flex-col items-start gap-4 opacity-0">
+                    {/* Top Marker */}
+                    <div className="flex flex-col gap-1">
+                        <span className="text-[7px] font-black text-primary tracking-[0.2em]">00_INIT</span>
+                        <div className="w-4 h-[1px] bg-primary/30" />
                     </div>
-                    <div>
-                        <div className="text-xl lg:text-3xl font-black text-primary leading-none tracking-tighter">{project.stat2_val}</div>
-                        <div className="text-[9px] text-white/50 uppercase tracking-[0.3em] font-black mt-2">{project.stat2_label}</div>
+
+                    {/* Progress Track */}
+                    <div className="relative group">
+                        <div className="h-48 w-[1px] bg-white/5 relative overflow-hidden">
+                            <div
+                                id="scroll-progress-bar"
+                                className="absolute top-0 left-0 w-full bg-primary origin-top shadow-[0_0_15px_#aed500]"
+                                style={{ height: "0%" }}
+                            />
+                        </div>
+                        {/* Interactive scanning line (deco) */}
+                        <div className="absolute top-0 -left-1 w-3 h-[1px] bg-primary/50 blur-[1px] animate-pulse" />
+                    </div>
+
+                    {/* Bottom Marker & Label */}
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1">
+                            <div className="w-4 h-[1px] bg-white/20" />
+                            <span className="text-[7px] font-black text-white/30 tracking-[0.2em]">100_END</span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-black tracking-[0.5em] text-white/60 uppercase vertical-text py-2 border-l border-primary/20 pl-3">
+                                SCROLL TO <span className="text-primary">QUANTUM</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="lg:col-span-5 flex flex-col justify-center space-y-6 lg:space-y-10">
-                <div className="space-y-2 lg:space-y-4">
-                    <span className="text-primary text-[10px] lg:text-[12px] font-black tracking-[0.5em] uppercase">[{project.category}]</span>
-                    <h3 className="font-headline text-4xl lg:text-7xl font-bold uppercase tracking-tighter text-white leading-[0.9]">
-                        {project.title}
-                    </h3>
-                </div>
-
-                <p className="font-body text-neutral-400 text-base lg:text-xl leading-relaxed uppercase tracking-tight max-w-xl">
-                    {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-x-8 gap-y-4 pt-4">
-                    {project.tags.map((tag) => (
-                        <span key={tag} className="text-[10px] text-primary/60 font-black tracking-[0.3em] uppercase">
-                            #{tag}
-                        </span>
-                    ))}
-                </div>
-
-                <div className="pt-8">
-                    <button className="group relative overflow-hidden bg-white text-black px-12 py-5 font-bold text-[11px] tracking-[0.3em] uppercase transition-all hover:bg-primary">
-                        <span className="relative z-10">{project.cta || "VIEW CASE STUDY"}</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+            <style jsx>{`
+                .vertical-text {
+                    writing-mode: vertical-rl;
+                    text-orientation: mixed;
+                }
+            `}</style>
+        </section >
     );
 }
