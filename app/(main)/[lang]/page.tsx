@@ -8,6 +8,7 @@ import FlipWord from "@/components/FlipWord";
 import ClientMarquee from "@/components/ClientMarquee";
 import ProjectsSection from "@/components/ProjectsSection";
 import SuccessStories from "@/components/SuccessStories";
+import ProcessAccordion from "@/components/ProcessAccordion";
 import { Waves } from "@/components/ui/wave-background";
 import DictionarySwitcher from "@/components/DictionarySwitcher";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -73,9 +74,20 @@ export default async function Home({
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </button>
 
-                <button className="flex-1 group relative border-2 border-primary text-primary px-12 py-6 font-bold text-xs md:text-base tracking-[0.3em] transition-all hover:bg-primary hover:text-black w-full">
-                  <span className="uppercase">{t.Hero.cta_secondary}</span>
-                </button>
+                <div className="flex-1 flex items-center justify-center sm:justify-start gap-4 border border-white/10 bg-white/5 px-6 md:px-8 py-5 md:py-6 w-full transition-all hover:bg-white/[0.07] hover:border-white/20">
+                  <div className="relative flex items-center justify-center w-3 h-3 shrink-0">
+                    <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
+                    <div className="relative w-2 h-2 bg-primary rounded-full" />
+                  </div>
+                  <div className="flex flex-col items-start gap-1">
+                    <span className="font-label text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-400 uppercase leading-none">
+                      {lang === 'en' ? "STATUS: OPERATIONAL" : "STATUS: OPERACIONAL"}
+                    </span>
+                    <span className="font-headline font-bold text-xs md:text-[13px] tracking-widest text-white uppercase leading-none">
+                      {lang === 'en' ? "1 SLOT FOR NEW PROJECT" : "1 VAGA PARA NOVO PROJETO"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -178,6 +190,9 @@ export default async function Home({
                     })()}
                   </div>
                 </div>
+
+                {/* Methodologies Accordion below Capabilities */}
+                <ProcessAccordion lang={lang} />
               </div>
             </div>
           </section>
