@@ -20,13 +20,15 @@ interface WavesProps {
     strokeColor?: string
     backgroundColor?: string
     pointerSize?: number
+    disableMouseFollow?: boolean
 }
 
 export function Waves({
     className = "",
     strokeColor = "rgba(255, 255, 255, 0.15)", // Very subtle white lines
     backgroundColor = "transparent",
-    pointerSize = 0.5
+    pointerSize = 0.5,
+    disableMouseFollow = false
 }: WavesProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const svgRef = useRef<SVGSVGElement>(null)
@@ -61,8 +63,10 @@ export function Waves({
 
         // Bind events
         window.addEventListener('resize', onResize)
-        window.addEventListener('mousemove', onMouseMove)
-        containerRef.current.addEventListener('touchmove', onTouchMove, { passive: false })
+        if (!disableMouseFollow) {
+            window.addEventListener('mousemove', onMouseMove)
+            containerRef.current.addEventListener('touchmove', onTouchMove, { passive: false })
+        }
 
         // Start animation
         rafRef.current = requestAnimationFrame(tick)
@@ -70,8 +74,10 @@ export function Waves({
         return () => {
             if (rafRef.current) cancelAnimationFrame(rafRef.current)
             window.removeEventListener('resize', onResize)
-            window.removeEventListener('mousemove', onMouseMove)
-            containerRef.current?.removeEventListener('touchmove', onTouchMove)
+            if (!disableMouseFollow) {
+                window.removeEventListener('mousemove', onMouseMove)
+                containerRef.current?.removeEventListener('touchmove', onTouchMove)
+            }
         }
     }, [])
 
@@ -293,38 +299,42 @@ export function Waves({
                 xmlns="http://www.w3.org/2000/svg"
             />
             {/* Green Glow Aura - Matching brand color #aed500 */}
-            <div
-                className="pointer-glow"
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: `400px`,
-                    height: `400px`,
-                    background: 'radial-gradient(circle, rgba(174, 213, 0, 0.2) 0%, transparent 70%)',
-                    borderRadius: '50%',
-                    transform: 'translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)',
-                    willChange: 'transform',
-                    pointerEvents: 'none',
-                }}
-            />
+            {!disableMouseFollow && (
+                <div
+                    className="pointer-glow"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: `400px`,
+                        height: `400px`,
+                        background: 'radial-gradient(circle, rgba(174, 213, 0, 0.2) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        transform: 'translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)',
+                        willChange: 'transform',
+                        pointerEvents: 'none',
+                    }}
+                />
+            )}
             {/* Pointer Dot - #aed500 */}
-            <div
-                className="pointer-dot"
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: `${pointerSize}rem`,
-                    height: `${pointerSize}rem`,
-                    background: '#aed500',
-                    boxShadow: '0 0 15px #aed500, 0 0 30px rgba(174, 213, 0, 0.5)',
-                    borderRadius: '50%',
-                    transform: 'translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)',
-                    willChange: 'transform',
-                    pointerEvents: 'none',
-                }}
-            />
+            {!disableMouseFollow && (
+                <div
+                    className="pointer-dot"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: `${pointerSize}rem`,
+                        height: `${pointerSize}rem`,
+                        background: '#aed500',
+                        boxShadow: '0 0 15px #aed500, 0 0 30px rgba(174, 213, 0, 0.5)',
+                        borderRadius: '50%',
+                        transform: 'translate3d(calc(var(--x) - 50%), calc(var(--y) - 50%), 0)',
+                        willChange: 'transform',
+                        pointerEvents: 'none',
+                    }}
+                />
+            )}
         </div>
     )
 }

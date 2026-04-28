@@ -1,6 +1,7 @@
 import { getDictionary } from "@/lib/get-dictionary";
 import { Locale } from "@/i18n-config";
 import LoginForm from "@/components/portal/LoginForm";
+import { Waves } from "@/components/ui/wave-background";
 
 export default async function PortalPage({
     params,
@@ -13,12 +14,11 @@ export default async function PortalPage({
     return (
         <main className="min-h-screen bg-background flex flex-col items-center justify-center p-8 relative overflow-hidden">
             {/* Background Decor */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[150px] rounded-full" />
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+                <Waves disableMouseFollow={true} />
             </div>
 
-            <div className="w-full max-w-md z-10">
+            <div className="w-full max-w-md z-10 relative">
                 <div className="flex flex-col items-center mb-12">
                     <h1 className="text-4xl font-black tracking-tighter text-white mb-2">
                         CACTUS<span className="text-primary">PORTAL</span>
