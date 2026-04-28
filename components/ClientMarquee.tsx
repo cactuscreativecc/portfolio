@@ -61,10 +61,10 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
                                     <img
                                         src={client.logoUrl}
                                         alt={client.name}
-                                        className="h-10 md:h-12 w-auto object-contain max-w-[150px] opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                                        className="h-10 md:h-12 w-auto object-contain max-w-[150px] opacity-40 brightness-0 invert hover:opacity-100 transition-opacity duration-500"
                                     />
                                 ) : (
-                                    <span className="font-headline text-xl md:text-2xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-primary transition-colors duration-300 flex items-center">
+                                    <span className="font-headline text-xl md:text-2xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-white transition-colors duration-300 flex items-center">
                                         {client.name}
                                     </span>
                                 )}
