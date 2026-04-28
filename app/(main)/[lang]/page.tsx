@@ -87,7 +87,6 @@ export default async function Home({
           </div>
         </section>
 
-        <ClientMarquee title={t.Hero.trusted_us} />
 
         <div id="services">
           {/* Services - Technical Architecture Grid */}
@@ -145,10 +144,10 @@ export default async function Home({
                               <div className="flex justify-between items-start mb-6">
                                 <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">{c.number}</div>
                                 <div className={`px-2 py-0.5 border text-[9px] font-black tracking-widest uppercase transition-colors ${c.tag_color === 'neutral' ? "border-white/10 bg-white/5 text-neutral-500 group-hover:border-black/20 group-hover:text-black/40" :
-                                    c.tag_color === 'yellow' ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
-                                      c.tag_color === 'blue' ? "border-blue-500/20 bg-blue-500/5 text-blue-500 group-hover:border-black/20 group-hover:text-black/60" :
-                                        c.tag_color === 'red' ? "border-red-500/20 bg-red-500/5 text-red-500 group-hover:border-black/20 group-hover:text-black/60" :
-                                          "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
+                                  c.tag_color === 'yellow' ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                    c.tag_color === 'blue' ? "border-blue-500/20 bg-blue-500/5 text-blue-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                      c.tag_color === 'red' ? "border-red-500/20 bg-red-500/5 text-red-500 group-hover:border-black/20 group-hover:text-black/60" :
+                                        "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
                                   }`}>{c.tag || "INFO"}</div>
                               </div>
                               <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
@@ -220,6 +219,9 @@ export default async function Home({
             <ContactForm t={t.Contact} />
           </div>
         </section>
+
+        {/* Client Marquee at the bottom of the page */}
+        <ClientMarquee title={t.Hero.trusted_us || "CLIENTES QUE ACREDITARAM EM NÓS"} clients={siteContent?.trusted_clients} />
       </main>
 
       {/* Footer - Premium Editorial Layout */}

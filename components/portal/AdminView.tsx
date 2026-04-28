@@ -46,7 +46,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [siteContent, setSiteContent] = useState<any>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [uploadingImage, setUploadingImage] = useState<number | null>(null);
-    const [activeCustomTab, setActiveCustomTab] = useState<'general' | 'capabilities' | 'projects' | 'stats' | 'stories'>('general');
+    const [activeCustomTab, setActiveCustomTab] = useState<'general' | 'capabilities' | 'projects' | 'stats' | 'stories' | 'clients'>('general');
     const [isGeneratingAI, setIsGeneratingAI] = useState<number | null>(null);
 
     // Clients State
@@ -58,6 +58,42 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [allProjects, setAllProjects] = useState<any[]>([]);
     const [isCreatingProject, setIsCreatingProject] = useState(false);
     const [expandedProject, setExpandedProject] = useState<string | null>(null);
+
+    const handleClientLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0) {
+                return;
+            }
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `client-${Date.now()}.${fileExt}`;
+            const filePath = `clients/${fileName}`;
+
+            setUploadingImage(idx); // reusar a flag para spinner visual
+
+            const { error: uploadError } = await supabase.storage
+                .from('portfolio')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            const { data } = supabase.storage.from('portfolio').getPublicUrl(filePath);
+
+            setSiteContent((prev: any) => {
+                if (!prev) return prev;
+                const newClients = [...(prev.trusted_clients || [])];
+                newClients[idx] = { ...newClients[idx], logoUrl: data.publicUrl };
+                return { ...prev, trusted_clients: newClients };
+            });
+            toast.success("Logo anexada com sucesso!");
+        } catch (error: any) {
+            toast.error('Erro ao fazer upload da logo. Erro: ' + error.message);
+        } finally {
+            setUploadingImage(null);
+        }
+    };
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, idx: number) => {
         try {
@@ -1171,6 +1207,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                             { id: 'projects', label: 'VITRINE', icon: Layers },
                                             { id: 'stats', label: 'NÚMEROS', icon: BarChart3 },
                                             { id: 'stories', label: 'DEPOIMENTOS', icon: Star },
+                                            { id: 'clients', label: 'CLIENTES', icon: Users },
                                         ].map((item) => (
                                             <button
                                                 key={item.id}
@@ -1841,6 +1878,93 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         <Plus className="group-hover:scale-125 transition-transform" />
                                                         ADICIONAR NOVA HISTÓRIA DE SUCESSO
                                                     </button>
+                                                </div>
+                                            </section>
+                                        )}
+
+                                        {activeCustomTab === 'clients' && (
+                                            <section className="animate-in fade-in slide-in-from-right-4">
+                                                <div className="flex justify-between items-center mb-8">
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase border-l-2 border-primary pl-4">CLIENTES QUE ACREDITARAM EM NÓS</h3>
+                                                    <button
+                                                        onClick={() => {
+                                                            const newClient = { name: "NOVO CLIENTE", logoUrl: "" };
+                                                            updateSection('trusted_clients', [...(siteContent.trusted_clients || []), newClient]);
+                                                        }}
+                                                        className="bg-primary/10 border border-primary/20 text-primary px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-primary hover:text-black transition-all flex items-center gap-2"
+                                                    >
+                                                        <Plus size={14} /> ADICIONAR CLIENTE
+                                                    </button>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                    {(siteContent.trusted_clients || []).map((client: any, idx: number) => (
+                                                        <div key={idx} className="bg-surface-container-high border border-white/5 p-6 space-y-6 group hover:border-primary/20 transition-all relative">
+                                                            <div className="absolute top-4 right-4 flex items-center gap-4">
+                                                                <span className="text-[10px] font-black text-neutral-800">#{idx + 1}</span>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const newClients = [...siteContent.trusted_clients];
+                                                                        newClients.splice(idx, 1);
+                                                                        updateSection('trusted_clients', newClients);
+                                                                    }}
+                                                                    title="Remover cliente"
+                                                                    className="text-neutral-500 hover:text-red-500 transition-colors bg-black/20 p-2 border border-white/5 hover:border-red-500/30"
+                                                                >
+                                                                    <Trash2 size={12} />
+                                                                </button>
+                                                            </div>
+
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">NOME DO CLIENTE</label>
+                                                                <input
+                                                                    value={client.name}
+                                                                    onChange={(e) => {
+                                                                        const newClients = [...siteContent.trusted_clients];
+                                                                        newClients[idx].name = e.target.value;
+                                                                        updateSection('trusted_clients', newClients);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                />
+                                                            </div>
+
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">LOGO DO CLIENTE</label>
+                                                                <div className="flex gap-2">
+                                                                    <input
+                                                                        value={client.logoUrl || ''}
+                                                                        onChange={(e) => {
+                                                                            const newClients = [...siteContent.trusted_clients];
+                                                                            newClients[idx].logoUrl = e.target.value;
+                                                                            updateSection('trusted_clients', newClients);
+                                                                        }}
+                                                                        placeholder="https://..."
+                                                                        className="flex-1 bg-background border border-white/5 p-3 text-white text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                    <label className="bg-primary/10 text-primary border border-primary/20 px-4 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-black transition-all group/up min-w-[48px]">
+                                                                        {uploadingImage === idx ? (
+                                                                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                        ) : (
+                                                                            <Download className="w-4 h-4 rotate-180" />
+                                                                        )}
+                                                                        <input
+                                                                            type="file"
+                                                                            accept="image/*"
+                                                                            className="hidden"
+                                                                            onChange={(e) => handleClientLogoUpload(e, idx)}
+                                                                            disabled={uploadingImage === idx}
+                                                                        />
+                                                                    </label>
+                                                                </div>
+
+                                                                {client.logoUrl && (
+                                                                    <div className="mt-3 w-full h-24 bg-white/5 flex items-center justify-center border border-white/5 relative p-4 group/img">
+                                                                        <img src={client.logoUrl} alt={client.name} className="max-w-full max-h-full object-contain grayscale opacity-60 group-hover/img:grayscale-0 group-hover/img:opacity-100 transition-all duration-500" />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </section>
                                         )}

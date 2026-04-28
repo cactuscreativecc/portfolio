@@ -3,17 +3,31 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const CLIENTS = [
-    "AETHERA", "NEXUS GLOBAL", "VOLARE", "CORE FISICO", "GOSAFE", "HYPERION", "NOVA ARCH"
+export interface ClientType {
+    name: string;
+    logoUrl?: string;
+}
+
+const DEFAULT_CLIENTS: ClientType[] = [
+    { name: "AETHERA" },
+    { name: "NEXUS GLOBAL" },
+    { name: "VOLARE" },
+    { name: "CORE FISICO" },
+    { name: "GOSAFE" },
+    { name: "HYPERION" },
+    { name: "NOVA ARCH" }
 ];
 
 interface ClientMarqueeProps {
     title: string;
+    clients?: ClientType[];
 }
 
-export default function ClientMarquee({ title }: ClientMarqueeProps) {
+export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
+    const actualClients = clients && clients.length > 0 ? clients : DEFAULT_CLIENTS;
+
     return (
-        <div className="w-full mt-4 overflow-hidden py-8 flex items-center justify-center bg-transparent">
+        <div className="w-full mt-4 overflow-hidden py-8 flex items-center justify-center bg-transparent border-t border-white/5">
             <div className="max-w-7xl mx-auto px-8 w-full flex items-center gap-12">
 
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
@@ -38,13 +52,23 @@ export default function ClientMarquee({ title }: ClientMarqueeProps) {
                         }}
                     >
                         {/* Duplicate for Seamless Integration */}
-                        {[...CLIENTS, ...CLIENTS].map((client, i) => (
-                            <span
+                        {[...actualClients, ...actualClients].map((client, i) => (
+                            <div
                                 key={i}
-                                className="font-headline text-xl md:text-2xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-primary transition-colors duration-300 flex items-center"
+                                className="flex items-center justify-center object-contain"
                             >
-                                {client}
-                            </span>
+                                {client.logoUrl ? (
+                                    <img
+                                        src={client.logoUrl}
+                                        alt={client.name}
+                                        className="h-10 md:h-12 w-auto object-contain max-w-[150px] opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                                    />
+                                ) : (
+                                    <span className="font-headline text-xl md:text-2xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-primary transition-colors duration-300 flex items-center">
+                                        {client.name}
+                                    </span>
+                                )}
+                            </div>
                         ))}
                     </motion.div>
 
