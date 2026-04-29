@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/input";
 import { Locale } from "@/i18n-config";
 
 interface LoginFormProps {
@@ -14,30 +15,41 @@ interface LoginFormProps {
 export default function LoginForm({ lang, t }: LoginFormProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLogin, setIsLogin] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
         try {
-            const { data, error: signInError } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (signInError) throw signInError;
-
-            if (data.user) {
-                // Redirecionar para o dashboard
-                router.push(`/${lang}/portal/dashboard`);
-                router.refresh();
+            if (isLogin) {
+                const { data, error: signInError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                if (signInError) throw signInError;
+                if (data.user) {
+                    router.push(`/${lang}/portal/dashboard`);
+                    router.refresh();
+                }
+            } else {
+                const { data, error: signUpError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                });
+                if (signUpError) throw signUpError;
+                if (data.user) {
+                    router.push(`/${lang}/portal/dashboard`);
+                    router.refresh();
+                }
             }
         } catch (err: any) {
-            setError(t.Portal.error_invalid || "Invalid credentials");
+            setError(err.message || t.Portal.error_invalid || "Invalid credentials");
         } finally {
             setLoading(false);
         }
@@ -55,17 +67,16 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
                 <div className="absolute top-0 left-[-100%] w-full h-[2px] bg-primary/20 animate-shine" />
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-6 relative z-10">
+            <form onSubmit={handleAuth} className="space-y-6 relative z-10">
                 <div>
                     <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
                         {t.Portal.email_label}
                     </label>
-                    <input
+                    <Input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="w-full bg-background border border-white/10 px-4 py-4 text-white focus:outline-none focus:border-primary transition-colors font-headline"
                         placeholder="admin@cactuscreative.cc"
                     />
                 </div>
@@ -74,14 +85,24 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
                     <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
                         {t.Portal.password_label}
                     </label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full bg-background border border-white/10 px-4 py-4 text-white focus:outline-none focus:border-primary transition-colors font-headline"
-                        placeholder="••••••••"
-                    />
+                    <div className="relative flex items-center">
+                        <Input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="••••••••"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 text-neutral-500 hover:text-white transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">
+                                {showPassword ? "visibility_off" : "visibility"}
+                            </span>
+                        </button>
+                    </div>
                 </div>
 
                 {error && (
@@ -95,8 +116,20 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
                     disabled={loading}
                     className="w-full bg-primary text-black font-black py-5 tracking-[0.4em] uppercase hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {loading ? "..." : t.Portal.login_button}
+                    {loading ? "..." : (isLogin ? t.Portal.login_button : (lang === 'en' ? "CREATE ACCOUNT" : "CRIAR CONTA"))}
                 </button>
+
+                <div className="text-center pt-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsLogin(!isLogin)}
+                        className="text-[10px] font-label font-bold tracking-[0.1em] text-neutral-500 hover:text-white uppercase transition-colors underline decoration-white/20 underline-offset-4"
+                    >
+                        {isLogin
+                            ? (lang === 'en' ? "NO ACCOUNT? SIGN UP" : "NÃO TEM CONTA? CADASTRE-SE")
+                            : (lang === 'en' ? "ALREADY HAVE AN ACCOUNT? LOG IN" : "JÁ TEM CONTA? FAÇA LOGIN")}
+                    </button>
+                </div>
             </form>
         </motion.div>
     );
