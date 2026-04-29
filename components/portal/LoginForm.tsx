@@ -15,6 +15,9 @@ interface LoginFormProps {
 export default function LoginForm({ lang, t }: LoginFormProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [instagram, setInstagram] = useState("");
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -41,6 +44,13 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
                 const { data, error: signUpError } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: {
+                            full_name: name,
+                            phone,
+                            instagram
+                        }
+                    }
                 });
                 if (signUpError) throw signUpError;
                 if (data.user) {
@@ -60,7 +70,7 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-surface-container-high border border-white/5 p-8 w-full shadow-2xl relative overflow-hidden"
+            className="bg-black/20 backdrop-blur-2xl border border-white/10 p-8 w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden rounded-xl"
         >
             {/* Shine effect */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -68,6 +78,47 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
             </div>
 
             <form onSubmit={handleAuth} className="space-y-6 relative z-10">
+                {!isLogin && (
+                    <>
+                        <div>
+                            <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
+                                {lang === 'en' ? "FULL NAME" : "NOME COMPLETO"}
+                            </label>
+                            <Input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required={!isLogin}
+                                placeholder="J. Doe"
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
+                                {lang === 'en' ? "PHONE" : "TELEFONE"}
+                            </label>
+                            <Input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required={!isLogin}
+                                placeholder="+55 11 99999-9999"
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
+                                INSTAGRAM
+                            </label>
+                            <Input
+                                type="text"
+                                value={instagram}
+                                onChange={(e) => setInstagram(e.target.value)}
+                                required={!isLogin}
+                                placeholder="@seu_perfil"
+                            />
+                        </div>
+                    </>
+                )}
+
                 <div>
                     <label className="block font-label text-[10px] font-bold tracking-[0.3em] text-neutral-500 mb-2 uppercase">
                         {t.Portal.email_label}
@@ -92,11 +143,12 @@ export default function LoginForm({ lang, t }: LoginFormProps) {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="••••••••"
+                            className="pr-12"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 text-neutral-500 hover:text-white transition-colors"
+                            className="absolute right-4 text-neutral-500 hover:text-white transition-colors z-50 cursor-pointer"
                         >
                             <span className="material-symbols-outlined text-[18px]">
                                 {showPassword ? "visibility_off" : "visibility"}

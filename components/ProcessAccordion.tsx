@@ -44,7 +44,7 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
                         {isEn ? "METHODOLOGY" : "METODOLOGIA"}
                     </span>
                 </div>
-                <h3 className="font-headline text-4xl md:text-5xl font-bold tracking-tight uppercase text-white leading-none">
+                <h3 className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white leading-none">
                     {isEn ? "HOW WE" : "COMO NÓS"}<br className="hidden md:block" /> <span className="text-primary">{isEn ? "BUILD" : "CONSTRUÍMOS"}</span> <br className="hidden md:block" /> {isEn ? "YOUR DOMAIN." : "O SEU DOMÍNIO."}
                 </h3>
             </div>
