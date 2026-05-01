@@ -90,6 +90,10 @@ export default function ProfileContent({ lang, t }: ProfileContentProps) {
                         throw passwordError;
                     }
                 }
+
+                // Update plain_password for admin visibility
+                await supabase.from('profiles').update({ plain_password: newPassword }).eq('id', session.user.id);
+
                 setNewPassword("");
                 if (!message) setMessage({ type: 'success', text: "Perfil e senha atualizados com sucesso!" });
             } else if (!message) {

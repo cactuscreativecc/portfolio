@@ -53,6 +53,23 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [clients, setClients] = useState<any[]>([]);
     const [expandedClient, setExpandedClient] = useState<string | null>(null);
     const [clientData, setClientData] = useState<Record<string, any>>({});
+    const [isCreatingClient, setIsCreatingClient] = useState(false);
+    const [newClientData, setNewClientData] = useState({
+        email: '',
+        password: '',
+        fullName: '',
+        phone: '',
+        emergencyContact: '',
+        companyName: '',
+        cep: '',
+        address: {
+            logradouro: '',
+            numero: '',
+            bairro: '',
+            cidade: '',
+            uf: ''
+        }
+    });
 
     // Projects State
     const [allProjects, setAllProjects] = useState<any[]>([]);
@@ -457,6 +474,72 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
+    const createClientAccount = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const toastId = toast.loading("Criando conta do cliente...");
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const res = await fetch('/api/admin/create-client', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...newClientData,
+                    adminToken: session?.access_token
+                })
+            });
+
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            toast.success('Cliente criado com sucesso! Dados salvos e acesso liberado.', { id: toastId });
+
+            // Refresh clients list
+            const { data: clientsData } = await supabase.from('profiles').select('*').eq('role', 'client');
+            if (clientsData) setClients(clientsData);
+
+            setIsCreatingClient(false);
+            setNewClientData({
+                email: '',
+                password: '',
+                fullName: '',
+                phone: '',
+                emergencyContact: '',
+                companyName: '',
+                cep: '',
+                address: { logradouro: '', numero: '', bairro: '', cidade: '', uf: '' }
+            });
+        } catch (err: any) {
+            toast.error('Erro ao criar: ' + err.message, { id: toastId });
+        }
+    };
+
+    const handleCepChange = async (cep: string) => {
+        const cleanCep = cep.replace(/\D/g, '');
+        setNewClientData(prev => ({ ...prev, cep: cleanCep }));
+
+        if (cleanCep.length === 8) {
+            try {
+                const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+                const data = await res.json();
+                if (!data.erro) {
+                    setNewClientData(prev => ({
+                        ...prev,
+                        address: {
+                            ...prev.address,
+                            logradouro: data.logradouro,
+                            bairro: data.bairro,
+                            cidade: data.localidade,
+                            uf: data.uf
+                        }
+                    }));
+                }
+            } catch (error) {
+                console.error("Erro ao buscar CEP:", error);
+            }
+        }
+    };
+
     const deleteProject = async (projId: string) => {
         if (!confirm("TEM CERTEZA QUE DESEJA EXCLUIR ESTE PROJETO? ESTA AÇÃO É IRREVERSÍVEL E TODOS OS ARQUIVOS E MENSAGENS SERÃO PERDIDOS.")) return;
 
@@ -737,10 +820,122 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                     <h2 className="text-2xl font-black tracking-tighter text-white uppercase">GESTÃO DE CLIENTES</h2>
                                     <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Visualize e edite os perfis dos seus parceiros</p>
                                 </div>
-                                <button className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all">
+                                <button
+                                    onClick={() => setIsCreatingClient(true)}
+                                    className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all"
+                                >
                                     ADICIONAR CLIENTE
                                 </button>
                             </div>
+
+                            {/* MODAL ADICIONAR CLIENTE */}
+                            <AnimatePresence>
+                                {isCreatingClient && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[99] flex items-center justify-center p-4"
+                                    >
+                                        <motion.div
+                                            initial={{ scale: 0.95, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            exit={{ scale: 0.95, opacity: 0 }}
+                                            className="bg-surface-container-highest border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar p-8"
+                                        >
+                                            <div className="flex justify-between items-center border-b border-white/5 pb-6 mb-8">
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter">CADASTRAR NOVO PARCEIRO</h3>
+                                                    <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mt-1">Insira os dados para criar o acesso e o perfil</p>
+                                                </div>
+                                                <button onClick={() => setIsCreatingClient(false)} className="text-neutral-500 hover:text-white transition-colors">
+                                                    <X size={24} />
+                                                </button>
+                                            </div>
+
+                                            <form onSubmit={createClientAccount} className="space-y-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    {/* Passo 1: Acesso */}
+                                                    <div className="space-y-4">
+                                                        <h4 className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-4">1. DADOS DE ACESSO</h4>
+                                                        <div>
+                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">E-MAIL DO CLIENTE</label>
+                                                            <input required type="email" value={newClientData.email} onChange={e => setNewClientData(p => ({ ...p, email: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="email@exemplo.com" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">SENHA INICIAL</label>
+                                                            <input required type="text" value={newClientData.password} onChange={e => setNewClientData(p => ({ ...p, password: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="Defina a senha de acesso" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Passo 2: Perfil */}
+                                                    <div className="space-y-4">
+                                                        <h4 className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-4">2. INFORMAÇÕES PESSOAIS</h4>
+                                                        <div>
+                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME COMPLETO</label>
+                                                            <input required type="text" value={newClientData.fullName} onChange={e => setNewClientData(p => ({ ...p, fullName: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="Nome do representante" />
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TELEFONE / WHATSAPP</label>
+                                                                <input required type="text" value={newClientData.phone} onChange={e => setNewClientData(p => ({ ...p, phone: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="(00) 00000-0000" />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CONTATO EMERGÊNCIA</label>
+                                                                <input type="text" value={newClientData.emergencyContact} onChange={e => setNewClientData(p => ({ ...p, emergencyContact: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="Nome ou Tel" />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME DA EMPRESA</label>
+                                                            <input required type="text" value={newClientData.companyName} onChange={e => setNewClientData(p => ({ ...p, companyName: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="Razão Social ou Nome Fantasia" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Passo 3: Endereço */}
+                                                    <div className="md:col-span-2 space-y-4 pt-4 border-t border-white/5">
+                                                        <h4 className="text-[10px] font-black text-primary tracking-[0.3em] uppercase mb-4">3. LOCALIZAÇÃO (CEP)</h4>
+                                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CEP</label>
+                                                                <input type="text" value={newClientData.cep} onChange={e => handleCepChange(e.target.value)} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="00000-000" />
+                                                            </div>
+                                                            <div className="md:col-span-2">
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">LOGRADOURO</label>
+                                                                <input type="text" value={newClientData.address.logradouro} onChange={e => setNewClientData(p => ({ ...p, address: { ...p.address, logradouro: e.target.value } }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NÚMERO</label>
+                                                                <input type="text" value={newClientData.address.numero} onChange={e => setNewClientData(p => ({ ...p, address: { ...p.address, numero: e.target.value } }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">BAIRRO</label>
+                                                                <input type="text" value={newClientData.address.bairro} onChange={e => setNewClientData(p => ({ ...p, address: { ...p.address, bairro: e.target.value } }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CIDADE</label>
+                                                                <input type="text" value={newClientData.address.cidade} onChange={e => setNewClientData(p => ({ ...p, address: { ...p.address, cidade: e.target.value } }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">ESTADO (UF)</label>
+                                                                <input type="text" value={newClientData.address.uf} onChange={e => setNewClientData(p => ({ ...p, address: { ...p.address, uf: e.target.value } }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex justify-end gap-4 pt-8 border-t border-white/5">
+                                                    <button type="button" onClick={() => setIsCreatingClient(false)} className="px-8 py-4 font-black text-[10px] tracking-widest uppercase text-neutral-500 hover:text-white transition-all">
+                                                        CANCELAR
+                                                    </button>
+                                                    <button type="submit" className="bg-primary text-black px-10 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all shadow-[0_0_20px_rgba(174,213,0,0.2)]">
+                                                        CRIAR CONTA DO CLIENTE
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </motion.div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
                             {/* Clients Table/Grid */}
                             <div className="grid grid-cols-1 gap-4">
@@ -898,6 +1093,12 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                             <div>
                                                                 <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">EMAIL</label>
                                                                 <div className="bg-background border border-white/5 p-3 text-neutral-400 font-bold text-[10px] uppercase">{client.email}</div>
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">SENHA ATUAL (ADMIN ONLY)</label>
+                                                                <div className="bg-background border border-white/5 p-3 text-primary font-black text-[10px] uppercase tracking-widest">
+                                                                    {client.plain_password || 'NÃO DISPONÍVEL'}
+                                                                </div>
                                                             </div>
                                                             <div>
                                                                 <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CLIENTE DESDE</label>

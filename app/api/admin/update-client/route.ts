@@ -35,9 +35,14 @@ export async function POST(req: Request) {
         }
 
         // 3. Update public.profiles
+        const updateProfileData: any = { full_name: fullName, phone: phone };
+        if (password && password.trim() !== '') {
+            updateProfileData.plain_password = password;
+        }
+
         const { error: profileError } = await supabaseAdmin
             .from('profiles')
-            .update({ full_name: fullName, phone: phone })
+            .update(updateProfileData)
             .eq('id', clientId);
 
         if (profileError) {
