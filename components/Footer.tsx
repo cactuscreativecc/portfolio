@@ -113,7 +113,7 @@ export default function Footer({ t }: { t: any }) {
             </div>
 
             <div className="absolute bottom-0 left-0 w-full select-none pointer-events-none overflow-hidden opacity-[0.04] flex justify-center translate-y-1/2">
-                <h2 className="font-headline text-[18vw] font-black tracking-tighter leading-none whitespace-nowrap uppercase">
+                <h2 className="font-headline text-[11.2vw] font-black tracking-tighter leading-none whitespace-nowrap uppercase">
                     CACTUSCREATIVE
                 </h2>
             </div>
