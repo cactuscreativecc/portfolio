@@ -3,7 +3,7 @@ import React from "react";
 export default function Footer({ t }: { t: any }) {
     return (
         <footer className="relative bg-background pt-32 pb-48 overflow-hidden border-t border-white/5">
-            <div className="max-w-7xl mx-auto px-8 relative z-10">
+            <div className="max-w-grid mx-auto px-6 md:px-16 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-32">
                     <div className="md:col-span-4 space-y-8">
                         <div className="text-3xl font-bold tracking-tighter text-white">CACTUSCREATIVE</div>

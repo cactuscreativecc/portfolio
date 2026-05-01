@@ -77,6 +77,9 @@ const config: Config = {
             },
             animation: {
                 shine: "shine 1.5s ease-in-out"
+            },
+            maxWidth: {
+                "grid": "1440px",
             }
         },
     },

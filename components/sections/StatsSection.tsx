@@ -105,7 +105,7 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
 
     return (
         <section className="relative py-32 md:py-48 bg-black overflow-hidden selection:bg-primary selection:text-black">
-            <div className="relative z-10 max-w-7xl mx-auto px-8">
+            <div className="relative z-10 max-w-grid mx-auto px-6 md:px-16">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 md:mb-32 gap-12">
                     <motion.div

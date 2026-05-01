@@ -28,7 +28,7 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
 
     return (
         <div className="w-full mt-4 overflow-hidden py-8 flex items-center justify-center bg-transparent border-t border-white/5">
-            <div className="max-w-7xl mx-auto px-8 w-full flex items-center gap-12">
+            <div className="max-w-grid mx-auto px-6 md:px-16 w-full flex items-center gap-12">
 
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
                 <div className="flex-shrink-0 flex items-center gap-8 relative z-10 bg-background pr-10">

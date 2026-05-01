@@ -96,7 +96,7 @@ export default function CTARevealSection({ t }: { t: any }) {
                 </span>
             </motion.div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 text-center flex flex-col items-center">
+            <div className="relative z-10 max-w-grid mx-auto px-6 md:px-16 text-center flex flex-col items-center">
                 {/* Badge */}
                 <div className="mb-16">
                     <WipeLine progress={badgeP}>

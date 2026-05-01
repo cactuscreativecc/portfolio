@@ -71,7 +71,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                 className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${scrolled ? "py-4 bg-background/90 backdrop-blur-xl" : "py-8 bg-transparent"
                     }`}
             >
-                <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
+                <div className="max-w-grid mx-auto px-6 md:px-16 flex justify-between items-center">
                     {/* Logo */}
                     <a href="#home" className="text-xl md:text-2xl font-black tracking-tighter text-white group">
                         CACTUS<span className="text-primary group-hover:text-white transition-colors">CREATIVE</span>

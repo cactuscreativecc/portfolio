@@ -5,6 +5,7 @@ import { Locale, i18n } from "@/i18n-config";
 import CustomCursor from "@/components/CustomCursor";
 import { Toaster } from "sonner";
 import { supabase } from "@/lib/supabase";
+import Script from "next/script";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -90,13 +91,16 @@ export default async function RootLayout({
           rel="stylesheet"
         />
         {trackingHead && (
-          <script dangerouslySetInnerHTML={{
-            __html: `
-              // Auto-injected head scripts from Admin
-              try {
-                ${trackingHead.replace(/<script[^>]*>|<\/script>/gi, '')}
-              } catch(e) { console.error('Tracking Injection Error:', e) }
-            `}} />
+          <Script
+            id="admin-tracking-head"
+            dangerouslySetInnerHTML={{
+              __html: `
+                // Auto-injected head scripts from Admin
+                try {
+                  ${trackingHead.replace(/<script[^>]*>|<\/script>/gi, '')}
+                } catch(e) { console.error('Tracking Injection Error:', e) }
+              `}}
+          />
         )}
       </head>
       <body className={`${spaceGrotesk.variable} antialiased`}>
