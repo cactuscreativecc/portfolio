@@ -35,7 +35,7 @@ export default function InteractiveSpotlight() {
             <motion.div
                 className="absolute inset-0 z-10"
                 style={{
-                    background: `radial-gradient(800px circle at calc(var(--x) * 1px) calc(var(--y) * 1px), rgba(174, 213, 0, 0.12), transparent 80%)`,
+                    background: `radial-gradient(500px circle at calc(var(--x) * 1px) calc(var(--y) * 1px), rgba(174, 213, 0, 0.08), transparent 80%)`,
                     // @ts-ignore
                     "--x": springX,
                     // @ts-ignore

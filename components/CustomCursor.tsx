@@ -15,6 +15,7 @@ interface HoverState {
 export default function CustomCursor() {
     const pathname = usePathname();
     const [hoverState, setHoverState] = useState<HoverState | null>(null);
+    const [showTrail, setShowTrail] = useState(false);
     const [isMobile, setIsMobile] = useState(true); // Default to true to prevent glitch on hydration
 
     useEffect(() => {
@@ -25,10 +26,22 @@ export default function CustomCursor() {
             setIsMobile(isTouch || isSmallScreen);
         };
 
+        const handleScroll = () => {
+            // Only show trail on home page and within hero section (roughly first screen height)
+            const isHome = pathname === "/" || pathname === "/en" || pathname === "/pt" || pathname === "";
+            const isAtTop = window.scrollY < (window.innerHeight * 0.8);
+            setShowTrail(isHome && isAtTop);
+        };
+
         checkMobile();
+        handleScroll();
         window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    }, []);
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("resize", checkMobile);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [pathname]);
 
     useEffect(() => {
         // Cleanup old effect body classes in case they stuck around
@@ -123,8 +136,8 @@ export default function CustomCursor() {
                     cursor: none !important;
                 }
             `}} />
-            {/* Trail Effects */}
-            {!hoverState && (
+            {/* Trail Effects - Only in Hero Section */}
+            {!hoverState && showTrail && (
                 <>
                     <motion.div
                         className="fixed top-0 left-0 pointer-events-none z-[9998] w-4 h-4 rounded-full bg-primary/20"
