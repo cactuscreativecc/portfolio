@@ -274,7 +274,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                         </h3>
                                     </div>
 
-                                    <p className="stagger-item font-body text-neutral-300 text-lg md:text-xl leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
+                                    <p className="stagger-item font-body text-neutral-300 text-base md:text-lg leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
                                         {project.description}
                                     </p>
 
