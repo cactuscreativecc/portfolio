@@ -48,6 +48,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [uploadingImage, setUploadingImage] = useState<number | null>(null);
     const [activeCustomTab, setActiveCustomTab] = useState<'general' | 'capabilities' | 'projects' | 'stats' | 'stories' | 'clients'>('general');
     const [isGeneratingAI, setIsGeneratingAI] = useState<number | null>(null);
+    const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>({});
 
     // Clients State
     const [clients, setClients] = useState<any[]>([]);
@@ -181,6 +182,32 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             toast.success("Imagem oficial definida!", { id: toastId });
         } catch (error: any) {
             toast.error('Erro: ' + error.message);
+        }
+    };
+
+    const autoTranslate = async (text: string, idx: number, enField: string) => {
+        if (!text?.trim()) return;
+        const key = `${idx}_${enField}`;
+        setIsTranslating(prev => ({ ...prev, [key]: true }));
+        try {
+            const res = await fetch('/api/admin/translate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, targetLang: 'en' })
+            });
+            const data = await res.json();
+            if (data.translatedText) {
+                setSiteContent((prev: any) => {
+                    if (!prev) return prev;
+                    const newProjs = [...prev.featured_projects];
+                    newProjs[idx] = { ...newProjs[idx], [enField]: data.translatedText };
+                    return { ...prev, featured_projects: newProjs };
+                });
+            }
+        } catch {
+            toast.error("Erro ao traduzir automaticamente.");
+        } finally {
+            setIsTranslating(prev => ({ ...prev, [key]: false }));
         }
     };
 
