@@ -123,13 +123,13 @@ export default function StartChat({ lang }: { lang: string }) {
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto flex flex-col h-[65vh] relative mt-4">
+        <div className="w-full flex flex-col h-[70vh] md:h-[75vh] relative mt-4">
 
             {/* Area de mensagens */}
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-2 md:px-4 space-y-8 scrollbar-hide pb-12">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-0 space-y-6 scrollbar-hide pb-4">
                 {messages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-8 duration-700`}>
-                        <div className={`max-w-[95%] md:max-w-[85%] py-2 text-2xl md:text-5xl font-headline uppercase leading-[1.1] tracking-tighter ${msg.role === 'user'
+                        <div className={`max-w-[95%] md:max-w-[90%] py-2 text-2xl md:text-4xl xl:text-5xl font-headline uppercase leading-[1.05] tracking-tighter ${msg.role === 'user'
                             ? 'text-primary font-bold text-right'
                             : 'text-white font-medium'
                             }`}>
@@ -148,14 +148,13 @@ export default function StartChat({ lang }: { lang: string }) {
                         </div>
                     </div>
                 )}
-                <div ref={messagesEndRef} className="h-8" />
             </div>
 
             {/* Area de entrada e botões elegantes */}
-            <div className="pt-6 shrink-0 space-y-6 relative z-20">
+            <div className="pt-2 shrink-0 space-y-6 relative z-20">
                 {/* Botões pré-definidos */}
                 {optionsByStep[step] && optionsByStep[step].length > 0 && messages[messages.length - 1]?.role !== 'user' && (
-                    <div className="flex flex-wrap gap-3 mb-2 justify-center md:justify-start">
+                    <div className="flex flex-wrap gap-3 mb-2 justify-start">
                         {optionsByStep[step].map((opt, i) => (
                             <button
                                 key={i}
