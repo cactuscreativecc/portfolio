@@ -196,16 +196,20 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 body: JSON.stringify({ text, targetLang: 'en' })
             });
             const data = await res.json();
-            if (data.translatedText) {
-                setSiteContent((prev: any) => {
-                    if (!prev) return prev;
-                    const newProjs = [...prev.featured_projects];
-                    newProjs[idx] = { ...newProjs[idx], [enField]: data.translatedText };
-                    return { ...prev, featured_projects: newProjs };
-                });
+            if (data.error) {
+                toast.error("Erro na tradução: " + data.error);
+                return;
             }
-        } catch {
-            toast.error("Erro ao traduzir automaticamente.");
+            if (!data.translatedText) {
+                toast.error("Tradução retornou vazia. Verifique a API Key no Vercel.");
+                return;
+            }
+            const newProjs = [...siteContent.featured_projects];
+            newProjs[idx] = { ...newProjs[idx], [enField]: data.translatedText };
+            updateSection('featured_projects', newProjs);
+            toast.success("Traduzido com sucesso!");
+        } catch (err: any) {
+            toast.error("Erro ao traduzir: " + (err?.message || "verifique o console"));
         } finally {
             setIsTranslating(prev => ({ ...prev, [key]: false }));
         }
@@ -1863,18 +1867,26 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                                 newProjs[idx].description = e.target.value;
                                                                                 updateSection('featured_projects', newProjs);
                                                                             }}
-                                                                            onBlur={(e) => {
-                                                                                if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'description_en');
-                                                                            }}
                                                                             className="w-full bg-background border border-white/5 p-4 text-[11px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none transition-all resize-none"
                                                                             rows={4}
                                                                             placeholder="Descreva o projeto aqui (PT)..."
                                                                         />
                                                                         <div className="mt-2">
-                                                                            <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest flex items-center gap-2">
-                                                                                DESCRIÇÃO (EN)
-                                                                                {isTranslating[`${idx}_description_en`] && <span className="w-2 h-2 border border-blue-400/60 border-t-transparent rounded-full animate-spin inline-block" />}
-                                                                            </label>
+                                                                            <div className="flex justify-between items-center mb-2">
+                                                                                <label className="text-[8px] font-black text-blue-400/60 uppercase tracking-widest flex items-center gap-2">
+                                                                                    DESCRIÇÃO (EN)
+                                                                                    {isTranslating[`${idx}_description_en`] && <span className="w-2 h-2 border border-blue-400/60 border-t-transparent rounded-full animate-spin inline-block" />}
+                                                                                </label>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => proj.description?.trim() && autoTranslate(proj.description, idx, 'description_en')}
+                                                                                    disabled={isTranslating[`${idx}_description_en`] || !proj.description?.trim()}
+                                                                                    className="flex items-center gap-1 text-[8px] font-black text-blue-400/60 hover:text-blue-400 transition-all disabled:opacity-30 uppercase tracking-widest"
+                                                                                >
+                                                                                    <Sparkles size={10} />
+                                                                                    AUTO-TRADUZIR
+                                                                                </button>
+                                                                            </div>
                                                                             <textarea
                                                                                 value={proj.description_en || ''}
                                                                                 onChange={(e) => {
@@ -1950,11 +1962,15 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             newProjs[idx].stat1_label = e.target.value;
                                                                             updateSection('featured_projects', newProjs);
                                                                         }}
-                                                                        onBlur={(e) => {
-                                                                            if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'stat1_label_en');
-                                                                        }}
                                                                         className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
                                                                     />
+                                                                    <div className="flex justify-between items-center mt-1 mb-0.5">
+                                                                        <span className="text-[7px] text-blue-400/40 uppercase tracking-widest">EN</span>
+                                                                        <button type="button" onClick={() => proj.stat1_label?.trim() && autoTranslate(proj.stat1_label, idx, 'stat1_label_en')} disabled={isTranslating[`${idx}_stat1_label_en`] || !proj.stat1_label?.trim()} className="text-[7px] font-black text-blue-400/50 hover:text-blue-400 transition-all disabled:opacity-30 uppercase flex items-center gap-1">
+                                                                            {isTranslating[`${idx}_stat1_label_en`] ? <span className="w-2 h-2 border border-blue-400/60 border-t-transparent rounded-full animate-spin inline-block" /> : <Sparkles size={8} />}
+                                                                            AUTO
+                                                                        </button>
+                                                                    </div>
                                                                     <input
                                                                         value={proj.stat1_label_en || ''}
                                                                         placeholder={isTranslating[`${idx}_stat1_label_en`] ? "Translating..." : "EN label..."}
@@ -1987,11 +2003,15 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             newProjs[idx].stat2_label = e.target.value;
                                                                             updateSection('featured_projects', newProjs);
                                                                         }}
-                                                                        onBlur={(e) => {
-                                                                            if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'stat2_label_en');
-                                                                        }}
                                                                         className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
                                                                     />
+                                                                    <div className="flex justify-between items-center mt-1 mb-0.5">
+                                                                        <span className="text-[7px] text-blue-400/40 uppercase tracking-widest">EN</span>
+                                                                        <button type="button" onClick={() => proj.stat2_label?.trim() && autoTranslate(proj.stat2_label, idx, 'stat2_label_en')} disabled={isTranslating[`${idx}_stat2_label_en`] || !proj.stat2_label?.trim()} className="text-[7px] font-black text-blue-400/50 hover:text-blue-400 transition-all disabled:opacity-30 uppercase flex items-center gap-1">
+                                                                            {isTranslating[`${idx}_stat2_label_en`] ? <span className="w-2 h-2 border border-blue-400/60 border-t-transparent rounded-full animate-spin inline-block" /> : <Sparkles size={8} />}
+                                                                            AUTO
+                                                                        </button>
+                                                                    </div>
                                                                     <input
                                                                         value={proj.stat2_label_en || ''}
                                                                         placeholder={isTranslating[`${idx}_stat2_label_en`] ? "Translating..." : "EN label..."}
