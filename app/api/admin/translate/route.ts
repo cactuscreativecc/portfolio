@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
         const prompt = `Você é um tradutor profissional. Traduza o seguinte texto de Português para ${targetLang === 'en' ? 'Inglês' : 'Português'}. Mantenha o tom profissional e natural. Retorne APENAS a tradução, sem comentários extras.\n\nTexto:\n${text}`;
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
