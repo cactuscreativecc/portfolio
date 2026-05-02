@@ -1863,12 +1863,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                                 newProjs[idx].description = e.target.value;
                                                                                 updateSection('featured_projects', newProjs);
                                                                             }}
+                                                                            onBlur={(e) => {
+                                                                                if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'description_en');
+                                                                            }}
                                                                             className="w-full bg-background border border-white/5 p-4 text-[11px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none transition-all resize-none"
                                                                             rows={4}
                                                                             placeholder="Descreva o projeto aqui (PT)..."
                                                                         />
                                                                         <div className="mt-2">
-                                                                            <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest">DESCRIÇÃO (EN)</label>
+                                                                            <label className="text-[8px] font-black text-blue-400/60 uppercase mb-2 block tracking-widest flex items-center gap-2">
+                                                                                DESCRIÇÃO (EN)
+                                                                                {isTranslating[`${idx}_description_en`] && <span className="w-2 h-2 border border-blue-400/60 border-t-transparent rounded-full animate-spin inline-block" />}
+                                                                            </label>
                                                                             <textarea
                                                                                 value={proj.description_en || ''}
                                                                                 onChange={(e) => {
@@ -1878,7 +1884,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                                 }}
                                                                                 className="w-full bg-background border border-white/5 p-4 text-[11px] text-blue-400/60 font-medium leading-relaxed focus:border-blue-400/40 focus:outline-none transition-all resize-none placeholder:text-neutral-800"
                                                                                 rows={4}
-                                                                                placeholder="Project description in English..."
+                                                                                placeholder={isTranslating[`${idx}_description_en`] ? "Traduzindo..." : "Project description in English..."}
                                                                             />
                                                                         </div>
                                                                     </div>
