@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: Request) {
     try {
@@ -8,21 +11,18 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Texto é obrigatório" }, { status: 400 });
         }
 
-        const langpair = targetLang === 'en' ? 'pt|en' : 'en|pt';
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`;
+        const direction = targetLang === 'en' ? 'Portuguese to English' : 'English to Portuguese';
 
-        const response = await fetch(url);
-        const data = await response.json();
+        const message = await client.messages.create({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 1024,
+            messages: [{
+                role: "user",
+                content: `Translate the following text from ${direction}. Return ONLY the translation, no explanations or extra text.\n\n${text}`
+            }]
+        });
 
-        if (data.responseStatus !== 200) {
-            throw new Error(data.responseDetails || "Erro na tradução");
-        }
-
-        const translatedText = data.responseData?.translatedText?.trim() || "";
-
-        if (!translatedText) {
-            throw new Error("Tradução retornou vazia");
-        }
+        const translatedText = (message.content[0] as { type: string; text: string }).text?.trim() || "";
 
         return NextResponse.json({ translatedText });
     } catch (error: any) {
