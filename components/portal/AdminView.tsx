@@ -676,13 +676,74 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
     const saveSiteContent = async () => {
         setIsSaving(true);
-        const { error } = await supabase
-            .from('site_content')
-            .upsert({ slug: 'landing-page', content: siteContent, updated_at: new Date().toISOString() });
+        const toastId = toast.loading("Processando e traduzindo conteúdo...");
 
-        if (error) alert("Erro ao salvar: " + error.message);
-        else alert("Site atualizado com sucesso!");
-        setIsSaving(false);
+        try {
+            let finalContent = { ...siteContent };
+            console.log("Iniciando salvamento. Conteúdo atual:", finalContent);
+
+            // Tradução automática para depoimentos (Success Stories)
+            if (finalContent.success_stories && Array.isArray(finalContent.success_stories)) {
+                let hasChanges = false;
+                const translatedStories = await Promise.all(finalContent.success_stories.map(async (story: any, idx: number) => {
+                    const needsCommentTrans = story.comment && !story.comment_en?.trim();
+                    const needsProfessionTrans = story.profession && !story.profession_en?.trim();
+
+                    if (needsCommentTrans || needsProfessionTrans) {
+                        console.log(`Traduzindo depoimento #${idx + 1}...`);
+                        hasChanges = true;
+                        const newStory = { ...story };
+
+                        if (needsCommentTrans) {
+                            try {
+                                const res = await fetch('/api/admin/translate', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ text: story.comment })
+                                });
+                                const data = await res.json();
+                                if (data.translatedText) newStory.comment_en = data.translatedText;
+                            } catch (e) { console.error(`Erro na tradução do comentário #${idx + 1}:`, e); }
+                        }
+
+                        if (needsProfessionTrans) {
+                            try {
+                                const res = await fetch('/api/admin/translate', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ text: story.profession })
+                                });
+                                const data = await res.json();
+                                if (data.translatedText) newStory.profession_en = data.translatedText;
+                            } catch (e) { console.error(`Erro na tradução da profissão #${idx + 1}:`, e); }
+                        }
+
+                        return newStory;
+                    }
+                    return story;
+                }));
+
+                if (hasChanges) {
+                    finalContent.success_stories = translatedStories;
+                    setSiteContent({ ...finalContent });
+                }
+            }
+
+            const { error } = await supabase
+                .from('site_content')
+                .upsert({ slug: 'landing-page', content: finalContent, updated_at: new Date().toISOString() });
+
+            if (error) {
+                toast.error("Erro ao salvar: " + error.message, { id: toastId });
+            } else {
+                toast.success("Site atualizado! Traduções aplicadas.", { id: toastId });
+            }
+        } catch (err) {
+            console.error("Erro crítico no saveSiteContent:", err);
+            toast.error("Erro interno ao processar conteúdo.", { id: toastId });
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const updateSection = (section: string, data: any) => {
@@ -2032,7 +2093,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     />
                                                                 </div>
                                                                 <div>
-                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">PROFISSÃO / CARGO</label>
+                                                                    <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">PROFISSÃO / CARGO (PT)</label>
                                                                     <input
                                                                         value={story.profession}
                                                                         onChange={(e) => {
@@ -2041,6 +2102,17 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             updateSection('success_stories', newS);
                                                                         }}
                                                                         className="w-full bg-background border border-white/5 p-3 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
+                                                                    />
+                                                                    <label className="text-[8px] font-black text-blue-400/60 uppercase mt-2 mb-2 block tracking-widest">PROFISSION / ROLE (EN)</label>
+                                                                    <input
+                                                                        value={story.profession_en || ''}
+                                                                        placeholder="Translation auto-generated..."
+                                                                        onChange={(e) => {
+                                                                            const newS = [...siteContent.success_stories];
+                                                                            newS[idx].profession_en = e.target.value;
+                                                                            updateSection('success_stories', newS);
+                                                                        }}
+                                                                        className="w-full bg-background border border-white/5 p-3 text-blue-400/60 font-black uppercase text-[10px] focus:border-blue-400/40 focus:outline-none transition-all placeholder:text-neutral-800"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -2057,7 +2129,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                 </div>
                                                             </div>
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DEPOIMENTO / COMENTÁRIO</label>
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">DEPOIMENTO / COMENTÁRIO (PT)</label>
                                                                 <textarea
                                                                     value={story.comment}
                                                                     onChange={(e) => {
@@ -2066,6 +2138,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                         updateSection('success_stories', newS);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-300 leading-relaxed focus:border-primary focus:outline-none custom-scrollbar resize-none transition-all"
+                                                                    rows={4}
+                                                                />
+                                                                <label className="text-[8px] font-black text-blue-400/60 uppercase mt-4 mb-2 block tracking-widest">TESTIMONIAL / COMMENT (EN)</label>
+                                                                <textarea
+                                                                    value={story.comment_en || ''}
+                                                                    placeholder="Translation auto-generated..."
+                                                                    onChange={(e) => {
+                                                                        const newS = [...siteContent.success_stories];
+                                                                        newS[idx].comment_en = e.target.value;
+                                                                        updateSection('success_stories', newS);
+                                                                    }}
+                                                                    className="w-full bg-background border border-white/5 p-4 text-[12px] text-blue-400/60 leading-relaxed focus:border-blue-400/40 focus:outline-none custom-scrollbar resize-none transition-all placeholder:text-neutral-800"
                                                                     rows={4}
                                                                 />
                                                             </div>

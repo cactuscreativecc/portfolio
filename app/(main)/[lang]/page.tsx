@@ -211,7 +211,7 @@ export default async function Home({
         </div>
 
         <div id="about">
-          <SuccessStories t={t} siteContent={siteContent} />
+          <SuccessStories t={t} siteContent={siteContent} lang={lang} />
         </div>
 
         {/* Strategic Consultation - High Impact Scroll Reveal */}

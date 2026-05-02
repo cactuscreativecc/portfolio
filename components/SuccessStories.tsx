@@ -5,6 +5,7 @@ import React, { useState } from "react";
 interface SuccessStoriesProps {
     t: any;
     siteContent?: any;
+    lang?: string;
 }
 
 const TestimonialCard = ({ item }: { item: any }) => (
@@ -28,13 +29,13 @@ const TestimonialCard = ({ item }: { item: any }) => (
     </div>
 );
 
-export default function SuccessStories({ t, siteContent }: SuccessStoriesProps) {
+export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesProps) {
     const [isPaused, setIsPaused] = useState(false);
 
     const testimonials = (siteContent?.success_stories && Array.isArray(siteContent.success_stories)) ? siteContent.success_stories.map((s: any) => ({
-        text: s.comment || "",
+        text: (lang === 'en' && s.comment_en) ? s.comment_en : (s.comment || ""),
         author: s.name || "CLIENTE",
-        role: s.profession || "PROJETO",
+        role: (lang === 'en' && s.profession_en) ? s.profession_en : (s.profession || "PROJETO"),
         initial: (s.name && typeof s.name === 'string') ? s.name.substring(0, 1).toUpperCase() : "C"
     })) : [
         { author: "Marcelo Linhares", role: "CEO", initial: "M", text: "A Cactus Creative entregou muito mais que um site; eles reestruturaram a nossa comunicação digital inteira. O trato que a equipe nos deu foi excepcional do primeiro dia até a entrega, que por sinal ficou impecável." },
