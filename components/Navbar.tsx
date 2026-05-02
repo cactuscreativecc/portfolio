@@ -14,6 +14,7 @@ interface NavbarProps {
 export default function Navbar({ t, lang }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isLogoHovered, setIsLogoHovered] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -73,9 +74,34 @@ export default function Navbar({ t, lang }: NavbarProps) {
             >
                 <div className="max-w-grid mx-auto px-6 md:px-16 flex justify-between items-center">
                     {/* Logo */}
-                    <a href="#home" className="text-xl md:text-2xl font-black tracking-tighter text-white group">
-                        CACTUS<span className="text-primary group-hover:text-white transition-colors">CREATIVE</span>
-                    </a>
+                    <motion.a
+                        href="#home"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-xl md:text-2xl font-black tracking-tighter text-white flex items-center group"
+                        onMouseEnter={() => setIsLogoHovered(true)}
+                        onMouseLeave={() => setIsLogoHovered(false)}
+                    >
+                        <span className="flex items-center">
+                            <span>CACTUS</span>
+                            <span className="text-primary">CREATIVE</span>
+                        </span>
+                        <AnimatePresence>
+                            {isLogoHovered && (
+                                <motion.span
+                                    initial={{ width: 0, opacity: 0, x: -10 }}
+                                    animate={{ width: "auto", opacity: 1, x: 0 }}
+                                    exit={{ width: 0, opacity: 0, x: -10 }}
+                                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                    className="flex items-center overflow-hidden whitespace-nowrap"
+                                >
+                                    <span className="mx-2 text-white font-light">/</span>
+                                    <span className="text-primary">CC</span>
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                    </motion.a>
 
                     {/* Desktop Nav */}
                     <nav className="hidden lg:flex items-center gap-12">
