@@ -39,7 +39,8 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 ...proj,
                 description: (lang === 'en' && proj.description_en) ? proj.description_en : proj.description,
                 stat1_label: (lang === 'en' && proj.stat1_label_en) ? proj.stat1_label_en : proj.stat1_label,
-                stat2_label: (lang === 'en' && proj.stat2_label_en) ? proj.stat2_label_en : proj.stat2_label
+                stat2_label: (lang === 'en' && proj.stat2_label_en) ? proj.stat2_label_en : proj.stat2_label,
+                cta: (lang === 'en' && proj.cta_en) ? proj.cta_en : proj.cta
             }));
         }
 
@@ -288,7 +289,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                     {(project.url || project.href) && (
                                         <div className="stagger-item pt-8">
                                             <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="inline-block group relative overflow-hidden bg-primary text-black px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-white active:scale-95 shadow-[0_0_20px_rgba(174,213,0,0.3)]">
-                                                <span className="relative z-10">{project.cta || "VER ESTUDO DE CASO"}</span>
+                                                <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "VER ESTUDO DE CASO")}</span>
                                             </a>
                                         </div>
                                     )}
