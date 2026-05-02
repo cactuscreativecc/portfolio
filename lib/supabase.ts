@@ -1,37 +1,60 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-// Cache para instâncias
+// ========================================================================
+// IMPORTANTE: Next.js só substitui process.env.NEXT_PUBLIC_* no client-side
+// quando a referência é LITERAL (ex: process.env.NEXT_PUBLIC_SUPABASE_URL).
+// Funções dinâmicas como getEnvVar('NEXT_PUBLIC_SUPABASE_URL') NÃO funcionam
+// no browser porque o bundler não consegue fazer a substituição em build-time.
+// ========================================================================
+
+// Referências estáticas — funciona tanto no server quanto no client
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+
+// Cache para evitar criar múltiplas instâncias
 let _supabaseClient: SupabaseClient | null = null
 let _supabaseAdmin: SupabaseClient | null = null
 
-// Fallbacks seguros para o build
-const FALLBACK_URL = 'https://placeholder.supabase.co';
-const FALLBACK_KEY = 'placeholder';
-
 /**
- * Cliente padrão (anon key) — seguro para uso em API routes e componentes server-side.
+ * Cliente padrão (anon key) — funciona no browser e no servidor.
+ * Usa persistSession para manter login entre páginas.
  */
 export function getSupabaseClient(): SupabaseClient {
   if (_supabaseClient) return _supabaseClient
 
-  // IMPORTANTE: O Next.js exige acesso estático para injetar variáveis no cliente
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || FALLBACK_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || FALLBACK_KEY;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error(
+      'Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY'
+    )
+  }
 
-  _supabaseClient = createClient(url, anonKey)
+  _supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  })
   return _supabaseClient
 }
 
 /**
- * Cliente admin (service role key) — APENAS para uso no servidor.
+ * Cliente admin (service role key) — APENAS para uso em API routes no servidor.
+ * Nunca importe isso em componentes client-side.
  */
 export function getSupabaseAdmin(): SupabaseClient {
   if (_supabaseAdmin) return _supabaseAdmin
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || FALLBACK_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || FALLBACK_KEY;
+  // Service role key não é NEXT_PUBLIC_, então só existe no servidor
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 
-  _supabaseAdmin = createClient(url, serviceKey, {
+  if (!SUPABASE_URL || !serviceKey) {
+    throw new Error(
+      'Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY (server-only)'
+    )
+  }
+
+  _supabaseAdmin = createClient(SUPABASE_URL, serviceKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
@@ -41,16 +64,13 @@ export function getSupabaseAdmin(): SupabaseClient {
 }
 
 /**
- * Proxy transparente para compatibilidade com o código existente.
- * O Proxy evita a chamada ao createClient durante a avaliação do módulo no build.
+ * Export de compatibilidade — Proxy lazy que cria o client sob demanda.
+ * Funciona em "use client" components sem quebrar o build do Vercel.
  */
 export const supabase = new Proxy({} as SupabaseClient, {
-  get(_target, prop) {
-    const client = getSupabaseClient();
-    const value = (client as any)[prop];
-    if (typeof value === 'function') {
-      return value.bind(client);
-    }
-    return value;
+  get(_target, prop, receiver) {
+    const client = getSupabaseClient()
+    const value = Reflect.get(client, prop, receiver)
+    return typeof value === 'function' ? value.bind(client) : value
   },
-});
+})
