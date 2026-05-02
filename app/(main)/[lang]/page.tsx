@@ -37,7 +37,7 @@ export default async function Home({
   const siteContent = data?.content || null;
 
   return (
-    <div className="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
+    <div className="bg-background text-on-surface selection:bg-primary selection:text-on-primary overflow-x-hidden">
       <Navbar t={t} lang={lang as Locale} />
 
       <main>

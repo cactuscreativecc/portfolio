@@ -40,9 +40,9 @@ function WipeLine({
     const textOpacity = useTransform(springProgress, [0, 0.48, 0.52, 1], [0, 0, 1, 1]);
 
     return (
-        <div className="relative overflow-hidden block w-fit mx-auto px-4 py-1">
+        <div className="relative overflow-hidden block w-fit max-w-[calc(100vw-3rem)] mx-auto px-4 py-1">
             <motion.span
-                className={`block leading-none ${isAccent ? 'text-primary' : 'text-white'} whitespace-normal md:whitespace-nowrap text-center`}
+                className={`block leading-none ${isAccent ? 'text-primary' : 'text-white'} whitespace-nowrap text-center`}
                 style={{ opacity: textOpacity }}
             >
                 {children}
@@ -111,14 +111,14 @@ export default function CTARevealSection({ t }: { t: any }) {
                 </div>
 
                 {/* Headline Wrap */}
-                <h2 className="font-headline text-4xl md:text-[80px] lg:text-[100px] font-black tracking-tighter uppercase mb-20 md:mb-28 flex flex-col items-center gap-2 md:gap-3 w-full px-4 text-center">
+                <h2 className="font-headline font-black tracking-tighter uppercase mb-20 md:mb-28 flex flex-col items-center gap-2 md:gap-3 w-full px-4 text-center">
                     {lines.map((line: string, i: number) => (
                         <WipeLine
                             key={i}
                             progress={lineProgresses[i]}
                             isAccent={i === accentLine}
                         >
-                            <span className="text-4xl md:text-7xl lg:text-[100px] block leading-[0.95]">{line}</span>
+                            <span className="block leading-[0.95]" style={{ fontSize: 'clamp(28px, 6.5vw, 100px)' }}>{line}</span>
                         </WipeLine>
                     ))}
                 </h2>
