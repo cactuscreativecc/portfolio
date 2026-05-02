@@ -120,6 +120,8 @@ export default function Navbar({ t, lang }: NavbarProps) {
                     <div className="hidden lg:flex items-center gap-8">
                         <Link
                             href={`/${lang}/portal`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="font-label text-[10px] font-bold tracking-[0.3em] text-neutral-400 hover:text-white uppercase transition-colors"
                         >
                             {t.Navigation.portal}
@@ -185,23 +187,9 @@ export default function Navbar({ t, lang }: NavbarProps) {
                         </nav>
 
                         <div className="mt-12 space-y-4 relative z-10 pb-8">
-                            {/* Mobile CTA */}
                             <motion.div
                                 variants={linkVariants}
                                 custom={navLinks.length}
-                            >
-                                <Link
-                                    href={`/${lang}/portal`}
-                                    onClick={() => setIsOpen(false)}
-                                    className="block w-full border border-white/20 text-white py-6 text-center font-black text-xs tracking-[0.4em] uppercase hover:bg-white/5"
-                                >
-                                    {t.Navigation.portal}
-                                </Link>
-                            </motion.div>
-
-                            <motion.div
-                                variants={linkVariants}
-                                custom={navLinks.length + 1}
                             >
                                 <a
                                     href="#contact"
@@ -215,7 +203,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             {/* Mobile Language & Meta */}
                             <motion.div
                                 variants={linkVariants}
-                                custom={navLinks.length + 2}
+                                custom={navLinks.length + 1}
                                 className="flex justify-between items-center pt-8 border-t border-white/5"
                             >
                                 <DictionarySwitcher currentLocale={lang} />
