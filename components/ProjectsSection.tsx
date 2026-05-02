@@ -248,18 +248,18 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                         <div
                             key={project.id || idx}
                             ref={(el) => { panelsRefs.current[idx] = el; }}
-                            className="absolute inset-0 w-full h-full opacity-0 invisible"
+                            className="absolute inset-0 w-full h-full opacity-0 invisible group/project"
                         >
-                            {/* Background Image with stronger overlay for readability */}
-                            <div className="project-bg absolute inset-0 w-full h-full">
+                            {/* Background Image with transitions */}
+                            <div className="project-bg absolute inset-0 w-full h-full transition-transform duration-1000 ease-out">
                                 <Image
                                     src={project.image}
                                     alt={project.title}
                                     fill
-                                    className="object-cover grayscale brightness-[0.4]"
+                                    className="object-cover grayscale brightness-[0.2] group-hover/project:grayscale-0 group-hover/project:brightness-100 transition-all duration-700 ease-in-out"
                                     priority={idx === 0}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-100 group-hover/project:opacity-30 transition-opacity duration-700" />
                             </div>
 
                             {/* Content Over Background */}
