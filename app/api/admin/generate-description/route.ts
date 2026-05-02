@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: Request) {
     try {
@@ -8,52 +11,32 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "URL da imagem é obrigatória" }, { status: 400 });
         }
 
-        const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-
-        if (!apiKey || apiKey === "SUA_CHAVE_AQUI") {
-            return NextResponse.json({
-                error: "Configuração pendente",
-                message: "A chave API do Gemini não foi configurada no servidor. Por favor, adicione GOOGLE_GEMINI_API_KEY no arquivo .env."
-            }, { status: 500 });
-        }
-
-        // Fetch image and convert to base64
         const imageRes = await fetch(imageUrl);
         const imageBuffer = await imageRes.arrayBuffer();
         const base64Image = Buffer.from(imageBuffer).toString('base64');
-        const mimeType = imageRes.headers.get('content-type') || 'image/jpeg';
+        const mimeType = (imageRes.headers.get('content-type') || 'image/jpeg') as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
 
-        const prompt = "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico.";
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [
-                        { text: prompt },
-                        {
-                            inline_data: {
-                                mime_type: mimeType,
-                                data: base64Image
-                            }
-                        }
-                    ]
-                }]
-            })
+        const message = await client.messages.create({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 256,
+            messages: [{
+                role: "user",
+                content: [
+                    {
+                        type: "image",
+                        source: { type: "base64", media_type: mimeType, data: base64Image }
+                    },
+                    {
+                        type: "text",
+                        text: "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico. Retorne APENAS a descrição, sem aspas."
+                    }
+                ]
+            }]
         });
 
-        const data = await response.json();
+        const description = (message.content[0] as { type: string; text: string }).text?.trim() || "";
 
-        if (data.error) {
-            throw new Error(data.error.message || "Erro na API do Gemini");
-        }
-
-        const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
-
-        return NextResponse.json({ description: generatedText });
+        return NextResponse.json({ description });
     } catch (error: any) {
         console.error("Erro ao gerar descrição:", error);
         return NextResponse.json({ error: error.message || "Erro interno do servidor" }, { status: 500 });
