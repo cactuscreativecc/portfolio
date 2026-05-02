@@ -1950,11 +1950,14 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             newProjs[idx].stat1_label = e.target.value;
                                                                             updateSection('featured_projects', newProjs);
                                                                         }}
+                                                                        onBlur={(e) => {
+                                                                            if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'stat1_label_en');
+                                                                        }}
                                                                         className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
                                                                     />
                                                                     <input
                                                                         value={proj.stat1_label_en || ''}
-                                                                        placeholder="EN label..."
+                                                                        placeholder={isTranslating[`${idx}_stat1_label_en`] ? "Translating..." : "EN label..."}
                                                                         onChange={(e) => {
                                                                             const newProjs = [...siteContent.featured_projects];
                                                                             newProjs[idx].stat1_label_en = e.target.value;
@@ -1984,11 +1987,14 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             newProjs[idx].stat2_label = e.target.value;
                                                                             updateSection('featured_projects', newProjs);
                                                                         }}
+                                                                        onBlur={(e) => {
+                                                                            if (e.target.value.trim()) autoTranslate(e.target.value, idx, 'stat2_label_en');
+                                                                        }}
                                                                         className="w-full bg-background border border-white/5 p-2 text-white font-black uppercase text-[10px] focus:border-primary focus:outline-none transition-all"
                                                                     />
                                                                     <input
                                                                         value={proj.stat2_label_en || ''}
-                                                                        placeholder="EN label..."
+                                                                        placeholder={isTranslating[`${idx}_stat2_label_en`] ? "Translating..." : "EN label..."}
                                                                         onChange={(e) => {
                                                                             const newProjs = [...siteContent.featured_projects];
                                                                             newProjs[idx].stat2_label_en = e.target.value;
