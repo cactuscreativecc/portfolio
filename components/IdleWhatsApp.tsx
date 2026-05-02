@@ -18,7 +18,7 @@ const WA_CHANNELS = [
     },
 ];
 
-export default function IdleWhatsApp() {
+export default function IdleWhatsApp({ lang = 'en' }: { lang?: string }) {
     const [isIdle, setIsIdle] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -58,7 +58,7 @@ export default function IdleWhatsApp() {
                         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                         className="text-[9px] font-black tracking-[0.4em] text-neutral-500 uppercase"
                     >
-                        FALE CONOSCO AGORA
+                        {lang === 'en' ? 'CONTACT US NOW' : 'FALE CONOSCO AGORA'}
                     </motion.div>
 
                     {/* Card */}

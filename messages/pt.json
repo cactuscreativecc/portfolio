@@ -181,6 +181,7 @@
         }
     },
     "CTA": {
+        "bg_word": "ENTREGA",
         "badge": "CONSULTA ESTRATÉGICA",
         "headline": "TRANSFORME SUA <br/>VISÃO EM UMA MÁQUINA <br/>DE <span class='text-primary'>RESULTADOS</span>",
         "headline_lines": [

@@ -181,6 +181,7 @@
         }
     },
     "CTA": {
+        "bg_word": "DELIVER",
         "badge": "STRATEGIC CONSULTATION",
         "headline": "TURN YOUR <br/>VISION INTO A REVENUE <br/><span class='text-primary'>ENGINE</span>",
         "headline_lines": [

@@ -238,7 +238,7 @@ export default async function Home({
         </section>
 
         {/* Client Marquee at the bottom of the page */}
-        <ClientMarquee title={t.Hero.trusted_us || "CLIENTES QUE ACREDITARAM EM NÓS"} clients={siteContent?.trusted_clients} />
+        <ClientMarquee title={t.Hero.trusted_us || (lang === 'en' ? "THEY TRUSTED US" : "CLIENTES QUE ACREDITARAM EM NÓS")} clients={siteContent?.trusted_clients} />
       </main>
 
       {/* Footer - Premium Editorial Layout */}
@@ -246,7 +246,7 @@ export default async function Home({
 
       {/* Global Command: Scroll to Top Unit [Off-Standard] */}
       <ScrollToTop />
-      <IdleWhatsApp />
+      <IdleWhatsApp lang={lang} />
     </div>
   );
 }

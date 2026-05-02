@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, MotionValue, useSpring } from 'framer-
 
 interface CTARevealSectionProps {
     t: {
+        bg_word?: string;
         badge?: string;
         headline_lines?: string[];
         headline_accent_line?: number;
@@ -92,7 +93,7 @@ export default function CTARevealSection({ t }: { t: any }) {
                 className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
             >
                 <span className="font-headline text-[50vw] md:text-[25vw] font-black tracking-tighter leading-none uppercase text-white/[0.015] whitespace-nowrap">
-                    ENTREGA
+                    {t.bg_word ?? 'DELIVER'}
                 </span>
             </motion.div>
 
