@@ -54,7 +54,7 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
     const col2 = testimonials.filter((_: any, i: number) => i % 2 !== 0);
 
     return (
-        <section className="py-24 md:py-40 bg-black relative overflow-hidden border-t border-white/5">
+        <section className="py-16 md:py-24 xl:py-40 bg-black relative overflow-hidden border-t border-white/5">
             <div className="max-w-grid mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative z-10">
 
                 {/* Left Side: Standardized Header (5 cols) */}
@@ -71,7 +71,7 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
 
                 {/* Right Side: Dual-Column Vertical Marquee (7 cols) */}
                 <div
-                    className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 h-[500px] md:h-[900px] overflow-hidden relative group"
+                    className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8 h-[400px] md:h-[600px] xl:h-[900px] overflow-hidden relative group"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >

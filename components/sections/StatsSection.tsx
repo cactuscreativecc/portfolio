@@ -76,7 +76,7 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
 
     return (
         <div ref={ref} className="flex items-baseline overflow-hidden select-none cursor-default group/num">
-            <motion.span className="font-headline text-5xl md:text-[6.5rem] font-black text-white tracking-tighter leading-none transition-colors duration-300 group-hover/num:text-primary">
+            <motion.span className="font-headline text-4xl lg:text-5xl xl:text-[6.5rem] font-black text-white tracking-tighter leading-none transition-colors duration-300 group-hover/num:text-primary">
                 {display}
             </motion.span>
             <motion.span
@@ -86,7 +86,7 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
                     duration: 0.4,
                     ease: [0.23, 1, 0.32, 1]
                 }}
-                className="font-headline text-3xl md:text-[4rem] font-black text-primary ml-1"
+                className="font-headline text-2xl lg:text-3xl xl:text-[4rem] font-black text-primary ml-1"
             >
                 {suffix}
             </motion.span>
@@ -104,10 +104,10 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
     });
 
     return (
-        <section className="relative py-32 md:py-48 bg-black overflow-hidden selection:bg-primary selection:text-black">
+        <section className="relative py-16 md:py-24 xl:py-48 bg-black overflow-hidden selection:bg-primary selection:text-black">
             <div className="relative z-10 max-w-grid mx-auto px-6 md:px-16">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 md:mb-32 gap-12">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 xl:mb-32 gap-8 md:gap-12">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}

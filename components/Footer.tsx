@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Footer({ t }: { t: any }) {
     return (
-        <footer className="relative bg-background pt-32 pb-48 overflow-hidden border-t border-white/5">
+        <footer className="relative bg-background pt-16 md:pt-24 xl:pt-32 pb-24 md:pb-32 xl:pb-48 overflow-hidden border-t border-white/5">
             <div className="max-w-grid mx-auto px-6 md:px-16 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-32">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-16 md:mb-24 xl:mb-32">
                     <div className="md:col-span-4 space-y-8">
                         <div className="text-3xl font-bold tracking-tighter text-white">
                             CACTUS<span className="text-primary">CREATIVE</span>
@@ -105,7 +105,7 @@ export default function Footer({ t }: { t: any }) {
                     </div>
                 </div>
 
-                <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-center items-center gap-8 font-label text-[10px] tracking-[0.3em] text-neutral-600 uppercase">
+                <div className="pt-8 md:pt-12 xl:pt-16 border-t border-white/5 flex flex-col md:flex-row justify-center items-center gap-8 font-label text-[10px] tracking-[0.3em] text-neutral-600 uppercase">
                     <p className="flex items-center gap-2">
                         {t.Footer.built_with.split('♡')[0]}
                         <span className="text-primary tracking-normal">❤</span>

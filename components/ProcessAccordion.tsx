@@ -35,7 +35,7 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
     ];
 
     return (
-        <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start mt-16 md:mt-24 pt-16 md:pt-24 border-t border-white/5">
+        <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 xl:gap-24 items-start mt-8 md:mt-12 xl:mt-24 pt-8 md:pt-12 xl:pt-24 border-t border-white/5">
             {/* Left Side: Highlighted Text / Header */}
             <div className="lg:col-span-5 lg:sticky lg:top-40">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
