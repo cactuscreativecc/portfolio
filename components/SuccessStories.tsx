@@ -55,7 +55,7 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
 
     return (
         <section className="py-24 md:py-40 bg-black relative overflow-hidden border-t border-white/5">
-            <div className="max-w-grid mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="max-w-grid mx-auto px-6 md:px-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative z-10">
 
                 {/* Left Side: Standardized Header (5 cols) */}
                 <div className="lg:col-span-5 lg:sticky lg:top-40 z-20">
@@ -67,9 +67,6 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
                     <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white mb-16"
                         dangerouslySetInnerHTML={{ __html: t.Testimonials?.headline || "HISTÓRIAS DE SUCESSO" }} />
 
-                    <button className="hidden lg:block border-2 border-primary text-primary px-12 py-6 font-bold text-sm tracking-widest uppercase hover:bg-primary hover:text-black transition-all duration-500 hover:scale-105 active:scale-95">
-                        {t.Testimonials?.cta || "VER MAIS"}
-                    </button>
                 </div>
 
                 {/* Right Side: Dual-Column Vertical Marquee (7 cols) */}
@@ -108,6 +105,7 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
                 </div>
 
             </div>
+
         </section>
     );
 }
