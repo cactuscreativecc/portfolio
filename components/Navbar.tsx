@@ -17,6 +17,14 @@ export default function Navbar({ t, lang }: NavbarProps) {
     const [isLogoHovered, setIsLogoHovered] = useState(false);
 
     useEffect(() => {
+        // Force scroll to top on load/refresh
+        window.scrollTo(0, 0);
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+    }, []);
+
+    useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
         };
