@@ -196,16 +196,20 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 body: JSON.stringify({ text, targetLang: 'en' })
             });
             const data = await res.json();
-            if (data.translatedText) {
-                setSiteContent((prev: any) => {
-                    if (!prev) return prev;
-                    const newProjs = [...prev.featured_projects];
-                    newProjs[idx] = { ...newProjs[idx], [enField]: data.translatedText };
-                    return { ...prev, featured_projects: newProjs };
-                });
+            if (data.error) {
+                toast.error("Erro na tradução: " + data.error);
+                return;
             }
-        } catch {
-            toast.error("Erro ao traduzir automaticamente.");
+            if (!data.translatedText) {
+                toast.error("Tradução retornou vazia. Verifique a API Key no Vercel.");
+                return;
+            }
+            const newProjs = [...siteContent.featured_projects];
+            newProjs[idx] = { ...newProjs[idx], [enField]: data.translatedText };
+            updateSection('featured_projects', newProjs);
+            toast.success("Traduzido com sucesso!");
+        } catch (err: any) {
+            toast.error("Erro ao traduzir: " + (err?.message || "verifique o console"));
         } finally {
             setIsTranslating(prev => ({ ...prev, [key]: false }));
         }
