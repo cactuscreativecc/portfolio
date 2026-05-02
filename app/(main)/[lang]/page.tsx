@@ -42,7 +42,7 @@ export default async function Home({
 
       <main>
         {/* HERO - Ultra Modern Digital Architecture */}
-        <section id="home" className="relative min-h-screen pt-20 lg:pt-24 xl:pt-32 flex flex-col justify-center overflow-hidden">
+        <section id="home" className="relative min-h-screen pt-12 md:pt-20 lg:pt-20 xl:pt-24 2xl:pt-32 flex flex-col justify-center overflow-hidden">
           <Waves />
           <div className="max-w-grid mx-auto px-6 md:px-16 relative z-10 w-full">
             <div className="max-w-4xl">
@@ -70,7 +70,7 @@ export default async function Home({
                 {t.Hero.description}
               </p>
 
-              <div className="mt-10 md:mt-14 xl:mt-28 flex flex-col sm:flex-row gap-4 w-full max-w-sm md:max-w-none">
+              <div className="mt-8 md:mt-10 lg:mt-14 xl:mt-16 2xl:mt-28 flex flex-col sm:flex-row gap-4 w-full max-w-sm md:max-w-none">
                 <Link href={`/${lang}/start`} className="flex-1 group relative overflow-hidden bg-white text-black px-12 py-6 font-bold text-xs md:text-base tracking-[0.3em] transition-all w-full text-center block">
                   <span className="relative z-10 uppercase">{t.Hero.cta_primary}</span>
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
@@ -104,7 +104,7 @@ export default async function Home({
 
         <div id="services">
           {/* Services - Technical Architecture Grid */}
-          <section className="py-20 lg:py-28 xl:py-40 bg-background border-y border-white/5 relative z-10 w-full">
+          <section className="py-16 md:py-24 lg:py-28 xl:py-32 2xl:py-40 bg-background border-y border-white/5 relative z-10 w-full">
             <div className="max-w-grid mx-auto px-6 md:px-16">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                 <div className="lg:col-span-12">
@@ -113,7 +113,7 @@ export default async function Home({
                       <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                       <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.Capabilities.label}</span>
                     </div>
-                    <h2 className="font-headline text-3xl md:text-4xl xl:text-6xl font-bold tracking-tight uppercase leading-none text-white mb-8 xl:mb-12"
+                    <h2 className="font-headline text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold tracking-tight uppercase leading-none text-white mb-8 xl:mb-10 2xl:mb-12"
                       dangerouslySetInnerHTML={{ __html: t.Capabilities.headline }} />
                   </div>
                 </div>

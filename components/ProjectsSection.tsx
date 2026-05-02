@@ -238,7 +238,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                         <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
                     </div>
-                    <h2 className="font-headline text-5xl md:text-8xl font-black tracking-tighter uppercase text-white leading-none whitespace-pre-line"
+                    <h2 className="font-headline text-5xl md:text-7xl 2xl:text-8xl font-black tracking-tighter uppercase text-white leading-none whitespace-pre-line"
                         dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
                 </div>
 
@@ -263,13 +263,13 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                             </div>
 
                             {/* Content Over Background */}
-                            <div className="project-content relative h-full w-full flex flex-col justify-end p-8 md:p-20 lg:p-32">
-                                <div className="max-w-4xl space-y-6 md:space-y-10">
+                            <div className="project-content relative h-full w-full flex flex-col justify-end p-8 md:p-12 lg:p-14 xl:p-16 2xl:p-32">
+                                <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10">
                                     <div className="space-y-4">
                                         <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
                                             {project.category}
                                         </span>
-                                        <h3 className="stagger-item font-headline text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
+                                        <h3 className="stagger-item font-headline text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
                                             {project.title}
                                         </h3>
                                     </div>
@@ -295,13 +295,13 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                     )}
 
                                     {/* Visual Stats overlay - bottom right */}
-                                    <div className="stagger-item pt-12 flex gap-12 border-t border-white/20">
+                                    <div className="stagger-item pt-6 xl:pt-8 2xl:pt-12 flex gap-8 md:gap-12 border-t border-white/20">
                                         <div>
-                                            <div className="text-3xl md:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
+                                            <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
                                             <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat1_label}</div>
                                         </div>
                                         <div>
-                                            <div className="text-3xl md:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
+                                            <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
                                             <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat2_label}</div>
                                         </div>
                                     </div>
@@ -312,7 +312,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 </div>
 
                 {/* 3. Refined Progress Indicator (Tactical HUD Style) */}
-                <div className="progress-indicator absolute bottom-20 left-12 z-[110] flex flex-col items-start gap-4 opacity-0">
+                <div className="progress-indicator absolute bottom-8 xl:bottom-12 2xl:bottom-20 left-6 md:left-12 z-[110] flex flex-col items-start gap-4 opacity-0">
                     {/* Top Marker */}
                     <div className="flex flex-col gap-1">
                         <span className="text-[7px] font-black text-primary tracking-[0.2em]">00_INIT</span>
