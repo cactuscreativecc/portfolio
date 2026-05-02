@@ -3,44 +3,26 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const { text, targetLang = "en" } = await req.json();
-        console.log(`[Translate API] Recebido texto para tradução: "${text}" para o idioma: ${targetLang}`);
 
         if (!text) {
             return NextResponse.json({ error: "Texto é obrigatório" }, { status: 400 });
         }
 
-        const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+        const langpair = targetLang === 'en' ? 'pt|en' : 'en|pt';
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`;
 
-        if (!apiKey || apiKey === "SUA_CHAVE_AQUI") {
-            // Fallback for development if key is missing
-            console.warn("GOOGLE_GEMINI_API_KEY não configurada. Retornando texto original.");
-            return NextResponse.json({ translatedText: text + " [MISSING_API_KEY]" });
-        }
-
-        const prompt = `Você é um tradutor profissional. Traduza o seguinte texto de Português para ${targetLang === 'en' ? 'Inglês' : 'Português'}. Mantenha o tom profissional e natural. Retorne APENAS a tradução, sem comentários extras.\n\nTexto:\n${text}`;
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                generationConfig: {
-                    temperature: 0.1,
-                }
-            })
-        });
-
+        const response = await fetch(url);
         const data = await response.json();
 
-        if (data.error) {
-            throw new Error(data.error.message || "Erro na API do Gemini");
+        if (data.responseStatus !== 200) {
+            throw new Error(data.responseDetails || "Erro na tradução");
         }
 
-        const translatedText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+        const translatedText = data.responseData?.translatedText?.trim() || "";
+
+        if (!translatedText) {
+            throw new Error("Tradução retornou vazia");
+        }
 
         return NextResponse.json({ translatedText });
     } catch (error: any) {
