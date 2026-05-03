@@ -269,12 +269,12 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                         <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
                                             {project.category}
                                         </span>
-                                        <h3 className="stagger-item font-headline text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
+                                        <h3 className="stagger-item font-headline text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
                                             {project.title}
                                         </h3>
                                     </div>
 
-                                    <p className="stagger-item font-body text-neutral-300 text-base md:text-lg leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
+                                    <p className="stagger-item font-body text-sm md:text-base text-neutral-300 leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
                                         {project.description}
                                     </p>
 
