@@ -137,9 +137,10 @@ export default function Navbar({ t, lang }: NavbarProps) {
                         <DictionarySwitcher currentLocale={lang} />
                         <a
                             href="#contact"
-                            className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all duration-300"
+                            className="group relative overflow-hidden bg-white text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase transition-all duration-300"
                         >
-                            {t.Navigation.start_project}
+                            <span className="relative z-10">{t.Navigation.start_project}</span>
+                            <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         </a>
                     </div>
 

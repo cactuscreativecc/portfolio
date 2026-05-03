@@ -76,7 +76,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
     };
 
     return (
-        <div className="bg-[#111] rounded-3xl p-6 md:p-16 border border-white/5">
+        <div className="bg-[#111] p-6 md:p-16 border border-white/5">
             <form className="space-y-8" onSubmit={handleSubmit}>
                 {/* Triple Column Info (Name, Email, Phone) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -87,7 +87,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder={t.name_placeholder}
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
+                            className="w-full bg-white/5 border border-white/10 px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
                         />
                     </div>
                     <div className="space-y-2">
@@ -97,7 +97,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder={t.email_placeholder}
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
+                            className="w-full bg-white/5 border border-white/10 px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
                         />
                     </div>
                     <div className="space-y-2">
@@ -106,7 +106,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             placeholder={t.phone_placeholder || "Telefone"}
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
+                            className="w-full bg-white/5 border border-white/10 px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest"
                         />
                     </div>
                 </div>
@@ -119,7 +119,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         placeholder={t.project_placeholder}
                         rows={6}
-                        className="w-full bg-white/5 border border-white/10 rounded-3xl px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest resize-none"
+                        className="w-full bg-white/5 border border-white/10 px-8 py-6 text-white placeholder:text-neutral-600 focus:outline-none focus:border-primary focus:bg-white/10 transition-all font-body uppercase text-xs tracking-widest resize-none"
                     />
                 </div>
 
@@ -135,7 +135,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                                 required
                                 value={formData.budget}
                                 onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-6 text-neutral-400 appearance-none focus:outline-none focus:border-primary focus:text-white transition-all font-body uppercase text-[10px] tracking-widest cursor-pointer group-hover:bg-white/10"
+                                className="w-full bg-white/5 border border-white/10 px-8 py-6 text-neutral-400 appearance-none focus:outline-none focus:border-primary focus:text-white transition-all font-body uppercase text-[10px] tracking-widest cursor-pointer group-hover:bg-white/10"
                             >
                                 <option value="" disabled>{t.budget_select || 'Select...'}</option>
                                 {(t.budget_options || []).map((opt: string) => (
@@ -160,7 +160,7 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                                         checked={formData.helpOptions.includes(label)}
                                         onChange={() => handleCheckboxChange(label)}
                                     />
-                                    <div className="w-6 h-6 border-2 border-white/10 rounded-lg flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary group-hover:border-primary/50 transition-all duration-300">
+                                    <div className="w-6 h-6 border-2 border-white/10 flex items-center justify-center peer-checked:bg-primary peer-checked:border-primary group-hover:border-primary/50 transition-all duration-300">
                                         <span className="material-symbols-outlined text-sm text-black opacity-0 peer-checked:opacity-100 font-bold">check</span>
                                     </div>
                                     <span className="text-xs font-bold text-neutral-500 group-hover:text-white peer-checked:text-white transition-colors uppercase tracking-widest">
@@ -176,10 +176,13 @@ export default function ContactForm({ t, lang }: ContactFormProps) {
                 <div className="pt-12">
                     <button
                         disabled={loading}
-                        className="w-full bg-white text-black font-black py-8 rounded-2xl hover:bg-primary transition-all duration-500 uppercase tracking-[0.4em] text-sm group flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full relative overflow-hidden bg-white text-black font-black py-8 transition-all duration-500 uppercase tracking-[0.4em] text-sm group flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? (lang === 'en' ? 'SENDING...' : 'ENVIANDO...') : t.button_send}
-                        {!loading && <span className="material-symbols-outlined group-hover:translate-x-2 transition-transform">east</span>}
+                        <span className="relative z-10 flex items-center gap-4">
+                            {loading ? (lang === 'en' ? 'SENDING...' : 'ENVIANDO...') : t.button_send}
+                            {!loading && <span className="material-symbols-outlined group-hover:translate-x-2 transition-transform">east</span>}
+                        </span>
+                        <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                     </button>
                 </div>
             </form>
