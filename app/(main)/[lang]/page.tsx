@@ -233,7 +233,7 @@ export default async function Home({
                 dangerouslySetInnerHTML={{ __html: t.Contact?.headline || '' }} />
             </div>
 
-            <ContactForm t={t.Contact} />
+            <ContactForm t={t.Contact} lang={lang} />
           </div>
         </section>
 

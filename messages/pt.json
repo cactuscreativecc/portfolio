@@ -226,6 +226,7 @@
         "title": "Informações de contato",
         "name_placeholder": "Nome completo",
         "email_placeholder": "E-mail corporativo",
+        "phone_placeholder": "Telefone / WhatsApp",
         "project_placeholder": "Fale sobre seu projeto",
         "budget_label": "Orçamento",
         "budget_select": "Selecione...",
