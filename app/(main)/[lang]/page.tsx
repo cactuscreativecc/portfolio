@@ -73,22 +73,22 @@ export default async function Home({
                 dangerouslySetInnerHTML={{ __html: t.Hero.description }}
               />
 
-              <div className="mt-8 md:mt-10 lg:mt-14 xl:mt-16 2xl:mt-24 flex flex-col sm:flex-row gap-4 w-full max-w-sm md:max-w-2xl">
-                <Link href={`/${lang}/start`} className="flex-1 h-20 group relative overflow-hidden bg-white text-black px-8 font-bold text-[11px] md:text-sm tracking-[0.3em] transition-all flex items-center justify-center text-center">
-                  <span className="relative z-10 uppercase">{t.Hero.cta_primary}</span>
+              <div className="mt-8 md:mt-10 lg:mt-14 xl:mt-16 2xl:mt-24 flex flex-col sm:flex-row gap-4 w-full flex-wrap xl:flex-nowrap">
+                <Link href={`/${lang}/start`} className="w-full sm:w-auto sm:flex-1 h-14 md:h-16 lg:h-20 group relative overflow-hidden bg-white text-black px-4 md:px-8 font-bold text-[10px] md:text-[11px] lg:text-sm tracking-[0.2em] md:tracking-[0.3em] transition-all flex items-center justify-center text-center shrink-0">
+                  <span className="relative z-10 uppercase whitespace-nowrap">{t.Hero.cta_primary}</span>
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>
 
-                <div className="flex-1 h-20 flex items-center justify-center gap-4 border border-white/10 bg-white/5 px-8 transition-all hover:bg-white/[0.07] hover:border-white/20">
+                <div className="w-full sm:w-auto sm:flex-1 h-14 md:h-16 lg:h-20 flex items-center justify-center gap-3 md:gap-4 border border-white/10 bg-white/5 px-4 md:px-8 transition-all hover:bg-white/[0.07] hover:border-white/20 shrink-0">
                   <div className="relative flex items-center justify-center w-2 h-2 shrink-0">
                     <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
                     <div className="relative w-1.5 h-1.5 bg-primary rounded-full" />
                   </div>
-                  <div className="flex flex-col items-start gap-1">
-                    <span className="font-label text-[8px] md:text-[9px] tracking-[0.2em] text-neutral-500 uppercase leading-none whitespace-nowrap">
+                  <div className="flex flex-col items-center sm:items-start gap-1">
+                    <span className="font-label text-[7px] md:text-[8px] lg:text-[9px] tracking-[0.2em] text-neutral-500 uppercase leading-none whitespace-nowrap">
                       {lang === 'en' ? "STATUS: OPERATIONAL" : "STATUS: OPERACIONAL"}
                     </span>
-                    <span className="font-headline font-bold text-[10px] md:text-[12px] tracking-widest text-white uppercase leading-none whitespace-nowrap">
+                    <span className="font-headline font-bold text-[8px] md:text-[9.5px] lg:text-[12px] tracking-widest text-white uppercase leading-none whitespace-nowrap">
                       {lang === 'en'
                         ? `${siteContent?.general?.project_slots ?? 1} ${Number(siteContent?.general?.project_slots) === 1 ? 'SLOT' : 'SLOTS'} FOR NEW PROJECT`
                         : `${siteContent?.general?.project_slots ?? 1} ${Number(siteContent?.general?.project_slots) === 1 ? 'VAGA' : 'VAGAS'} PARA NOVO PROJETO`}

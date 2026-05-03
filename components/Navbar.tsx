@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { X } from "lucide-react";
 import DictionarySwitcher from "./DictionarySwitcher";
 import { Locale } from "@/i18n-config";
 
@@ -170,6 +171,16 @@ export default function Navbar({ t, lang }: NavbarProps) {
                         exit="closed"
                         className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-24 pb-12 lg:hidden overflow-y-auto"
                     >
+                        {/* Header Row para o Botão Fechar */}
+                        <div className="w-full flex justify-end mb-8 relative z-50">
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="p-2 -mr-2 text-white hover:text-primary transition-all duration-300 pointer-events-auto"
+                                aria-label="Close menu"
+                            >
+                                <X strokeWidth={1} size={40} />
+                            </button>
+                        </div>
                         {/* Background Watermark */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] overflow-hidden select-none">
                             <span className="text-[30vw] font-black font-headline rotate-90">MENU</span>
