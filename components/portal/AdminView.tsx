@@ -37,7 +37,7 @@ interface AdminViewProps {
     profile: any;
 }
 
-type AdminTab = 'clients' | 'projects' | 'customization';
+type AdminTab = 'clients' | 'projects' | 'customization' | 'briefings';
 
 export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [activeTab, setActiveTab] = useState<AdminTab>('clients');
@@ -76,6 +76,29 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [allProjects, setAllProjects] = useState<any[]>([]);
     const [isCreatingProject, setIsCreatingProject] = useState(false);
     const [expandedProject, setExpandedProject] = useState<string | null>(null);
+
+    // Briefings State
+    const [briefings, setBriefings] = useState<any[]>([]);
+    const [expandedBriefing, setExpandedBriefing] = useState<string | null>(null);
+    const [isLoadingBriefings, setIsLoadingBriefings] = useState(false);
+
+    const fetchBriefings = async () => {
+        setIsLoadingBriefings(true);
+        try {
+            const { data } = await supabase
+                .from('briefings')
+                .select('*')
+                .order('created_at', { ascending: false });
+            setBriefings(data ?? []);
+        } catch { /* noop */ } finally {
+            setIsLoadingBriefings(false);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'briefings') fetchBriefings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
 
     const handleClientLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>, idx: number) => {
         try {
@@ -892,6 +915,14 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 >
                     <Settings size={16} />
                     {t.Portal.admin_customization}
+                </button>
+                <button
+                    onClick={() => setActiveTab('briefings')}
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'briefings' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                        }`}
+                >
+                    <FileText size={16} />
+                    LEADS
                 </button>
 
             </aside>
@@ -2313,6 +2344,157 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                             </section>
                                         )}
                                     </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                    {activeTab === 'briefings' && (
+                        <motion.div
+                            key="briefings"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-8"
+                        >
+                            <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                                <div>
+                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase">LEADS & BRIEFINGS</h2>
+                                    <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-1">Projetos enviados pelo bot de briefing</p>
+                                </div>
+                                <button
+                                    onClick={fetchBriefings}
+                                    disabled={isLoadingBriefings}
+                                    className="border border-white/10 text-neutral-400 px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:border-primary hover:text-primary transition-all disabled:opacity-40"
+                                >
+                                    {isLoadingBriefings ? 'CARREGANDO...' : 'ATUALIZAR'}
+                                </button>
+                            </div>
+
+                            {isLoadingBriefings ? (
+                                <div className="flex justify-center py-16">
+                                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                </div>
+                            ) : briefings.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-20 text-center">
+                                    <FileText size={32} className="text-neutral-700 mb-4" />
+                                    <p className="text-neutral-500 text-[11px] uppercase tracking-widest">Nenhum briefing ainda</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {briefings.map((b) => {
+                                        const isOpen = expandedBriefing === b.id;
+                                        const statusColor = b.status === 'aprovado' ? 'text-green-400 bg-green-400/10' : b.status === 'em_andamento' ? 'text-primary bg-primary/10' : 'text-neutral-400 bg-white/5';
+                                        return (
+                                            <div key={b.id} className="border border-white/5 bg-surface-container-high">
+                                                <button
+                                                    onClick={() => setExpandedBriefing(isOpen ? null : b.id)}
+                                                    className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/5 transition-all"
+                                                >
+                                                    <div className="flex items-center gap-6">
+                                                        <div>
+                                                            <p className="font-black text-white text-sm uppercase tracking-tight">{b.company ?? '—'}</p>
+                                                            <p className="text-[10px] text-neutral-500 mt-0.5">{b.email ?? '—'} · {b.project_type ?? '—'}</p>
+                                                        </div>
+                                                        <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 ${statusColor}`}>
+                                                            {b.status ?? 'novo'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        {b.preview_config?.palette && (
+                                                            <div className="flex gap-1">
+                                                                {Object.values(b.preview_config.palette).slice(0, 5).map((c: any, i: number) => (
+                                                                    <div key={i} className="w-4 h-4 rounded-sm border border-white/10" style={{ backgroundColor: c }} />
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                        <span className="text-[9px] text-neutral-600">{b.created_at ? new Date(b.created_at).toLocaleDateString('pt-BR') : ''}</span>
+                                                        <ChevronRight size={14} className={`text-neutral-500 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+                                                    </div>
+                                                </button>
+
+                                                {isOpen && (
+                                                    <div className="border-t border-white/5 px-6 py-6 space-y-6">
+                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                            {[
+                                                                ['EMPRESA', b.company],
+                                                                ['EMAIL', b.email],
+                                                                ['TIPO', b.project_type],
+                                                                ['ORÇAMENTO', b.budget],
+                                                                ['PRAZO', b.deadline],
+                                                                ['PÚBLICO', b.target_audience],
+                                                            ].map(([label, val]) => (
+                                                                <div key={label} className="bg-background p-4 border border-white/5">
+                                                                    <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-1">{label}</p>
+                                                                    <p className="text-[11px] text-white font-bold">{val ?? '—'}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {b.project_goal && (
+                                                            <div className="bg-background p-4 border border-white/5">
+                                                                <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-1">OBJETIVO</p>
+                                                                <p className="text-[11px] text-neutral-300 leading-relaxed">{b.project_goal}</p>
+                                                            </div>
+                                                        )}
+
+                                                        <div className="grid grid-cols-3 gap-4">
+                                                            {b.pages?.length > 0 && (
+                                                                <div className="bg-background p-4 border border-white/5">
+                                                                    <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-2">PÁGINAS</p>
+                                                                    <div className="flex flex-wrap gap-1">
+                                                                        {b.pages.map((p: string) => (
+                                                                            <span key={p} className="text-[8px] bg-white/5 text-neutral-400 px-2 py-1">{p}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {b.features?.length > 0 && (
+                                                                <div className="bg-background p-4 border border-white/5">
+                                                                    <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-2">FUNCIONALIDADES</p>
+                                                                    <div className="flex flex-wrap gap-1">
+                                                                        {b.features.map((f: string) => (
+                                                                            <span key={f} className="text-[8px] bg-white/5 text-neutral-400 px-2 py-1">{f}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {b.visual_references?.length > 0 && (
+                                                                <div className="bg-background p-4 border border-white/5">
+                                                                    <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-2">REFERÊNCIAS</p>
+                                                                    <div className="flex flex-wrap gap-1">
+                                                                        {b.visual_references.map((r: string) => (
+                                                                            <span key={r} className="text-[8px] bg-white/5 text-neutral-400 px-2 py-1">{r}</span>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+
+                                                        {b.preview_config?.palette && (
+                                                            <div>
+                                                                <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-3">PALETA DE CORES</p>
+                                                                <div className="flex gap-3 flex-wrap">
+                                                                    {Object.entries(b.preview_config.palette).map(([name, color]: [string, any]) => (
+                                                                        <div key={name} className="flex items-center gap-2">
+                                                                            <div className="w-6 h-6 rounded border border-white/10" style={{ backgroundColor: color }} />
+                                                                            <span className="text-[9px] text-neutral-500 uppercase">{name}</span>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {b.additional_notes && (
+                                                            <div className="bg-background p-4 border border-white/5">
+                                                                <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-1">NOTAS</p>
+                                                                <p className="text-[11px] text-neutral-300 leading-relaxed">{b.additional_notes}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </motion.div>

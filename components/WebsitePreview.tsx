@@ -75,7 +75,7 @@ export default function WebsitePreview({ preview, company }: WebsitePreviewProps
             </div>
 
             {/* Sections */}
-            {sections.map((section) => {
+            {sections.map((section, sectionIdx) => {
                 if (section.type === "hero") {
                     return (
                         <div
@@ -149,7 +149,7 @@ export default function WebsitePreview({ preview, company }: WebsitePreviewProps
                     <div
                         key={section.id}
                         className="px-6 py-6"
-                        style={{ backgroundColor: section.id % 2 === 0 ? palette.background : palette.surface } as any}
+                        style={{ backgroundColor: sectionIdx % 2 === 0 ? palette.background : palette.surface }}
                     >
                         <span className="text-[7px] tracking-[0.3em] opacity-50 uppercase block mb-1" style={{ color: palette.primary }}>
                             {section.label}
