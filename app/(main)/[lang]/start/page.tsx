@@ -18,7 +18,7 @@ export default async function StartPage({
         <div className="bg-background text-on-surface selection:bg-primary selection:text-on-primary min-h-screen flex flex-col relative overflow-hidden">
             <Navbar t={t} lang={lang as Locale} />
 
-            <main className="flex-1 flex flex-col relative z-10 pt-32 pb-24 px-6 md:px-16 max-w-grid mx-auto w-full">
+            <main className="flex-1 flex flex-col justify-center relative z-10 pt-32 pb-24 px-6 md:px-16 max-w-grid mx-auto w-full">
                 <div className="mb-12">
                     <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />

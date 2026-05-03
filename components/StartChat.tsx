@@ -123,10 +123,10 @@ export default function StartChat({ lang }: { lang: string }) {
     }
 
     return (
-        <div className="w-full flex flex-col h-[70vh] md:h-[75vh] relative mt-4">
+        <div className="w-full flex flex-col relative">
 
             {/* Area de mensagens */}
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-0 space-y-6 scrollbar-hide pb-4">
+            <div ref={scrollContainerRef} className="overflow-y-auto px-0 space-y-6 scrollbar-hide pb-4 max-h-[55vh]">
                 {messages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-8 duration-700`}>
                         <div className={`max-w-[95%] md:max-w-[90%] py-2 text-2xl md:text-4xl xl:text-5xl font-headline uppercase leading-[1.05] tracking-tighter ${msg.role === 'user'
