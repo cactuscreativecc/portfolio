@@ -8,6 +8,7 @@ import { Locale } from "@/i18n-config";
 import { LogOut, User, Bell } from "lucide-react";
 import AdminView from "./AdminView";
 import ClientView from "./ClientView";
+import { Component } from "@/components/ui/loader-2";
 
 interface DashboardContentProps {
     lang: Locale;
@@ -123,7 +124,7 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
-                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                <Component size="lg" />
             </div>
         );
     }

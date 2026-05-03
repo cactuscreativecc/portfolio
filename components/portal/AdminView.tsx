@@ -28,6 +28,7 @@ import {
     BarChart3,
     CheckSquare
 } from "lucide-react";
+import { Component as Loader } from "@/components/ui/loader-2";
 import { Locale } from "@/i18n-config";
 import { toast } from "sonner";
 
@@ -1954,7 +1955,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             />
                                                                             <label className="bg-primary/10 text-primary border border-primary/20 px-4 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-black transition-all group/up">
                                                                                 {uploadingImage === idx ? (
-                                                                                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                                    <Loader size="sm" />
                                                                                 ) : (
                                                                                     <Download className="w-4 h-4 rotate-180" />
                                                                                 )}
@@ -1987,7 +1988,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                                 className="flex items-center gap-2 text-[9px] font-black text-primary hover:text-white transition-all disabled:opacity-30"
                                                                             >
                                                                                 {isGeneratingAI === idx ? (
-                                                                                    <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                                    <Loader size="xs" />
                                                                                 ) : (
                                                                                     <Sparkles size={12} />
                                                                                 )}
@@ -2421,7 +2422,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     />
                                                                     <label className="bg-primary/10 text-primary border border-primary/20 px-4 flex items-center justify-center cursor-pointer hover:bg-primary hover:text-black transition-all group/up min-w-[48px]">
                                                                         {uploadingImage === idx ? (
-                                                                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                                                            <Loader size="sm" />
                                                                         ) : (
                                                                             <Download className="w-4 h-4 rotate-180" />
                                                                         )}
@@ -2475,7 +2476,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
                             {isLoadingBriefings ? (
                                 <div className="flex justify-center py-16">
-                                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                    <Loader size="md" />
                                 </div>
                             ) : briefings.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-20 text-center">

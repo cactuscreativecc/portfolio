@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import WebsitePreview from "./WebsitePreview";
+import { Component } from "@/components/ui/loader-2";
 
 interface Message {
     role: "bot" | "user";
@@ -629,7 +630,7 @@ export default function StartChat({ lang }: { lang: string }) {
                                 className="w-12 h-12 flex items-center justify-center border border-white/20 hover:border-primary bg-white/5 hover:bg-primary hover:text-black text-white transition-all disabled:opacity-30"
                             >
                                 {isLoading
-                                    ? <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                    ? <Component size="md" />
                                     : <span className="material-symbols-outlined">arrow_forward</span>}
                             </button>
                         </div>

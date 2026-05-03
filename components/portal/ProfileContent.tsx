@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { Locale } from "@/i18n-config";
 import { ArrowLeft, Save, Lock, Mail } from "lucide-react";
+import { Component } from "@/components/ui/loader-2";
 
 interface ProfileContentProps {
     lang: Locale;
@@ -110,7 +111,7 @@ export default function ProfileContent({ lang, t }: ProfileContentProps) {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
-                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                <Component size="lg" />
             </div>
         );
     }
