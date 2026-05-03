@@ -135,22 +135,13 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             {t.Navigation.portal}
                         </Link>
                         <DictionarySwitcher currentLocale={lang} />
-<<<<<<< HEAD
-                        <a
-                            href="#contact"
+                        <Link
+                            href={`/${lang}/start`}
                             className="group relative overflow-hidden bg-white text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase transition-all duration-300"
                         >
                             <span className="relative z-10">{t.Navigation.start_project}</span>
                             <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                        </a>
-=======
-                        <Link
-                            href={`/${lang}/start`}
-                            className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all duration-300"
-                        >
-                            {t.Navigation.start_project}
                         </Link>
->>>>>>> 180e0cd39d87e5a46feb5b73f93e4bbbe136e0e2
                     </div>
 
                     {/* Mobile Hamburger (Target: 430px) */}
