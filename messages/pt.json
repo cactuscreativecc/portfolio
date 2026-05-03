@@ -13,7 +13,7 @@
     "Hero": {
         "badge": "Agência Digital Premium",
         "headline": "PARE DE <span class='text-primary'>EXISTIR</span>. <br/>COMECE A <span class='text-primary'>DOMINAR</span>.",
-        "description": "DO DESIGN À ENGENHARIA: CRIAMOS SITES, APRESENTAÇÕES, MÍDIAS SOCIAIS, WEB APPS E SISTEMAS DE ALTA PERFORMANCE PARA QUEM BUSCA O TOPO DO\u00A0MERCADO.",
+        "description": "<span class='text-primary font-black'>DO DESIGN À ENGENHARIA:</span> CRIAMOS SITES, APRESENTAÇÕES, MÍDIAS SOCIAIS, WEB APPS E SISTEMAS DE ALTA PERFORMANCE PARA QUEM BUSCA O TOPO DO\u00A0MERCADO.",
         "trusted_us": "Eles confiaram em nós",
         "cta_primary": "QUERO MEU PROJETO",
         "cta_secondary": "COMO FUNCIONA",
@@ -26,7 +26,7 @@
     },
     "Capabilities": {
         "label": "SERVIÇOS & SOLUÇÕES",
-        "headline": "DOS PIXELS AOS <span class='text-primary'>SISTEMAS</span> <br/>SOLUÇÕES COMPLETAS DE PONTA A PONTA",
+        "headline": "DOS <span class='text-primary'>PIXELS</span> AOS <span class='text-primary'>SISTEMAS</span> <br/>SOLUÇÕES <span class='text-primary'>COMPLETAS</span> DE <span class='text-primary'>PONTA A PONTA</span>",
         "tags": {
             "subscription": "ASSINATURA MENSAL",
             "available": "DISPONÍVEL",
@@ -59,7 +59,7 @@
     },
     "Highlights": {
         "label": "HIGHLIGHTS",
-        "headline": "NÚMEROS QUE <span class='text-primary'>FALAM</span> <br/>MAIS ALTO QUE PROMESSAS.",
+        "headline": "<span class='text-primary'>NÚMEROS</span> QUE <span class='text-primary'>FALAM</span> <br/>MAIS <span class='text-primary'>ALTO</span> QUE <span class='text-primary'>PROMESSAS.</span>",
         "cta": "EXPLORE NOSSA METODOLOGIA",
         "item1": {
             "val": "80+",
@@ -80,7 +80,7 @@
     },
     "CaseStudies": {
         "label": "PROJETOS SELECIONADOS",
-        "headline": "ESTUDOS DE CASO <br/><span class='text-primary'>QUE GERARAM DOMÍNIO</span>",
+        "headline": "ESTUDOS DE <span class='text-primary'>CASES</span>, <br/><span class='text-primary'>QUE GERARAM PARCEIROS.</span>",
         "case1": {
             "label": "ESTUDO DE CASO 01: AYU PILATES",
             "title": "AYU PILATES",

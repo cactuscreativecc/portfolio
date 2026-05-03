@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, useInView } from "framer-motion";
+import TextReveal from "./TextReveal";
 
 interface SuccessStoriesProps {
     t: any;
@@ -61,11 +63,10 @@ export default function SuccessStories({ t, siteContent, lang }: SuccessStoriesP
                 <div className="lg:col-span-5 lg:sticky lg:top-40 z-20">
                     <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.Testimonials?.badge || "DEPOIMENTOS"}</span>
+                        <TextReveal as="span" text={t.Testimonials?.badge || "DEPOIMENTOS"} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
                     </div>
 
-                    <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white mb-16"
-                        dangerouslySetInnerHTML={{ __html: t.Testimonials?.headline || "HISTÓRIAS DE SUCESSO" }} />
+                    <TextReveal as="h2" text={t.Testimonials?.headline || "HISTÓRIAS DE SUCESSO"} className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white mb-16" />
 
                 </div>
 

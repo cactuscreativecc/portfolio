@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue, useSpring } from 'framer-motion';
+import TextReveal from './TextReveal';
 
 interface CTARevealSectionProps {
     t: {
@@ -103,9 +104,7 @@ export default function CTARevealSection({ t }: { t: any }) {
                     <WipeLine progress={badgeP}>
                         <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10">
                             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">
-                                {t.badge}
-                            </span>
+                            <TextReveal as="span" text={t.badge} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
                         </div>
                     </WipeLine>
                 </div>
@@ -118,7 +117,7 @@ export default function CTARevealSection({ t }: { t: any }) {
                             progress={lineProgresses[i]}
                             isAccent={i === accentLine}
                         >
-                            <span className="block leading-[0.95]" style={{ fontSize: 'clamp(28px, 6.5vw, 100px)' }}>{line}</span>
+                            <TextReveal text={line} className="block leading-[0.95]" style={{ fontSize: 'clamp(28px, 6.5vw, 100px)' } as any} />
                         </WipeLine>
                     ))}
                 </h2>

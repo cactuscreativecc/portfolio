@@ -18,6 +18,7 @@ import Footer from "@/components/Footer";
 import IdleWhatsApp from "@/components/IdleWhatsApp";
 import Navbar from "@/components/Navbar";
 import CTARevealSection from "@/components/CTARevealSection";
+import TextReveal from "@/components/TextReveal";
 
 export default async function Home({
   params,
@@ -48,7 +49,7 @@ export default async function Home({
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8 md:mb-12">
                 <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.Hero.badge}</span>
+                <TextReveal as="span" text={t.Hero.badge} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
               </div>
 
               {/* Refined Headline with Flip-Box Effect on High-Impact Words */}
@@ -66,9 +67,11 @@ export default async function Home({
                 )}
               </h1>
 
-              <p className="font-body text-lg md:text-xl text-neutral-500 max-w-2xl leading-relaxed uppercase tracking-tighter" style={{ textWrap: 'balance' } as any}>
-                {t.Hero.description}
-              </p>
+              <p
+                className="font-body text-lg md:text-xl text-neutral-500 max-w-2xl leading-relaxed uppercase tracking-tighter"
+                style={{ textWrap: 'balance' } as any}
+                dangerouslySetInnerHTML={{ __html: t.Hero.description }}
+              />
 
               <div className="mt-8 md:mt-10 lg:mt-14 xl:mt-16 2xl:mt-24 flex flex-col sm:flex-row gap-4 w-full max-w-sm md:max-w-2xl">
                 <Link href={`/${lang}/start`} className="flex-1 h-20 group relative overflow-hidden bg-white text-black px-8 font-bold text-[11px] md:text-sm tracking-[0.3em] transition-all flex items-center justify-center text-center">
@@ -113,10 +116,9 @@ export default async function Home({
                   <div className="max-w-4xl">
                     <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                       <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                      <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.Capabilities.label}</span>
+                      <TextReveal as="span" text={t.Capabilities.label} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
                     </div>
-                    <h2 className="font-headline text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold tracking-tight uppercase leading-none text-white mb-8 xl:mb-10 2xl:mb-12"
-                      dangerouslySetInnerHTML={{ __html: t.Capabilities.headline }} />
+                    <TextReveal as="h2" text={t.Capabilities.headline} className="font-headline text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold tracking-tight uppercase leading-none text-white mb-8 xl:mb-10 2xl:mb-12" />
                   </div>
                 </div>
 
@@ -229,12 +231,9 @@ export default async function Home({
             <div className="mb-12 md:mb-16 xl:mb-24 text-left">
               <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                 <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">
-                  {t.Contact?.badge}
-                </span>
+                <TextReveal as="span" text={t.Contact?.badge || ""} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
               </div>
-              <h2 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4 uppercase leading-none text-white"
-                dangerouslySetInnerHTML={{ __html: t.Contact?.headline || '' }} />
+              <TextReveal as="h2" text={t.Contact?.headline || ""} className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-4 uppercase leading-none text-white" />
             </div>
 
             <ContactForm t={t.Contact} lang={lang} />

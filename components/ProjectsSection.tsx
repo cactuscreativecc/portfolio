@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import TextReveal from "./TextReveal";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
@@ -236,10 +237,9 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 <div ref={headlineRef} className="z-[100] text-center w-full max-w-5xl px-6 pointer-events-none">
                     <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8 mx-auto">
                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                        <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">{t.CaseStudies?.label || "PROJETOS SELECIONADOS"}</span>
+                        <TextReveal as="span" text={t.CaseStudies?.label || "PROJETOS SELECIONADOS"} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
                     </div>
-                    <h2 className="font-headline text-5xl md:text-7xl 2xl:text-8xl font-black tracking-tighter uppercase text-white leading-none whitespace-pre-line"
-                        dangerouslySetInnerHTML={{ __html: t.CaseStudies?.headline || "ESTUDOS DE CASO" }} />
+                    <TextReveal as="h2" text={t.CaseStudies?.headline || "ESTUDOS DE CASO"} className="font-headline text-5xl md:text-7xl 2xl:text-8xl font-black tracking-tighter uppercase text-white leading-none whitespace-pre-line" />
                 </div>
 
                 {/* 2. Project Panels (Absolute Stack) */}

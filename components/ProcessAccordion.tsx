@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import TextReveal from "./TextReveal";
 
 export default function ProcessAccordion({ lang }: { lang: string }) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -41,13 +42,9 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
             <div className="lg:col-span-5 lg:sticky lg:top-40">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                     <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                    <span className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none">
-                        {isEn ? "METHODOLOGY" : "METODOLOGIA"}
-                    </span>
+                    <TextReveal as="span" text={isEn ? "METHODOLOGY" : "METODOLOGIA"} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
                 </div>
-                <h3 className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white leading-none">
-                    {isEn ? "HOW WE" : "COMO NÓS"}<br className="hidden md:block" /> <span className="text-primary">{isEn ? "BUILD" : "CONSTRUÍMOS"}</span> <br className="hidden md:block" /> {isEn ? "YOUR DOMAIN." : "O SEU DOMÍNIO."}
-                </h3>
+                <TextReveal as="h3" text={isEn ? "HOW WE <br class='hidden md:block' /> <span class='text-primary'>BUILD</span> <br class='hidden md:block' /> YOUR <span class='text-primary'>DOMAIN</span>." : "COMO NÓS <br class='hidden md:block' /> <span class='text-primary'>CONSTRUÍMOS</span> <br class='hidden md:block' /> O SEU <span class='text-primary'>DOMÍNIO</span>."} className="font-headline text-4xl md:text-6xl font-bold tracking-tight uppercase text-white leading-none" />
             </div>
 
             {/* Right Side: Accordion */}

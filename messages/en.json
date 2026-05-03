@@ -13,7 +13,7 @@
     "Hero": {
         "badge": "Premium Digital Agency",
         "headline": "STOP <span class='text-primary'>EXISTING</span>. <br/>START <span class='text-primary'>DOMINATING</span>.",
-        "description": "FROM DESIGN TO ENGINEERING: WE CREATE SITES, PRESENTATIONS, SOCIAL MEDIA, WEB APPS, AND HIGH-PERFORMANCE SYSTEMS FOR THOSE SEEKING THE TOP OF THE\u00A0MARKET.",
+        "description": "<span class='text-primary font-black'>FROM DESIGN TO ENGINEERING:</span> WE CREATE SITES, PRESENTATIONS, SOCIAL MEDIA, WEB APPS, AND HIGH-PERFORMANCE SYSTEMS FOR THOSE SEEKING THE TOP OF THE\u00A0MARKET.",
         "trusted_us": "They trusted us",
         "cta_primary": "START MY PROJECT",
         "cta_secondary": "HOW IT WORKS",
@@ -26,7 +26,7 @@
     },
     "Capabilities": {
         "label": "SERVICES & SOLUTIONS",
-        "headline": "FROM PIXELS TO <span class='text-primary'>SYSTEMS</span> <br/>COMPLETE END-TO-END SOLUTIONS",
+        "headline": "FROM <span class='text-primary'>PIXELS</span> TO <span class='text-primary'>SYSTEMS</span> <br/><span class='text-primary'>COMPLETE</span> <span class='text-primary'>END-TO-END</span> SOLUTIONS",
         "tags": {
             "subscription": "MONTHLY SUBSCRIPTION",
             "available": "AVAILABLE",
@@ -59,7 +59,7 @@
     },
     "Highlights": {
         "label": "HIGHLIGHTS",
-        "headline": "NUMBERS THAT <span class='text-primary'>SPEAK</span> <br/>LOUDER THAN PROMISES.",
+        "headline": "<span class='text-primary'>NUMBERS</span> THAT <span class='text-primary'>SPEAK</span> <br/><span class='text-primary'>LOUDER</span> THAN <span class='text-primary'>PROMISES.</span>",
         "cta": "EXPLORE OUR METHODOLOGY",
         "item1": {
             "val": "80+",
@@ -80,7 +80,7 @@
     },
     "CaseStudies": {
         "label": "SELECTED PROJECTS",
-        "headline": "CASE STUDIES <br/><span class='text-primary'>THAT GENERATE DOMINANCE</span>",
+        "headline": "SUCCESS <span class='text-primary'>CASES</span>, <br/><span class='text-primary'>THAT CREATED PARTNERS.</span>",
         "case1": {
             "label": "CASE STUDY 01: AYU PILATES",
             "title": "AYU PILATES",

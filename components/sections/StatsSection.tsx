@@ -8,6 +8,7 @@ import {
     useTransform,
     useInView
 } from "framer-motion";
+import TextReveal from "../TextReveal";
 
 interface StatItem {
     val: string;
@@ -117,14 +118,9 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
                     >
                         <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                             <div className="w-2 h-2 bg-primary animate-pulse" />
-                            <span className="text-[10px] font-black tracking-[0.4em] text-neutral-500 uppercase leading-none">
-                                {t.label}
-                            </span>
+                            <TextReveal as="span" text={t.label} className="text-[10px] font-black tracking-[0.4em] text-neutral-500 uppercase leading-none" />
                         </div>
-                        <h2
-                            className="font-headline text-4xl md:text-6xl font-black tracking-tight uppercase leading-[0.9] text-white"
-                            dangerouslySetInnerHTML={{ __html: t.headline }}
-                        />
+                        <TextReveal as="h2" text={t.headline} className="font-headline text-4xl md:text-6xl font-black tracking-tight uppercase leading-[0.9] text-white" />
                     </motion.div>
 
                     <motion.div
@@ -168,7 +164,7 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
                             </div>
 
                             <p className="font-label text-xs md:text-[13px] text-neutral-500 font-bold uppercase tracking-[0.3em] leading-relaxed pl-9 group-hover:text-neutral-300 transition-colors">
-                                {item.label || "INFO"}
+                                <TextReveal text={item.label || "INFO"} />
                             </p>
 
                             <div className="absolute top-0 left-0 w-1/4 h-[1px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />

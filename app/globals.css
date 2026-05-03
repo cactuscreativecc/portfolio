@@ -292,3 +292,35 @@ input:-webkit-autofill:active {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+@keyframes cinematic-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(40%) scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cinematic-reveal-char {
+  display: inline-block;
+  white-space: pre;
+  opacity: var(--opacity-val, 0);
+  animation: cinematic-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--index) * 0.04s + var(--base-delay, 0s));
+  animation-play-state: var(--play-state, paused);
+}
+
+.cinematic-reveal-word {
+  display: inline-block;
+  white-space: pre;
+  opacity: var(--opacity-val, 0);
+  animation: cinematic-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--index) * 0.1s + var(--base-delay, 0s));
+  animation-play-state: var(--play-state, paused);
+}

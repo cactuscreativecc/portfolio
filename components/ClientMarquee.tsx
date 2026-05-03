@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import TextReveal from "./TextReveal";
 
 export interface ClientType {
     name: string;
@@ -33,7 +34,7 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
                 <div className="flex-shrink-0 flex items-center gap-8 relative z-10 bg-background pr-10">
                     <p className="font-label text-[9px] tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
-                        {title}
+                        <TextReveal text={title} />
                     </p>
                     {/* Tactical Vertical Line */}
                     <div className="w-[1px] h-3 bg-white/20" />
