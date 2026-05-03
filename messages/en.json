@@ -14,7 +14,7 @@
         "badge": "Premium Digital Agency",
         "headline": "STOP <span class='text-primary'>EXISTING</span>. <br/>START <span class='text-primary'>DOMINATING</span>.",
         "description": "<span class='text-primary font-black'>FROM DESIGN TO ENGINEERING:</span> WE CREATE SITES, PRESENTATIONS, SOCIAL MEDIA, WEB APPS, AND HIGH-PERFORMANCE SYSTEMS FOR THOSE SEEKING THE TOP OF THE\u00A0MARKET.",
-        "trusted_us": "They trusted us",
+        "trusted_us": "<span class='text-primary'>They trusted us</span>",
         "cta_primary": "START MY PROJECT",
         "cta_secondary": "HOW IT WORKS",
         "stat_roi": "GROWTH DELTA",
