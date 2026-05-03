@@ -66,7 +66,7 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500 shrink-0 ml-4 ${openIndex === idx ? 'border-primary/50 text-primary rotate-180' : 'border-white/20 text-white/50 group-hover:text-white group-hover:border-white/40'
                                 }`}>
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d={openIndex === idx ? "M5 15l7-7 7-7" : "M19 9l-7 7-7-7"} />
+                                    <path d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </div>

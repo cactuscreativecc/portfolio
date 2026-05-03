@@ -133,10 +133,10 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
-                        <button className="group relative px-10 py-5 bg-white text-black font-bold text-xs tracking-[0.3em] uppercase overflow-hidden transition-all hover:bg-primary">
+                        <a href="#services" className="group relative inline-block px-12 py-6 bg-white text-black font-bold text-xs tracking-[0.3em] uppercase overflow-hidden transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                             <span className="relative z-10">{t.cta}</span>
                             <div className="absolute inset-0 translate-y-full bg-primary transition-transform duration-500 group-hover:translate-y-0" />
-                        </button>
+                        </a>
                     </motion.div>
                 </div>
 
