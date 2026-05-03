@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "@/app/globals.css";
 import { Locale, i18n } from "@/i18n-config";
-import CustomCursor from "@/components/CustomCursor";
+// import CustomCursor from "@/components/CustomCursor";
 import { Toaster } from "sonner";
 import { supabase } from "@/lib/supabase";
 import Script from "next/script";
@@ -117,7 +117,7 @@ export default async function RootLayout({
             letterSpacing: '0.1em'
           }
         }} />
-        <CustomCursor />
+        {/* <CustomCursor /> */}
         {children}
       </body>
     </html>

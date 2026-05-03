@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getDictionary } from "@/lib/get-dictionary";
 import { supabase } from "@/lib/supabase";
 import { Locale } from "@/i18n-config";
-import InteractiveSpotlight from "@/components/InteractiveSpotlight";
+// import InteractiveSpotlight from "@/components/InteractiveSpotlight";
 import StatsSection from "@/components/sections/StatsSection";
 import FlipWord from "@/components/FlipWord";
 import ClientMarquee from "@/components/ClientMarquee";
@@ -204,7 +204,7 @@ export default async function Home({
           <ProjectsSection t={t} siteContent={siteContent} lang={lang} />
         </div>
 
-        <InteractiveSpotlight />
+        {/* <InteractiveSpotlight /> */}
 
         <div id="tech">
           <StatsSection t={t.Highlights} siteContent={siteContent} lang={lang} />
