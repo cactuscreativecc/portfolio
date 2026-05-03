@@ -135,6 +135,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             {t.Navigation.portal}
                         </Link>
                         <DictionarySwitcher currentLocale={lang} />
+<<<<<<< HEAD
                         <a
                             href="#contact"
                             className="group relative overflow-hidden bg-white text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase transition-all duration-300"
@@ -142,6 +143,14 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             <span className="relative z-10">{t.Navigation.start_project}</span>
                             <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         </a>
+=======
+                        <Link
+                            href={`/${lang}/start`}
+                            className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all duration-300"
+                        >
+                            {t.Navigation.start_project}
+                        </Link>
+>>>>>>> 180e0cd39d87e5a46feb5b73f93e4bbbe136e0e2
                     </div>
 
                     {/* Mobile Hamburger (Target: 430px) */}
@@ -200,13 +209,13 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 variants={linkVariants}
                                 custom={navLinks.length}
                             >
-                                <a
-                                    href="#contact"
+                                <Link
+                                    href={`/${lang}/start`}
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
                                 >
                                     {t.Navigation.start_project}
-                                </a>
+                                </Link>
                             </motion.div>
 
                             {/* Mobile Language & Meta */}
