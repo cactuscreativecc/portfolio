@@ -594,6 +594,28 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
+    const deleteClient = async (clientId: string, clientName: string) => {
+        if (!confirm(`EXCLUIR O CLIENTE "${clientName}"? ESTA AÇÃO REMOVE PROJETOS, BRIEFINGS E A CONTA. IRREVERSÍVEL.`)) return;
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const res = await fetch('/api/admin/delete-client', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clientId, adminToken: session?.access_token }),
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.error || 'Erro ao excluir');
+
+            toast.success('Cliente excluído.');
+            setClients(prev => prev.filter(c => c.id !== clientId));
+            setClientData(prev => { const n = { ...prev }; delete n[clientId]; return n; });
+            if (expandedClient === clientId) setExpandedClient(null);
+        } catch (err: any) {
+            toast.error('Erro: ' + err.message);
+        }
+    };
+
     const deleteProject = async (projId: string) => {
         if (!confirm("TEM CERTEZA QUE DESEJA EXCLUIR ESTE PROJETO? ESTA AÇÃO É IRREVERSÍVEL E TODOS OS ARQUIVOS E MENSAGENS SERÃO PERDIDOS.")) return;
 
@@ -1077,11 +1099,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                     <p className="text-[10px] text-neutral-500 uppercase tracking-widest">{client.email}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-6 items-center">
+                                            <div className="flex gap-4 items-center">
                                                 <div className="text-right hidden md:block">
                                                     <p className="text-[8px] font-black text-neutral-600 uppercase">STATUS</p>
                                                     <p className="text-xs font-bold text-white tracking-widest uppercase">{clientData[client.id]?.projects?.length > 0 ? 'ATIVO' : 'INATIVO'}</p>
                                                 </div>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); deleteClient(client.id, client.full_name || client.email); }}
+                                                    title="Excluir cliente"
+                                                    className="w-8 h-8 flex items-center justify-center border border-white/10 text-neutral-600 hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                                >
+                                                    <Trash2 size={13} />
+                                                </button>
                                                 <ChevronRight className={`text-neutral-700 group-hover:text-primary transition-transform ${expandedClient === client.id ? 'rotate-90 text-primary' : ''}`} />
                                             </div>
                                         </div>

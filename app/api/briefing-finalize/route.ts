@@ -44,18 +44,24 @@ export async function POST(req: Request) {
         });
 
         if (authError) {
-            // User may already exist — find by email in profiles
+            // User already exists — find by email in profiles
             const { data: existingProfile } = await supabase
                 .from("profiles")
                 .select("id")
                 .eq("email", email)
-                .single();
+                .maybeSingle(); // maybeSingle: returns null (not error) when 0 rows
 
             if (existingProfile?.id) {
                 userId = existingProfile.id;
             } else {
-                console.error("Auth create error:", authError.message);
-                // Still continue to save briefing without client link
+                // Profile lookup failed — scan auth users by email as fallback
+                const { data: userList } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+                const match = userList?.users?.find((u) => u.email === email);
+                if (match) {
+                    userId = match.id;
+                } else {
+                    console.error("Auth create error and no existing user found:", authError.message);
+                }
             }
         } else {
             userId = newUser.user.id;
