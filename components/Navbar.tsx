@@ -15,7 +15,6 @@ interface NavbarProps {
 export default function Navbar({ t, lang }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [isLogoHovered, setIsLogoHovered] = useState(false);
 
     useEffect(() => {
         // Force scroll to top on load/refresh
@@ -90,27 +89,14 @@ export default function Navbar({ t, lang }: NavbarProps) {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         className="text-xl md:text-2xl font-black tracking-tighter text-white flex items-center group"
-                        onMouseEnter={() => setIsLogoHovered(true)}
-                        onMouseLeave={() => setIsLogoHovered(false)}
                     >
-                        <span className="flex items-center">
-                            <span>CACTUS</span>
-                            <span className="text-primary">CREATIVE</span>
+                        <span className="flex items-center h-4 md:h-5">
+                            <img
+                                src="/logocactuscreativecc.svg"
+                                alt="Cactus Creative"
+                                className="h-full w-auto object-left object-contain transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] [clip-path:inset(0_23.5%_0_0)] group-hover:[clip-path:inset(0_0_0_0)]"
+                            />
                         </span>
-                        <AnimatePresence>
-                            {isLogoHovered && (
-                                <motion.span
-                                    initial={{ width: 0, opacity: 0, x: -10 }}
-                                    animate={{ width: "auto", opacity: 1, x: 0 }}
-                                    exit={{ width: 0, opacity: 0, x: -10 }}
-                                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                                    className="flex items-center overflow-hidden whitespace-nowrap"
-                                >
-                                    <span className="mx-2 text-white font-light">/</span>
-                                    <span className="text-primary">CC</span>
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
                     </motion.a>
 
                     {/* Desktop Nav */}
@@ -159,77 +145,79 @@ export default function Navbar({ t, lang }: NavbarProps) {
                         />
                     </button>
                 </div>
-            </motion.header>
+            </motion.header >
 
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        variants={menuVariants}
-                        initial="closed"
-                        animate="open"
-                        exit="closed"
-                        className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-24 pb-12 lg:hidden overflow-y-auto"
-                    >
-                        {/* Header Row para o Botão Fechar */}
-                        <div className="w-full flex justify-end mb-8 relative z-50">
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="p-2 -mr-2 text-white hover:text-primary transition-all duration-300 pointer-events-auto"
-                                aria-label="Close menu"
-                            >
-                                <X strokeWidth={1} size={40} />
-                            </button>
-                        </div>
-                        {/* Background Watermark */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] overflow-hidden select-none">
-                            <span className="text-[30vw] font-black font-headline rotate-90">MENU</span>
-                        </div>
+                {
+                    isOpen && (
+                        <motion.div
+                            variants={menuVariants}
+                            initial="closed"
+                            animate="open"
+                            exit="closed"
+                            className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-24 pb-12 lg:hidden overflow-y-auto"
+                        >
+                            {/* Header Row para o Botão Fechar */}
+                            <div className="w-full flex justify-end mb-8 relative z-50">
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-2 -mr-2 text-white hover:text-primary transition-all duration-300 pointer-events-auto"
+                                    aria-label="Close menu"
+                                >
+                                    <X strokeWidth={1} size={40} />
+                                </button>
+                            </div>
+                            {/* Background Watermark */}
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] overflow-hidden select-none">
+                                <span className="text-[30vw] font-black font-headline rotate-90">MENU</span>
+                            </div>
 
-                        <nav className="flex flex-col gap-6 relative z-10">
-                            {navLinks.map((link, i) => (
-                                <motion.a
-                                    key={link.name}
-                                    href={link.href}
-                                    custom={i}
+                            <nav className="flex flex-col gap-6 relative z-10">
+                                {navLinks.map((link, i) => (
+                                    <motion.a
+                                        key={link.name}
+                                        href={link.href}
+                                        custom={i}
+                                        variants={linkVariants}
+                                        onClick={() => setIsOpen(false)}
+                                        className="font-headline text-4xl font-black uppercase text-white hover:text-primary transition-colors tracking-tighter"
+                                    >
+                                        {link.name}
+                                    </motion.a>
+                                ))}
+                            </nav>
+
+                            <div className="mt-12 space-y-6 relative z-10 pb-8">
+                                <motion.div
                                     variants={linkVariants}
-                                    onClick={() => setIsOpen(false)}
-                                    className="font-headline text-4xl font-black uppercase text-white hover:text-primary transition-colors tracking-tighter"
+                                    custom={navLinks.length}
                                 >
-                                    {link.name}
-                                </motion.a>
-                            ))}
-                        </nav>
+                                    <Link
+                                        href={`/${lang}/portal`}
+                                        onClick={() => setIsOpen(false)}
+                                        className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
+                                    >
+                                        {t.Navigation.portal}
+                                    </Link>
+                                </motion.div>
 
-                        <div className="mt-12 space-y-6 relative z-10 pb-8">
-                            <motion.div
-                                variants={linkVariants}
-                                custom={navLinks.length}
-                            >
-                                <Link
-                                    href={`/${lang}/portal`}
-                                    onClick={() => setIsOpen(false)}
-                                    className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
+                                {/* Mobile Language & Meta */}
+                                <motion.div
+                                    variants={linkVariants}
+                                    custom={navLinks.length + 1}
+                                    className="flex justify-between items-center pt-8 border-t border-white/5"
                                 >
-                                    {t.Navigation.portal}
-                                </Link>
-                            </motion.div>
-
-                            {/* Mobile Language & Meta */}
-                            <motion.div
-                                variants={linkVariants}
-                                custom={navLinks.length + 1}
-                                className="flex justify-between items-center pt-8 border-t border-white/5"
-                            >
-                                <DictionarySwitcher currentLocale={lang} />
-                                <div className="text-[10px] font-bold tracking-widest text-neutral-600 uppercase">
-                                    © 2026 CactusCreative
-                                </div>
-                            </motion.div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                    <DictionarySwitcher currentLocale={lang} />
+                                    <div className="text-[10px] font-bold tracking-widest text-neutral-600 uppercase">
+                                        © 2026 CactusCreative
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    )
+                }
+            </AnimatePresence >
         </>
     );
 }

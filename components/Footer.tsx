@@ -1,14 +1,27 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function Footer({ t }: { t: any }) {
+
     return (
         <footer className="relative bg-background pt-16 md:pt-24 xl:pt-32 pb-24 md:pb-32 xl:pb-48 overflow-hidden border-t border-white/5">
             <div className="max-w-grid mx-auto px-6 md:px-16 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-16 md:mb-24 xl:mb-32">
-                    <div className="md:col-span-4 space-y-8">
-                        <div className="text-3xl font-bold tracking-tighter text-white">
-                            CACTUS<span className="text-primary">CREATIVE</span>
-                        </div>
+                    <div className="md:col-span-4 space-y-8 flex flex-col items-start">
+                        <motion.a
+                            href="#home"
+                            className="text-3xl font-black tracking-tighter text-white flex items-center group cursor-pointer"
+                        >
+                            <span className="flex items-center h-5 md:h-6 pr-2">
+                                <img
+                                    src="/logocactuscreativecc.svg"
+                                    alt="Cactus Creative"
+                                    className="h-full w-auto object-left object-contain transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] [clip-path:inset(0_23.5%_0_0)] group-hover:[clip-path:inset(0_0_0_0)]"
+                                />
+                            </span>
+                        </motion.a>
                         <p className="font-body text-neutral-500 leading-relaxed max-w-sm uppercase">
                             {t.Footer.description}
                         </p>
@@ -120,6 +133,6 @@ export default function Footer({ t }: { t: any }) {
                     CACTUSCREATIVE
                 </h2>
             </div>
-        </footer>
+        </footer >
     );
 }
