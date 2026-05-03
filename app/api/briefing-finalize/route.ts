@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { Resend } from "resend";
 import crypto from "crypto";
 
 export async function POST(req: Request) {
@@ -149,6 +150,41 @@ export async function POST(req: Request) {
 
             if (projectError) {
                 console.error("Project create error:", projectError.message);
+            }
+        }
+
+        // 5. Enviar e-mail de notificação para a Cactus e para o Cliente (via CC)
+        if (process.env.RESEND_API_KEY) {
+            try {
+                const resend = new Resend(process.env.RESEND_API_KEY);
+                await resend.emails.send({
+                    from: "Cactus Creative <contact@cactuscreative.cc>",
+                    to: ["contact@cactuscreative.cc"],
+                    cc: [email],
+                    subject: `Novo Briefing Recebido // ${client_name || company || "Lead"}`,
+                    html: `
+                        <div style="background-color: #050505; color: #fff; padding: 40px; font-family: sans-serif;">
+                            <h1 style="color: #aed500; font-size: 24px; text-transform: uppercase;">NOVO BRIEFING RECEBIDO</h1>
+                            <p style="color: #999;">UM NOVO LEAD ESTRATÉGICO ACABOU DE PREENCHER O SISTEMA.</p>
+                            <br/>
+                            <div style="border-left: 3px solid #aed500; padding-left: 20px;">
+                                <p>NOME: <b>${client_name || "N/A"}</b></p>
+                                <p>EMPRESA: <b>${company || "N/A"}</b></p>
+                                <p>EMAIL: <b>${email}</b></p>
+                                <p>PROJETO: <b>${project_type || "N/A"}</b></p>
+                                <p>ORÇAMENTO: <b>${budget || "N/A"}</b></p>
+                                <p>PRAZO: <b>${deadline || "N/A"}</b></p>
+                            </div>
+                            <br/>
+                            <h3 style="color: #aed500;">OBJETIVO:</h3>
+                            <p style="color: #ddd;">${project_goal || "N/A"}</p>
+                            <br/>
+                            <p style="font-size: 11px; opacity: 0.5;">CACTUS CREATIVE // SYSTEM AUTOMATION</p>
+                        </div>
+                    `
+                });
+            } catch (err) {
+                console.error("Falha ao enviar e-mail de briefing via Resend:", err);
             }
         }
 

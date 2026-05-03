@@ -538,6 +538,24 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 }
                 return newData;
             });
+
+            // Trigger Email Notification to Client (Fire and forget style)
+            const projectToUpdate = allProjects.find(p => p.id === projId);
+            const clientInfo = clients.find(c => c.id === projectToUpdate?.client_id);
+            if (clientInfo?.email) {
+                fetch('/api/admin/notify-project-update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clientEmail: clientInfo.email,
+                        clientName: clientInfo.full_name,
+                        projectName: name,
+                        status,
+                        currentStep: parseInt(currentStep)
+                    })
+                }).catch(e => console.error("Falha ao enviar e-mail:", e));
+            }
+
         } catch (err: any) {
             toast.error('Erro ao salvar: ' + err.message);
         }
