@@ -5,7 +5,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: Request) {
     try {
-        const { briefing } = await req.json();
+        const { briefing, selectedPalette } = await req.json();
 
         const prompt = `Based on this client briefing, generate a website design concept as JSON.
 
@@ -82,6 +82,11 @@ Make the content specific to ${briefing.company} — not generic.`;
         } catch {
             const match = text.match(/\{[\s\S]*\}/);
             preview = match ? JSON.parse(match[0]) : {};
+        }
+
+        // Override palette with user selection when provided
+        if (selectedPalette && typeof selectedPalette === "object") {
+            preview.palette = selectedPalette;
         }
 
         return NextResponse.json({ preview });

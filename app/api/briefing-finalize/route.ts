@@ -127,6 +127,25 @@ export async function POST(req: Request) {
             throw briefingError;
         }
 
+        // 4. Create project linked to client so admin "PROJETOS E STATUS" shows it
+        if (userId) {
+            const projectName = company
+                ? `${company} — ${project_type || "Website"}`
+                : (project_type || "Website Project");
+
+            const { error: projectError } = await supabase.from("projects").insert({
+                name: projectName,
+                description: project_goal || additional_notes || null,
+                client_id: userId,
+                status: "Briefing & Estratégia",
+                current_step: 0,
+            });
+
+            if (projectError) {
+                console.error("Project create error:", projectError.message);
+            }
+        }
+
         return NextResponse.json({
             success: true,
             briefingId: briefing.id,
