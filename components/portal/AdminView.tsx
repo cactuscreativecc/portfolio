@@ -37,7 +37,7 @@ interface AdminViewProps {
     profile: any;
 }
 
-type AdminTab = 'clients' | 'projects' | 'customization';
+type AdminTab = 'clients' | 'projects' | 'customization' | 'briefings';
 
 export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [activeTab, setActiveTab] = useState<AdminTab>('clients');
@@ -76,6 +76,29 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [allProjects, setAllProjects] = useState<any[]>([]);
     const [isCreatingProject, setIsCreatingProject] = useState(false);
     const [expandedProject, setExpandedProject] = useState<string | null>(null);
+
+    // Briefings State
+    const [briefings, setBriefings] = useState<any[]>([]);
+    const [expandedBriefing, setExpandedBriefing] = useState<string | null>(null);
+    const [isLoadingBriefings, setIsLoadingBriefings] = useState(false);
+
+    const fetchBriefings = async () => {
+        setIsLoadingBriefings(true);
+        try {
+            const { data } = await supabase
+                .from('briefings')
+                .select('*')
+                .order('created_at', { ascending: false });
+            setBriefings(data ?? []);
+        } catch { /* noop */ } finally {
+            setIsLoadingBriefings(false);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'briefings') fetchBriefings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
 
     const handleClientLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>, idx: number) => {
         try {
@@ -892,6 +915,14 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 >
                     <Settings size={16} />
                     {t.Portal.admin_customization}
+                </button>
+                <button
+                    onClick={() => setActiveTab('briefings')}
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'briefings' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                        }`}
+                >
+                    <FileText size={16} />
+                    LEADS
                 </button>
 
             </aside>
