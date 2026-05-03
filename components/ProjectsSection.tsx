@@ -288,8 +288,9 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
 
                                     {(project.url || project.href) && (
                                         <div className="stagger-item pt-8">
-                                            <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="inline-block group relative overflow-hidden bg-primary text-black px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all hover:bg-white active:scale-95 shadow-[0_0_20px_rgba(174,213,0,0.3)]">
+                                            <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="inline-block group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                                                 <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "VER ESTUDO DE CASO")}</span>
+                                                <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                                             </a>
                                         </div>
                                     )}
