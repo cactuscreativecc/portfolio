@@ -135,12 +135,12 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             {t.Navigation.portal}
                         </Link>
                         <DictionarySwitcher currentLocale={lang} />
-                        <a
-                            href="#contact"
+                        <Link
+                            href={`/${lang}/start`}
                             className="bg-primary text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all duration-300"
                         >
                             {t.Navigation.start_project}
-                        </a>
+                        </Link>
                     </div>
 
                     {/* Mobile Hamburger (Target: 430px) */}
@@ -199,13 +199,13 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 variants={linkVariants}
                                 custom={navLinks.length}
                             >
-                                <a
-                                    href="#contact"
+                                <Link
+                                    href={`/${lang}/start`}
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
                                 >
                                     {t.Navigation.start_project}
-                                </a>
+                                </Link>
                             </motion.div>
 
                             {/* Mobile Language & Meta */}

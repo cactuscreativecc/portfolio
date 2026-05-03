@@ -1,59 +1,42 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+
+interface Message {
+    role: "bot" | "user";
+    text: string;
+}
+
+interface ApiMessage {
+    role: "user" | "assistant";
+    content: string;
+}
 
 export default function StartChat({ lang }: { lang: string }) {
     const router = useRouter();
-    // Flow states
-    const [step, setStep] = useState(0);
-    const [messages, setMessages] = useState<{ role: 'bot' | 'user', text: string }[]>([]);
+    const isEn = lang === "en";
+
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [apiHistory, setApiHistory] = useState<ApiMessage[]>([]);
     const [inputValue, setInputValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const [countdown, setCountdown] = useState(5);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    const isEn = lang === 'en';
-
-    const questions = [
-        isEn ? "To get started, what is your full name?" : "Para começarmos, qual é o seu nome completo?",
-        isEn ? "What is the main goal of your project?" : "Qual é o objetivo principal do seu projeto?",
-        isEn ? "What is your budget estimate for this challenge?" : "Qual é a sua estimativa de orçamento para esse desafio?"
-    ];
-
-    const optionsByStep: Record<number, string[]> = {
-        0: [],
-        1: isEn
-            ? ["Web App / System Development", "High-Conversion Landing Page", "Premium E-commerce", "Still deciding"]
-            : ["Desenvolvimento de um Web App / Sistema", "Landing Page de Alta Conversão", "E-commerce Premium", "Ainda estou decidindo"],
-        2: isEn
-            ? ["$10k - $25k", "$25k - $50k", "$50k - $100k", "Above $100k"]
-            : ["R$ 15k - R$ 30k", "R$ 30k - R$ 60k", "R$ 60k - R$ 100k", "Acima de R$ 100k"]
-    };
 
     const scrollToBottom = () => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTo({
                 top: scrollContainerRef.current.scrollHeight,
-                behavior: "smooth"
+                behavior: "smooth",
             });
         }
     };
 
     useEffect(() => {
-        // Initial generic greeting
-        setTimeout(() => {
-            setMessages([
-                { role: 'bot', text: isEn ? "Hello! Glad to have you here. From now on, things start to scale." : "Olá! Que bom ter você aqui. A partir de agora, as coisas começam a escalar." },
-                { role: 'bot', text: questions[0] }
-            ]);
-        }, 500);
-    }, []);
-
-    useEffect(() => {
         scrollToBottom();
-    }, [messages, step, isComplete]);
+    }, [messages, isLoading]);
 
     useEffect(() => {
         if (isComplete) {
@@ -71,23 +54,100 @@ export default function StartChat({ lang }: { lang: string }) {
         }
     }, [isComplete, router, lang]);
 
-    const handleSend = (text: string) => {
-        if (!text.trim()) return;
+    useEffect(() => {
+        const greet = async () => {
+            setIsLoading(true);
+            try {
+                const res = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ messages: [] }),
+                });
+                const data = await res.json();
+                const botText = data.message ?? "";
 
-        setMessages(prev => [...prev, { role: 'user', text }]);
+                setMessages([{ role: "bot", text: botText }]);
+                setApiHistory([{ role: "assistant", content: botText }]);
+            } catch {
+                const fallback = isEn
+                    ? "Hello! 👋 I'm Cactus, CactusCreative's assistant. What's your company or brand name?"
+                    : "Olá! 👋 Sou o Cactus, assistente da CactusCreative. Qual é o nome da sua empresa ou marca?";
+                setMessages([{ role: "bot", text: fallback }]);
+                setApiHistory([{ role: "assistant", content: fallback }]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        greet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const extractBriefing = (text: string) => {
+        const match = text.match(/\[BRIEFING_COMPLETE\]([\s\S]*?)\[\/BRIEFING_COMPLETE\]/);
+        if (!match) return null;
+        try {
+            return JSON.parse(match[1].trim());
+        } catch {
+            return null;
+        }
+    };
+
+    const cleanText = (text: string) =>
+        text.replace(/\[BRIEFING_COMPLETE\][\s\S]*?\[\/BRIEFING_COMPLETE\]/g, "").trim();
+
+    const saveBriefing = async (briefingData: Record<string, unknown>, history: ApiMessage[]) => {
+        try {
+            await fetch("/api/save-briefing", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...briefingData, conversation_history: history }),
+            });
+        } catch (err) {
+            console.error("Failed to save briefing:", err);
+        }
+    };
+
+    const handleSend = async (text: string) => {
+        if (!text.trim() || isLoading || isComplete) return;
+
+        const userMsg: Message = { role: "user", text };
+        const newMessages = [...messages, userMsg];
+        setMessages(newMessages);
         setInputValue("");
+        setIsLoading(true);
 
-        const nextStep = step + 1;
+        const newHistory: ApiMessage[] = [...apiHistory, { role: "user", content: text }];
 
-        if (nextStep < questions.length) {
-            setTimeout(() => {
-                setMessages(prev => [...prev, { role: 'bot', text: questions[nextStep] }]);
-                setStep(nextStep);
-            }, 800);
-        } else {
-            setTimeout(() => {
+        try {
+            const res = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messages: newHistory }),
+            });
+            const data = await res.json();
+            const botText = data.message ?? (isEn ? "Sorry, try again." : "Desculpe, tente novamente.");
+
+            const updatedHistory: ApiMessage[] = [...newHistory, { role: "assistant", content: botText }];
+            setApiHistory(updatedHistory);
+
+            const visibleText = cleanText(botText);
+            setMessages([...newMessages, { role: "bot", text: visibleText }]);
+
+            const briefing = extractBriefing(botText);
+            if (briefing) {
+                await saveBriefing(briefing, updatedHistory);
                 setIsComplete(true);
-            }, 1000);
+            }
+        } catch {
+            setMessages([
+                ...newMessages,
+                {
+                    role: "bot",
+                    text: isEn ? "Connection error. Please try again." : "Erro de conexão. Tente novamente.",
+                },
+            ]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -106,8 +166,8 @@ export default function StartChat({ lang }: { lang: string }) {
                 </h2>
                 <p className="font-body text-neutral-400 text-sm md:text-base uppercase tracking-tight max-w-lg mb-12 leading-relaxed">
                     {isEn
-                        ? "Jokes aside, we successfully received all your intel in our encrypted system. One of our engineers will analyze the data and contact you shortly."
-                        : "Brincadeiras à parte, recebemos todas as suas informações com sucesso no nosso sistema criptografado. Um dos nossos engenheiros analisará os dados e entrará em contato em breve."
+                        ? "We successfully received all your intel. One of our engineers will analyze the data and contact you within 48 hours."
+                        : "Recebemos todas as suas informações com sucesso. Um dos nossos engenheiros analisará os dados e entrará em contato em até 48 horas."
                     }
                 </p>
                 <div className="flex flex-col items-center gap-4">
@@ -124,61 +184,49 @@ export default function StartChat({ lang }: { lang: string }) {
 
     return (
         <div className="w-full flex flex-col relative">
-
-            {/* Area de mensagens */}
             <div ref={scrollContainerRef} className="overflow-y-auto px-0 space-y-6 scrollbar-hide pb-4 max-h-[55vh]">
                 {messages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-8 duration-700`}>
-                        <div className={`max-w-[95%] md:max-w-[90%] py-2 text-2xl md:text-4xl xl:text-5xl font-headline uppercase leading-[1.05] tracking-tighter ${msg.role === 'user'
-                            ? 'text-primary font-bold text-right'
-                            : 'text-white font-medium'
-                            }`}>
+                    <div
+                        key={i}
+                        className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} animate-in fade-in slide-in-from-bottom-8 duration-700`}
+                    >
+                        <div
+                            className={`max-w-[95%] md:max-w-[90%] py-2 text-2xl md:text-4xl xl:text-5xl font-headline uppercase leading-[1.05] tracking-tighter ${
+                                msg.role === "user"
+                                    ? "text-primary font-bold text-right"
+                                    : "text-white font-medium"
+                            }`}
+                        >
                             {msg.text}
                         </div>
                     </div>
                 ))}
 
-                {/* Loader do Bot (typing indicator) */}
-                {(messages.length === 0 || (messages[messages.length - 1].role === 'user' && !isComplete)) && (
+                {isLoading && (
                     <div className="flex justify-start">
                         <div className="py-4 flex gap-3">
-                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: "0ms" }} />
+                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: "150ms" }} />
+                            <div className="w-2 md:w-3 h-2 md:h-3 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: "300ms" }} />
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Area de entrada e botões elegantes */}
             <div className="pt-2 shrink-0 space-y-6 relative z-20">
-                {/* Botões pré-definidos */}
-                {optionsByStep[step] && optionsByStep[step].length > 0 && messages[messages.length - 1]?.role !== 'user' && (
-                    <div className="flex flex-wrap gap-3 mb-2 justify-start">
-                        {optionsByStep[step].map((opt, i) => (
-                            <button
-                                key={i}
-                                onClick={() => handleSend(opt)}
-                                className="px-6 py-3 border border-white/20 bg-white/5 backdrop-blur-sm text-[10px] md:text-xs font-bold tracking-widest text-neutral-300 uppercase hover:border-primary hover:text-black hover:bg-primary transition-all duration-300"
-                            >
-                                {opt}
-                            </button>
-                        ))}
-                    </div>
-                )}
-
                 <div className="flex items-center gap-4 relative">
                     <input
                         type="text"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' ? handleSend(inputValue) : null}
+                        onKeyDown={(e) => e.key === "Enter" ? handleSend(inputValue) : null}
                         placeholder={isEn ? "TYPE YOUR ANSWER HERE..." : "DIGITE SUA RESPOSTA AQUI..."}
-                        className="flex-1 bg-transparent border-b-2 border-white/10 px-0 py-4 text-white font-headline text-lg md:text-2xl focus:outline-none focus:border-primary uppercase placeholder:text-neutral-600 transition-colors"
+                        disabled={isLoading}
+                        className="flex-1 bg-transparent border-b-2 border-white/10 px-0 py-4 text-white font-headline text-lg md:text-2xl focus:outline-none focus:border-primary uppercase placeholder:text-neutral-600 transition-colors disabled:opacity-50"
                     />
                     <button
                         onClick={() => handleSend(inputValue)}
-                        disabled={!inputValue.trim()}
+                        disabled={!inputValue.trim() || isLoading}
                         className="w-12 h-12 flex items-center justify-center border border-white/20 hover:border-primary bg-white/5 backdrop-blur-sm hover:bg-primary hover:text-black text-white transition-all disabled:opacity-30 disabled:hover:bg-white/5 disabled:hover:border-white/20 disabled:hover:text-white"
                     >
                         <span className="material-symbols-outlined">arrow_forward</span>
