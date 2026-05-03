@@ -131,6 +131,16 @@ html {
   html {
     @apply font-mono;
   }
+
+  button,
+  a,
+  [role="button"],
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  label {
+    cursor: pointer;
+  }
 }
 
 @layer components {
