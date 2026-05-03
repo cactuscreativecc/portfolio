@@ -300,7 +300,12 @@ export default function StartChat({ lang }: { lang: string }) {
     ) => {
         setStage("generating");
 
-        const payload = { ...data, email, conversation_history: history };
+        const payload = {
+            ...data,
+            email,
+            conversation_history: history,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
 
         try {
             const res = await fetch("/api/briefing-finalize", {

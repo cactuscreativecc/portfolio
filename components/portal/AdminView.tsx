@@ -2510,7 +2510,9 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                 ))}
                                                             </div>
                                                         )}
-                                                        <span className="text-[9px] text-neutral-600">{b.created_at ? new Date(b.created_at).toLocaleDateString('pt-BR') : ''}</span>
+                                                        <span className="text-[9px] text-neutral-600">
+                                                            {b.created_at ? new Date(b.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : ''}
+                                                        </span>
                                                         {profile?.role === 'admin' && (
                                                             <button
                                                                 onClick={(e) => {
@@ -2602,7 +2604,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         {b.additional_notes && (
                                                             <div className="bg-background p-4 border border-white/5">
                                                                 <p className="text-[8px] text-neutral-600 uppercase tracking-widest mb-1">NOTAS</p>
-                                                                <p className="text-[11px] text-neutral-300 leading-relaxed">{b.additional_notes}</p>
+                                                                <p className="text-[11px] text-neutral-300 leading-relaxed whitespace-pre-wrap">{b.additional_notes}</p>
                                                             </div>
                                                         )}
                                                     </div>

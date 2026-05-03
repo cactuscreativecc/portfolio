@@ -6,6 +6,12 @@ import crypto from "crypto";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+
+        // Puxar headers para IP e Localização caso o deploy seja na Vercel
+        const city = req.headers.get("x-vercel-ip-city") || "";
+        const country = req.headers.get("x-vercel-ip-country") || "";
+        const reqLocation = city && country ? `${city}, ${country}` : "Location indisponível";
+
         const {
             email,
             client_name,
@@ -97,7 +103,7 @@ export async function POST(req: Request) {
             primary_color_hint: primary_color_hint || null,
             deadline: deadline || null,
             budget: budget || null,
-            additional_notes: additional_notes || null,
+            additional_notes: (additional_notes ? additional_notes + "\n\n" : "") + `[System Data] Geo-location detectada: ${reqLocation} / Origin Timezone do formulário: ` + (body.timezone || "Não mapeado"),
             conversation_history: conversation_history || [],
             status: "novo",
         };
