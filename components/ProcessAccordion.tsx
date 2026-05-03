@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 export default function ProcessAccordion({ lang }: { lang: string }) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -35,7 +36,7 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
     ];
 
     return (
-        <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 xl:gap-24 items-start mt-8 md:mt-12 xl:mt-24 pt-8 md:pt-12 xl:pt-24 border-t border-white/5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 xl:gap-24 items-start mt-8 md:mt-12 xl:mt-24 pt-8 md:pt-12 xl:pt-24 border-t border-white/5">
             {/* Left Side: Highlighted Text / Header */}
             <div className="lg:col-span-5 lg:sticky lg:top-40">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
@@ -54,27 +55,25 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
                 {processes.map((proc, idx) => (
                     <div
                         key={idx}
-                        className={`group border transition-all duration-500 cursor-pointer overflow-hidden ${openIndex === idx ? 'bg-white/5 border-primary/30' : 'bg-transparent border-white/10 hover:border-white/30'
+                        className={`group border transition-all duration-500 cursor-pointer overflow-hidden ${openIndex === idx ? 'bg-primary/5 border-primary/40' : 'bg-transparent border-white/10 hover:border-primary/50'
                             }`}
                         onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                     >
                         <div className="p-6 md:p-8 flex justify-between items-center">
-                            <h4 className={`font-headline text-lg md:text-xl font-bold uppercase tracking-tight transition-colors ${openIndex === idx ? 'text-primary' : 'text-white group-hover:text-neutral-300'
+                            <h4 className={`font-headline text-lg md:text-xl font-bold uppercase tracking-tight transition-all duration-300 ${openIndex === idx ? 'text-primary' : 'text-white group-hover:text-primary'
                                 }`}>
                                 {proc.title}
                             </h4>
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500 shrink-0 ml-4 ${openIndex === idx ? 'border-primary/50 text-primary rotate-180' : 'border-white/20 text-white/50 group-hover:text-white group-hover:border-white/40'
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-500 shrink-0 ml-4 ${openIndex === idx ? 'border-primary/50 text-primary rotate-180' : 'border-white/20 text-white/50 group-hover:text-primary group-hover:border-primary/40'
                                 }`}>
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <ChevronDown size={14} />
                             </div>
                         </div>
                         <div
                             className={`px-6 md:px-8 transition-all duration-500 ease-in-out ${openIndex === idx ? 'max-h-64 opacity-100 pb-8' : 'max-h-0 opacity-0 pb-0'
                                 }`}
                         >
-                            <p className="font-body text-sm md:text-base text-neutral-400 leading-relaxed uppercase pr-4 md:pr-12">
+                            <p className="font-body text-sm md:text-base text-neutral-400 leading-relaxed uppercase pr-4 md:pr-12 transition-colors group-hover:text-primary/80">
                                 {proc.content}
                             </p>
                         </div>

@@ -196,7 +196,7 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
 
                     <button
                         onClick={() => router.push(`/${lang}/portal/profile`)}
-                        className="flex items-center gap-3 px-6 h-full font-black text-[10px] tracking-widest uppercase hover:bg-white/5 transition-all border-r border-white/5"
+                        className="flex items-center gap-3 px-6 h-full font-black text-[10px] tracking-widest uppercase hover:bg-white/5 transition-all border-r border-white/5 cursor-pointer"
                     >
                         <User size={14} className="text-primary" />
                         <span className="hidden md:inline">{t.Portal.profile_title}</span>

@@ -34,6 +34,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
 
     const navLinks = [
         { name: t.Navigation.services, href: "#services" },
+        { name: t.Navigation.methodology, href: "#methodology" },
         { name: t.Navigation.work, href: "#work" },
         { name: t.Navigation.tech, href: "#tech" },
         { name: t.Navigation.about, href: "#about" },
@@ -126,20 +127,14 @@ export default function Navbar({ t, lang }: NavbarProps) {
 
                     {/* Right Side Tools */}
                     <div className="hidden lg:flex items-center gap-8">
+                        <DictionarySwitcher currentLocale={lang} />
                         <Link
                             href={`/${lang}/portal`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-label text-[10px] font-bold tracking-[0.3em] text-neutral-400 hover:text-white uppercase transition-colors"
-                        >
-                            {t.Navigation.portal}
-                        </Link>
-                        <DictionarySwitcher currentLocale={lang} />
-                        <Link
-                            href={`/${lang}/start`}
                             className="group relative overflow-hidden bg-white text-black px-6 py-4 font-black text-[10px] tracking-widest uppercase transition-all duration-300"
                         >
-                            <span className="relative z-10">{t.Navigation.start_project}</span>
+                            <span className="relative z-10">{t.Navigation.portal}</span>
                             <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                         </Link>
                     </div>
@@ -195,17 +190,17 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             ))}
                         </nav>
 
-                        <div className="mt-12 space-y-4 relative z-10 pb-8">
+                        <div className="mt-12 space-y-6 relative z-10 pb-8">
                             <motion.div
                                 variants={linkVariants}
                                 custom={navLinks.length}
                             >
                                 <Link
-                                    href={`/${lang}/start`}
+                                    href={`/${lang}/portal`}
                                     onClick={() => setIsOpen(false)}
                                     className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
                                 >
-                                    {t.Navigation.start_project}
+                                    {t.Navigation.portal}
                                 </Link>
                             </motion.div>
 

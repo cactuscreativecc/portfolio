@@ -95,9 +95,24 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
+    const deleteBriefing = async (id: string) => {
+        if (!confirm("TEM CERTEZA QUE DESEJA EXCLUIR ESTE LEAD? ESTA AÇÃO É IRREVERSÍVEL.")) return;
+
+        try {
+            const { error } = await supabase.from('briefings').delete().eq('id', id);
+            if (error) throw error;
+
+            toast.success('Lead excluído com sucesso.');
+            setBriefings(prev => prev.filter(b => b.id !== id));
+            if (expandedBriefing === id) setExpandedBriefing(null);
+        } catch (err: any) {
+            toast.error('Erro ao excluir: ' + err.message);
+        }
+    };
+
     useEffect(() => {
         if (activeTab === 'briefings') fetchBriefings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab]);
 
     const handleClientLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>, idx: number) => {
@@ -916,7 +931,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             <aside className="w-64 flex flex-col gap-2">
                 <button
                     onClick={() => setActiveTab('clients')}
-                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'clients' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all cursor-pointer ${activeTab === 'clients' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
                         }`}
                 >
                     <Users size={16} />
@@ -924,7 +939,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 </button>
                 <button
                     onClick={() => setActiveTab('projects')}
-                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'projects' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all cursor-pointer ${activeTab === 'projects' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
                         }`}
                 >
                     <Layers size={16} />
@@ -932,7 +947,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 </button>
                 <button
                     onClick={() => setActiveTab('customization')}
-                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'customization' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all cursor-pointer ${activeTab === 'customization' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
                         }`}
                 >
                     <Settings size={16} />
@@ -940,7 +955,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                 </button>
                 <button
                     onClick={() => setActiveTab('briefings')}
-                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all ${activeTab === 'briefings' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all cursor-pointer ${activeTab === 'briefings' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
                         }`}
                 >
                     <FileText size={16} />
@@ -1539,7 +1554,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                 <button
                                     onClick={saveSiteContent}
                                     disabled={isSaving}
-                                    className="bg-primary text-black px-10 py-4 font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all disabled:opacity-50 shadow-[0_0_20px_rgba(174,213,0,0.2)]"
+                                    className="bg-primary text-black px-10 py-4 font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all disabled:opacity-50 cursor-pointer shadow-[0_0_20px_rgba(174,213,0,0.2)]"
                                 >
                                     {isSaving ? "SALVANDO..." : "PUBLICAR ALTERAÇÕES"}
                                 </button>
@@ -1565,7 +1580,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                             <button
                                                 key={item.id}
                                                 onClick={() => setActiveCustomTab(item.id as any)}
-                                                className={`flex items-center gap-3 px-4 py-3 text-[9px] font-black tracking-widest uppercase transition-all ${activeCustomTab === item.id
+                                                className={`flex items-center gap-3 px-4 py-3 text-[9px] font-black tracking-widest uppercase transition-all cursor-pointer ${activeCustomTab === item.id
                                                     ? 'bg-primary/10 text-primary border-l-2 border-primary'
                                                     : 'text-neutral-500 hover:text-white hover:bg-white/5'
                                                     }`}
@@ -1580,6 +1595,47 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                     <div className="flex-1 space-y-12 pb-20">
                                         {activeCustomTab === 'general' && (
                                             <section className="animate-in fade-in slide-in-from-right-4 space-y-12">
+                                                <div>
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">ESTADO DE OPERAÇÃO</h3>
+                                                    <div className="bg-surface-container-high border border-white/5 p-8 flex flex-col lg:flex-row gap-8 items-center justify-between">
+                                                        <div className="space-y-2">
+                                                            <h4 className="text-sm font-bold text-white uppercase tracking-tight">Capacidade de Atendimento</h4>
+                                                            <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Ajuste o contador de vagas exibido na Landing Page em tempo real</p>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-6 bg-background p-4 border border-white/5">
+                                                            <button
+                                                                onClick={() => updateSection('general', { ...siteContent?.general, project_slots: Math.max(0, Number(siteContent?.general?.project_slots || 0) - 1) })}
+                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-xl font-light cursor-pointer select-none"
+                                                            >
+                                                                −
+                                                            </button>
+                                                            <div className="flex flex-col items-center min-w-[80px]">
+                                                                <span className="text-4xl font-black text-primary leading-none tracking-tighter">
+                                                                    {siteContent?.general?.project_slots ?? 1}
+                                                                </span>
+                                                                <span className="text-[9px] font-black text-neutral-600 uppercase tracking-widest mt-2">vagas ativas</span>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => updateSection('general', { ...siteContent?.general, project_slots: Number(siteContent?.general?.project_slots || 0) + 1 })}
+                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-xl font-light cursor-pointer select-none"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+
+                                                        <div className={`px-6 py-4 border flex items-center gap-4 transition-colors duration-500 ${Number(siteContent?.general?.project_slots) > 0 ? 'border-primary/20 bg-primary/5 text-primary' : 'border-red-500/20 bg-red-500/5 text-red-500'}`}>
+                                                            <div className={`w-2 h-2 rounded-full animate-pulse ${Number(siteContent?.general?.project_slots) > 0 ? 'bg-primary' : 'bg-red-500'}`} />
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] font-black tracking-[0.2em] uppercase leading-none">
+                                                                    {Number(siteContent?.general?.project_slots) > 0 ? 'STATUS: OPERACIONAL' : 'STATUS: LOTADO'}
+                                                                </span>
+                                                                <span className="text-[8px] font-bold opacity-60 uppercase mt-1">Visível na Hero Section</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <div>
                                                     <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">META TAGS & SEO</h3>
                                                     <div className="bg-surface-container-high border border-white/5 p-8 space-y-6">
@@ -2437,6 +2493,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                             </div>
                                                         )}
                                                         <span className="text-[9px] text-neutral-600">{b.created_at ? new Date(b.created_at).toLocaleDateString('pt-BR') : ''}</span>
+                                                        {profile?.role === 'admin' && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    deleteBriefing(b.id);
+                                                                }}
+                                                                className="p-2 text-neutral-600 hover:text-red-500 transition-all hover:bg-red-500/10 border border-transparent hover:border-red-500/20"
+                                                                title="Deletar Lead"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        )}
                                                         <ChevronRight size={14} className={`text-neutral-500 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
                                                     </div>
                                                 </button>
