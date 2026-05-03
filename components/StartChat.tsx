@@ -91,6 +91,19 @@ export default function StartChat({ lang }: { lang: string }) {
     const cleanText = (text: string) =>
         text.replace(/\[BRIEFING_COMPLETE\][\s\S]*?\[\/BRIEFING_COMPLETE\]/g, "").trim();
 
+    const renderBotText = (text: string) => {
+        const parts = text.split(/\*\*(.*?)\*\*/g);
+        return (
+            <>
+                {parts.map((part, i) =>
+                    i % 2 === 1
+                        ? <strong key={i} className="font-black text-primary">{part}</strong>
+                        : <span key={i}>{part}</span>
+                )}
+            </>
+        );
+    };
+
     const saveBriefing = async (data: Record<string, unknown>, history: ApiMessage[]) => {
         try {
             const res = await fetch("/api/save-briefing", {
@@ -305,11 +318,20 @@ export default function StartChat({ lang }: { lang: string }) {
                             animate={{ opacity: 1, y: 0 }}
                             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                         >
-                            <div className={`max-w-[95%] md:max-w-[90%] py-2 text-2xl md:text-4xl xl:text-5xl font-headline uppercase leading-[1.05] tracking-tighter ${
-                                msg.role === "user" ? "text-primary font-bold text-right" : "text-white font-medium"
-                            }`}>
-                                {msg.text}
-                            </div>
+                            {msg.role === "bot" ? (
+                                <div className="max-w-[88%] py-1">
+                                    <span className="block text-[8px] font-black tracking-[0.3em] text-primary uppercase mb-2">CACTUS</span>
+                                    <p className="font-body text-white text-base md:text-lg lg:text-xl leading-relaxed font-light">
+                                        {renderBotText(msg.text)}
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="max-w-[75%] py-1 text-right">
+                                    <p className="font-headline text-primary font-black text-sm md:text-base uppercase tracking-widest leading-snug">
+                                        {msg.text}
+                                    </p>
+                                </div>
+                            )}
                         </motion.div>
                     ))}
                 </AnimatePresence>
