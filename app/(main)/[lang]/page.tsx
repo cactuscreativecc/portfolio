@@ -90,8 +90,12 @@ export default async function Home({
                     </span>
                     <span className="font-headline font-bold text-[8px] md:text-[9.5px] lg:text-[12px] tracking-widest text-white uppercase leading-none whitespace-nowrap">
                       {lang === 'en'
-                        ? `${siteContent?.general?.project_slots ?? 1} ${Number(siteContent?.general?.project_slots) === 1 ? 'SLOT' : 'SLOTS'} FOR NEW PROJECT`
-                        : `${siteContent?.general?.project_slots ?? 1} ${Number(siteContent?.general?.project_slots) === 1 ? 'VAGA' : 'VAGAS'} PARA NOVO PROJETO`}
+                        ? Number(siteContent?.general?.project_slots ?? 1) === 1
+                          ? 'WE HAVE ONLY 1 SLOT FOR NEW PROJECTS'
+                          : `WE HAVE ${siteContent?.general?.project_slots ?? 1} SLOTS FOR NEW PROJECTS`
+                        : Number(siteContent?.general?.project_slots ?? 1) === 1
+                          ? 'TEMOS APENAS 1 VAGA PARA NOVOS PROJETOS'
+                          : `TEMOS ${siteContent?.general?.project_slots ?? 1} VAGAS PARA NOVOS PROJETOS`}
                     </span>
                   </div>
                 </div>

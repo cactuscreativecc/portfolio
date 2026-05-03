@@ -10,13 +10,12 @@ function LocalTimeInfo({ locale, isActive }: { locale: Locale, isActive: boolean
 
     useEffect(() => {
         const updateTime = () => {
-            const timeZone = locale === 'pt' ? 'America/Sao_Paulo' : 'America/New_York';
             try {
+                // Sem definir 'timeZone', a API Intl usa o fuso horário local do navegador do visitante
                 const formatted = new Intl.DateTimeFormat('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
-                    hour12: false,
-                    timeZone
+                    hour12: false
                 }).format(new Date());
                 setTime(formatted);
             } catch (e) {
@@ -27,7 +26,7 @@ function LocalTimeInfo({ locale, isActive }: { locale: Locale, isActive: boolean
         updateTime();
         const interval = setInterval(updateTime, 30000); // Update every 30s
         return () => clearInterval(interval);
-    }, [locale]);
+    }, []);
 
     if (!time) return null;
 
