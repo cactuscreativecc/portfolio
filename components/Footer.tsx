@@ -36,12 +36,12 @@ export default function Footer({ t }: { t: any }) {
                     <div className="md:col-span-2 space-y-6">
                         <h4 className="font-label text-xs uppercase tracking-widest text-primary font-bold">{t.Footer.menu}</h4>
                         <ul className="space-y-4 font-body text-sm text-white">
-                            <li><a href="/#services" className="hover:text-primary transition-colors uppercase">{t.Navigation.services}</a></li>
-                            <li><a href="/#methodology" className="hover:text-primary transition-colors uppercase">{t.Navigation.methodology}</a></li>
-                            <li><a href="/#work" className="hover:text-primary transition-colors uppercase">{t.Navigation.work}</a></li>
-                            <li><a href="/#tech" className="hover:text-primary transition-colors uppercase">{t.Navigation.tech}</a></li>
-                            <li><a href="/#about" className="hover:text-primary transition-colors uppercase">{t.Navigation.about}</a></li>
-                            <li><a href="/#contact" className="hover:text-primary transition-colors uppercase">{t.Navigation.contact}</a></li>
+                            <li><a href="#services" className="hover:text-primary transition-colors uppercase">{t.Navigation.services}</a></li>
+                            <li><a href="#methodology" className="hover:text-primary transition-colors uppercase">{t.Navigation.methodology}</a></li>
+                            <li><a href="#work" className="hover:text-primary transition-colors uppercase">{t.Navigation.work}</a></li>
+                            <li><a href="#tech" className="hover:text-primary transition-colors uppercase">{t.Navigation.tech}</a></li>
+                            <li><a href="#about" className="hover:text-primary transition-colors uppercase">{t.Navigation.about}</a></li>
+                            <li><a href="#contact" className="hover:text-primary transition-colors uppercase">{t.Navigation.contact}</a></li>
                         </ul>
                     </div>
 
