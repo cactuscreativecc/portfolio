@@ -1859,7 +1859,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             value={cap.tag}
                                                                             onChange={(e) => {
                                                                                 const newCaps = [...siteContent.capabilities];
-                                                                                newCaps[idx].tag = e.target.value;
+                                                                                newCaps[idx] = { ...newCaps[idx], tag: e.target.value };
                                                                                 updateSection('capabilities', newCaps);
                                                                             }}
                                                                             className="w-full bg-primary/5 text-primary text-[10px] font-black tracking-widest border border-primary/20 p-2 focus:outline-none uppercase focus:bg-primary/10 transition-all"
@@ -1872,7 +1872,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                             placeholder="English tag..."
                                                                             onChange={(e) => {
                                                                                 const newCaps = [...siteContent.capabilities];
-                                                                                newCaps[idx].tag_en = e.target.value;
+                                                                                newCaps[idx] = { ...newCaps[idx], tag_en: e.target.value };
                                                                                 updateSection('capabilities', newCaps);
                                                                             }}
                                                                             className="w-full bg-blue-400/5 text-blue-400 border border-blue-400/20 p-2 text-[10px] font-black tracking-widest uppercase focus:bg-blue-400/10 focus:outline-none transition-all placeholder:text-blue-900"
@@ -1881,10 +1881,10 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     <div className="flex-1 max-w-[150px]">
                                                                         <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block tracking-widest">COR DA TAG</label>
                                                                         <select
-                                                                            value={cap.tag_color || 'primary'}
+                                                                            value={cap.tag_color || (idx === 0 ? 'neutral' : (idx === 2 || idx === 5) ? 'yellow' : 'primary')}
                                                                             onChange={(e) => {
                                                                                 const newCaps = [...siteContent.capabilities];
-                                                                                newCaps[idx].tag_color = e.target.value;
+                                                                                newCaps[idx] = { ...newCaps[idx], tag_color: e.target.value };
                                                                                 updateSection('capabilities', newCaps);
                                                                             }}
                                                                             className="w-full bg-background text-white border border-white/5 p-2 text-[10px] font-black tracking-widest uppercase focus:border-primary focus:outline-none transition-all"
@@ -1905,7 +1905,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     value={cap.title}
                                                                     onChange={(e) => {
                                                                         const newCaps = [...siteContent.capabilities];
-                                                                        newCaps[idx].title = e.target.value;
+                                                                        newCaps[idx] = { ...newCaps[idx], title: e.target.value };
                                                                         updateSection('capabilities', newCaps);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-3 font-black text-white uppercase text-sm tracking-tighter focus:border-primary focus:outline-none transition-all"
@@ -1916,7 +1916,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     placeholder="English title..."
                                                                     onChange={(e) => {
                                                                         const newCaps = [...siteContent.capabilities];
-                                                                        newCaps[idx].title_en = e.target.value;
+                                                                        newCaps[idx] = { ...newCaps[idx], title_en: e.target.value };
                                                                         updateSection('capabilities', newCaps);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-3 font-black text-blue-400/60 uppercase text-sm tracking-tighter focus:border-blue-400/40 focus:outline-none transition-all placeholder:text-neutral-800"
@@ -1928,7 +1928,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     value={cap.text}
                                                                     onChange={(e) => {
                                                                         const newCaps = [...siteContent.capabilities];
-                                                                        newCaps[idx].text = e.target.value;
+                                                                        newCaps[idx] = { ...newCaps[idx], text: e.target.value };
                                                                         updateSection('capabilities', newCaps);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-4 text-[12px] text-neutral-400 font-medium leading-relaxed focus:border-primary focus:outline-none custom-scrollbar resize-none transition-all"
@@ -1940,7 +1940,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                                     placeholder="English description..."
                                                                     onChange={(e) => {
                                                                         const newCaps = [...siteContent.capabilities];
-                                                                        newCaps[idx].text_en = e.target.value;
+                                                                        newCaps[idx] = { ...newCaps[idx], text_en: e.target.value };
                                                                         updateSection('capabilities', newCaps);
                                                                     }}
                                                                     className="w-full bg-background border border-white/5 p-4 text-[12px] text-blue-400/60 font-medium leading-relaxed focus:border-blue-400/40 focus:outline-none custom-scrollbar resize-none transition-all placeholder:text-neutral-800"

@@ -20,6 +20,8 @@ import Navbar from "@/components/Navbar";
 import CTARevealSection from "@/components/CTARevealSection";
 import TextReveal from "@/components/TextReveal";
 
+export const revalidate = 0;
+
 export default async function Home({
   params,
 }: {
