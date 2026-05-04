@@ -249,7 +249,7 @@ export default async function Home({
       </main>
 
       {/* Footer - Premium Editorial Layout */}
-      <Footer t={t} />
+      <Footer t={t} socialLinks={siteContent?.general?.social_links} />
 
       {/* Global Command: Scroll to Top Unit [Off-Standard] */}
       <ScrollToTop />

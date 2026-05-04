@@ -1748,6 +1748,92 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                {/* ── REDES SOCIAIS ── */}
+                                                <div>
+                                                    <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">REDES SOCIAIS</h3>
+                                                    <div className="bg-surface-container-high border border-white/5 p-8 space-y-6">
+                                                        {/* Lista de redes */}
+                                                        <div className="space-y-3">
+                                                            {(siteContent?.general?.social_links || []).map((social: any, idx: number) => (
+                                                                <div key={idx} className="flex items-center gap-3 bg-background border border-white/5 p-3 group hover:border-white/10 transition-all">
+                                                                    {/* Ícone selector */}
+                                                                    <select
+                                                                        value={social.icon || 'link'}
+                                                                        onChange={(e) => {
+                                                                            const updated = [...(siteContent.general.social_links || [])];
+                                                                            updated[idx] = { ...updated[idx], icon: e.target.value };
+                                                                            updateSection('general', { ...siteContent.general, social_links: updated });
+                                                                        }}
+                                                                        className="bg-white/5 border border-white/10 text-primary text-[9px] font-black tracking-widest uppercase p-2 focus:border-primary focus:outline-none transition-all w-32 shrink-0"
+                                                                    >
+                                                                        <option value="instagram">INSTAGRAM</option>
+                                                                        <option value="youtube">YOUTUBE</option>
+                                                                        <option value="facebook">FACEBOOK</option>
+                                                                        <option value="x">X (TWITTER)</option>
+                                                                        <option value="linkedin">LINKEDIN</option>
+                                                                        <option value="tiktok">TIKTOK</option>
+                                                                        <option value="whatsapp">WHATSAPP</option>
+                                                                        <option value="github">GITHUB</option>
+                                                                        <option value="link">OUTRO</option>
+                                                                    </select>
+                                                                    {/* Label */}
+                                                                    <input
+                                                                        value={social.label || ''}
+                                                                        placeholder="Ex: @cactuscreative.cc"
+                                                                        onChange={(e) => {
+                                                                            const updated = [...(siteContent.general.social_links || [])];
+                                                                            updated[idx] = { ...updated[idx], label: e.target.value };
+                                                                            updateSection('general', { ...siteContent.general, social_links: updated });
+                                                                        }}
+                                                                        className="flex-1 bg-transparent border-b border-white/10 py-2 text-white text-[10px] font-bold focus:outline-none focus:border-primary transition-all placeholder:text-neutral-700"
+                                                                    />
+                                                                    {/* URL */}
+                                                                    <input
+                                                                        value={social.url || ''}
+                                                                        placeholder="https://..."
+                                                                        onChange={(e) => {
+                                                                            const updated = [...(siteContent.general.social_links || [])];
+                                                                            updated[idx] = { ...updated[idx], url: e.target.value };
+                                                                            updateSection('general', { ...siteContent.general, social_links: updated });
+                                                                        }}
+                                                                        className="flex-1 bg-transparent border-b border-white/10 py-2 text-neutral-400 text-[10px] focus:outline-none focus:border-primary transition-all placeholder:text-neutral-700"
+                                                                    />
+                                                                    {/* Delete */}
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            const updated = (siteContent.general.social_links || []).filter((_: any, i: number) => i !== idx);
+                                                                            updateSection('general', { ...siteContent.general, social_links: updated });
+                                                                        }}
+                                                                        className="p-2 text-neutral-700 hover:text-red-500 transition-colors shrink-0 opacity-0 group-hover:opacity-100"
+                                                                        title="Remover"
+                                                                    >
+                                                                        <Trash2 size={14} />
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {/* Add button */}
+                                                        <button
+                                                            onClick={() => {
+                                                                const current = siteContent?.general?.social_links || [];
+                                                                updateSection('general', {
+                                                                    ...siteContent.general,
+                                                                    social_links: [...current, { icon: 'instagram', label: '', url: '' }]
+                                                                });
+                                                            }}
+                                                            className="w-full border border-dashed border-white/10 py-4 text-[9px] font-black tracking-[0.4em] text-neutral-600 hover:border-primary hover:text-primary transition-all uppercase flex items-center justify-center gap-3 group"
+                                                        >
+                                                            <Plus className="group-hover:scale-125 transition-transform" size={14} />
+                                                            ADICIONAR REDE SOCIAL
+                                                        </button>
+
+                                                        <p className="text-[9px] text-neutral-700 font-bold uppercase tracking-widest">
+                                                            As redes são exibidas automaticamente no rodapé do site após salvar.
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </section>
                                         )}
 
