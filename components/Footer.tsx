@@ -209,10 +209,10 @@ export default function Footer({ t, socialLinks }: { t: any; socialLinks?: Socia
                 </div>
 
                 {/* ── Bottom bar ── */}
-                <div className="pt-8 md:pt-12 xl:pt-16 border-t border-white/5 flex flex-col md:flex-row justify-center items-center gap-8 font-label text-[10px] tracking-[0.3em] text-neutral-600 uppercase">
-                    <p className="flex items-center gap-2">
+                <div className="pt-8 md:pt-12 xl:pt-16 pb-24 md:pb-0 border-t border-white/5 flex flex-col md:flex-row justify-center items-center font-label text-[9px] md:text-[10px] tracking-[0.3em] text-neutral-600 uppercase">
+                    <p className="text-center leading-relaxed max-w-[200px] md:max-w-none">
                         {t.Footer.built_with.split('♡')[0]}
-                        <span className="text-primary tracking-normal">❤</span>
+                        <span className="inline-block text-primary tracking-normal mx-1 md:mx-2">❤</span>
                         {t.Footer.built_with.split('♡')[1]}
                     </p>
                 </div>
