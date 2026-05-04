@@ -29,19 +29,19 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
 
     return (
         <div className="w-full mt-4 overflow-hidden py-8 flex items-center justify-center bg-transparent border-t border-white/5">
-            <div className="max-w-grid mx-auto px-6 md:px-16 w-full flex items-center gap-12">
+            <div className="max-w-grid mx-auto px-6 md:px-16 w-full flex flex-col md:flex-row items-center gap-6 md:gap-12">
 
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
-                <div className="flex-shrink-0 flex items-center gap-8 relative z-10 bg-background pr-10">
+                <div className="flex-shrink-0 flex w-full md:w-auto items-center justify-center md:justify-start gap-4 md:gap-8 relative z-10 bg-background md:pr-10">
                     <p className="font-label text-[9px] tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
                         <TextReveal text={title} />
                     </p>
                     {/* Tactical Vertical Line */}
-                    <div className="w-[1px] h-3 bg-white/20" />
+                    <div className="hidden md:block w-[1px] h-3 bg-white/20" />
                 </div>
 
                 {/* Infinite Flow - Vertical Centering Refined */}
-                <div className="relative flex flex-grow overflow-hidden items-center h-full">
+                <div className="relative flex flex-grow overflow-hidden items-center h-full w-full">
                     <motion.div
                         className="flex gap-24 whitespace-nowrap items-center"
                         initial={{ x: 0 }}
