@@ -1616,41 +1616,49 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                             <section className="animate-in fade-in slide-in-from-right-4 space-y-12">
                                                 <div>
                                                     <h3 className="text-xs font-black tracking-[0.5em] text-primary uppercase mb-8 border-l-2 border-primary pl-4">ESTADO DE OPERAÇÃO</h3>
-                                                    <div className="bg-surface-container-high border border-white/5 p-8 flex flex-col lg:flex-row gap-8 items-center justify-between">
-                                                        <div className="space-y-2">
-                                                            <h4 className="text-sm font-bold text-white uppercase tracking-tight">Capacidade de Atendimento</h4>
-                                                            <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Ajuste o contador de vagas exibido na Landing Page em tempo real</p>
+                                                    <div className="bg-background border border-white/5 grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-white/5 rounded-sm overflow-hidden">
+                                                        {/* Col 1: Título e Descrição */}
+                                                        <div className="p-6 md:p-8 flex flex-col justify-center">
+                                                            <h4 className="text-sm font-bold text-white uppercase tracking-tight mb-2">Capacidade</h4>
+                                                            <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">Controle em tempo real de vagas</p>
                                                         </div>
 
-                                                        <div className="flex items-center gap-6 bg-background p-4 border border-white/5">
+                                                        {/* Col 2: Controlador */}
+                                                        <div className="p-6 md:p-8 flex items-center justify-center gap-6 bg-white/[0.02]">
                                                             <button
                                                                 onClick={() => updateSection('general', { ...siteContent?.general, project_slots: Math.max(0, Number(siteContent?.general?.project_slots || 0) - 1) })}
-                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-xl font-light cursor-pointer select-none"
+                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-2xl font-light cursor-pointer select-none rounded-sm bg-background shadow-lg"
                                                             >
                                                                 −
                                                             </button>
                                                             <div className="flex flex-col items-center min-w-[80px]">
-                                                                <span className="text-4xl font-black text-primary leading-none tracking-tighter">
+                                                                <span className="text-5xl font-black text-primary leading-none tracking-tighter tabular-nums drop-shadow-sm">
                                                                     {siteContent?.general?.project_slots ?? 1}
                                                                 </span>
-                                                                <span className="text-[9px] font-black text-neutral-600 uppercase tracking-widest mt-2">vagas ativas</span>
+                                                                <span className="text-[9px] font-black text-neutral-500 uppercase tracking-widest mt-4">
+                                                                    vagas ativas
+                                                                </span>
                                                             </div>
                                                             <button
                                                                 onClick={() => updateSection('general', { ...siteContent?.general, project_slots: Number(siteContent?.general?.project_slots || 0) + 1 })}
-                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-xl font-light cursor-pointer select-none"
+                                                                className="w-12 h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-all text-2xl font-light cursor-pointer select-none rounded-sm bg-background shadow-lg"
                                                             >
                                                                 +
                                                             </button>
                                                         </div>
 
-                                                        <div className={`px-6 py-4 border flex items-center gap-4 transition-colors duration-500 ${Number(siteContent?.general?.project_slots) > 0 ? 'border-primary/20 bg-primary/5 text-primary' : 'border-red-500/20 bg-red-500/5 text-red-500'}`}>
-                                                            <div className={`w-2 h-2 rounded-full animate-pulse ${Number(siteContent?.general?.project_slots) > 0 ? 'bg-primary' : 'bg-red-500'}`} />
-                                                            <div className="flex flex-col">
-                                                                <span className="text-[10px] font-black tracking-[0.2em] uppercase leading-none">
-                                                                    {Number(siteContent?.general?.project_slots) > 0 ? 'STATUS: OPERACIONAL' : 'STATUS: LOTADO'}
-                                                                </span>
-                                                                <span className="text-[8px] font-bold opacity-60 uppercase mt-1">Visível na Hero Section</span>
-                                                            </div>
+                                                        {/* Col 3: Status Visual */}
+                                                        <div className={`p-6 md:p-8 flex flex-col items-center justify-center transition-colors duration-500 relative overflow-hidden ${Number(siteContent?.general?.project_slots) > 0 ? 'bg-primary/[0.03]' : 'bg-red-500/[0.03]'}`}>
+                                                            {/* Aura Glow */}
+                                                            <div className={`absolute inset-0 opacity-[0.15] blur-3xl pointer-events-none rounded-full scale-150 ${Number(siteContent?.general?.project_slots) > 0 ? 'bg-primary' : 'bg-red-500'}`} />
+
+                                                            <div className={`w-2 h-2 rounded-full mb-3 shadow-[0_0_10px_currentColor] animate-pulse relative z-10 ${Number(siteContent?.general?.project_slots) > 0 ? 'bg-primary text-primary' : 'bg-red-500 text-red-500'}`} />
+                                                            <span className={`text-[11px] font-black tracking-[0.2em] relative z-10 uppercase leading-none mb-2 ${Number(siteContent?.general?.project_slots) > 0 ? 'text-primary' : 'text-red-500'}`}>
+                                                                {Number(siteContent?.general?.project_slots) > 0 ? 'Operacional' : 'Lotado'}
+                                                            </span>
+                                                            <span className="text-[8px] font-bold opacity-60 uppercase text-neutral-400 relative z-10 tracking-widest">
+                                                                Hero Section
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
