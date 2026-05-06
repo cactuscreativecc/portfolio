@@ -23,6 +23,8 @@ import {
     Edit,
     Sparkles,
     X,
+    CreditCard,
+    Briefcase,
     Layout,
     Star,
     BarChart3,
@@ -56,11 +58,15 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [expandedClient, setExpandedClient] = useState<string | null>(null);
     const [clientData, setClientData] = useState<Record<string, any>>({});
     const [isCreatingClient, setIsCreatingClient] = useState(false);
+    const updateSection = (section: string, data: any) => {
+        setSiteContent((prev: any) => ({ ...prev, [section]: data }));
+    };
     const [newClientData, setNewClientData] = useState({
         email: '',
         password: '',
         fullName: '',
         phone: '',
+        document: '', // CPF ou CNPJ
         emergencyContact: '',
         companyName: '',
         cep: '',
@@ -82,6 +88,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [briefings, setBriefings] = useState<any[]>([]);
     const [expandedBriefing, setExpandedBriefing] = useState<string | null>(null);
     const [isLoadingBriefings, setIsLoadingBriefings] = useState(false);
+    const [clientInnerTabs, setClientInnerTabs] = useState<Record<string, 'projects' | 'finance' | 'chat' | 'settings'>>({});
+    const [selectedContractProject, setSelectedContractProject] = useState<any>(null);
 
     const fetchBriefings = async () => {
         setIsLoadingBriefings(true);
@@ -422,6 +430,8 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         const email = (document.getElementById(`client-email-${clientId}`) as HTMLInputElement)?.value;
         const phone = (document.getElementById(`client-phone-${clientId}`) as HTMLInputElement)?.value;
         const password = (document.getElementById(`client-pwd-${clientId}`) as HTMLInputElement)?.value;
+        const cep = (document.getElementById(`client-cep-${clientId}`) as HTMLInputElement)?.value;
+        const addressRaw = (document.getElementById(`client-address-${clientId}`) as HTMLInputElement)?.value;
 
         try {
             const { data: { session } } = await supabase.auth.getSession();
@@ -434,6 +444,10 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                     email,
                     phone,
                     password,
+                    cep,
+                    addressRaw,
+                    document: (document.getElementById(`client-doc-${clientId}`) as HTMLInputElement)?.value,
+                    companyName: (document.getElementById(`client-company-${clientId}`) as HTMLInputElement)?.value,
                     adminToken: session?.access_token
                 })
             });
@@ -442,7 +456,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             if (data.error) throw new Error(data.error);
 
             toast.success('Dados do cliente atualizados com sucesso!');
-            setClients(prev => prev.map(c => c.id === clientId ? { ...c, full_name: fullName, email, phone } : c));
+            setClients(prev => prev.map(c => c.id === clientId ? { ...c, full_name: fullName, email, phone, cep } : c));
 
             const pwdInput = document.getElementById(`client-pwd-${clientId}`) as HTMLInputElement;
             if (password && pwdInput) {
@@ -562,6 +576,43 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
+    const updateProjectFinance = async (projId: string, value: string, paymentMethod: string) => {
+        try {
+            const { error } = await supabase
+                .from('projects')
+                .update({
+                    value: value,
+                    payment_method: paymentMethod
+                })
+                .eq('id', projId);
+
+            if (error) {
+                if (error.message.includes('column "value"') || error.message.includes('column "payment_method"')) {
+                    toast.error('Erro: Colunas financeiras não encontradas. Adicione "value" e "payment_method" na tabela "projects" do Supabase.');
+                    return;
+                }
+                throw error;
+            }
+
+            toast.success('Dados financeiros atualizados!');
+
+            // Update local state
+            setClientData(prev => {
+                const newData = { ...prev };
+                for (const clientId in newData) {
+                    if (newData[clientId].projects) {
+                        newData[clientId].projects = newData[clientId].projects.map((p: any) =>
+                            p.id === projId ? { ...p, value, payment_method: paymentMethod } : p
+                        );
+                    }
+                }
+                return newData;
+            });
+        } catch (err: any) {
+            toast.error('Erro ao atualizar financeiro: ' + err.message);
+        }
+    };
+
     const createClientAccount = async (e: React.FormEvent) => {
         e.preventDefault();
         const toastId = toast.loading("Criando conta do cliente...");
@@ -587,16 +638,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
             if (clientsData) setClients(clientsData);
 
             setIsCreatingClient(false);
-            setNewClientData({
+            setNewClientData(prev => ({
+                ...prev,
+                fullName: '',
                 email: '',
                 password: '',
-                fullName: '',
                 phone: '',
+                document: '',
                 emergencyContact: '',
                 companyName: '',
                 cep: '',
                 address: { logradouro: '', numero: '', bairro: '', cidade: '', uf: '' }
-            });
+            }));
         } catch (err: any) {
             toast.error('Erro ao criar: ' + err.message, { id: toastId });
         }
@@ -648,6 +701,42 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         } catch (err: any) {
             toast.error('Erro: ' + err.message);
         }
+    };
+
+    const getContractTemplate = (client: any, project: any) => {
+        const today = new Date().toLocaleDateString('pt-BR');
+        const val = project.value || '0.00';
+        const method = project.payment_method || 'A combinar';
+        const address = client.address ? `${client.address.logradouro}, ${client.address.numero} - ${client.address.bairro}, ${client.address.cidade}/${client.address.uf}` : 'Não informado';
+
+        return `CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE DESENVOLVIMENTO
+
+CONTRATADA: CACTUS CREATIVE CC
+CNPJ: [INSERIR SEU CNPJ AQUI]
+
+CONTRATANTE: ${client.full_name || client.company_name || 'CLIENTE'}
+CPF/CNPJ: ${client.document || '[NÃO INFORMADO]'}
+ENDEREÇO: ${address}
+
+OBJETO DO CONTRATO:
+Desenvolvimento de ${project.name || 'projeto digital'}.
+
+VALOR TOTAL DO INVESTIMENTO:
+R$ ${val}
+
+FORMA DE PAGAMENTO:
+${method}
+
+PRAZO DE ENTREGA:
+Conforme detalhado no cronograma do projeto em anexo.
+
+DATA: ${today}
+
+_____________________________________
+CACTUS CREATIVE CC
+
+_____________________________________
+${client.full_name || 'CONTRATANTE'}`;
     };
 
     const deleteProject = async (projId: string) => {
@@ -856,9 +945,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
-    const updateSection = (section: string, data: any) => {
-        setSiteContent((prev: any) => ({ ...prev, [section]: data }));
-    };
+
 
     const removeSuccessStory = (idx: number) => {
         const current = [...(siteContent.success_stories || [])];
@@ -1056,12 +1143,12 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         </div>
                                                         <div className="grid grid-cols-2 gap-4">
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TELEFONE / WHATSAPP</label>
-                                                                <input required type="text" value={newClientData.phone} onChange={e => setNewClientData(p => ({ ...p, phone: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="(00) 00000-0000" />
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CPF / CNPJ</label>
+                                                                <input required type="text" value={newClientData.document} onChange={e => setNewClientData(p => ({ ...p, document: e.target.value }))} className="w-full bg-background border border-primary/20 p-3 text-primary font-black text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="000.000.000-00" />
                                                             </div>
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CONTATO EMERGÊNCIA</label>
-                                                                <input type="text" value={newClientData.emergencyContact} onChange={e => setNewClientData(p => ({ ...p, emergencyContact: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="Nome ou Tel" />
+                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TELEFONE / WHATSAPP</label>
+                                                                <input required type="text" value={newClientData.phone} onChange={e => setNewClientData(p => ({ ...p, phone: e.target.value }))} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" placeholder="(00) 00000-0000" />
                                                             </div>
                                                         </div>
                                                         <div>
@@ -1150,148 +1237,339 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                         </div>
 
                                         {expandedClient === client.id && (
-                                            <div className="mt-8 pt-8 border-t border-white/5 space-y-12 animate-in fade-in slide-in-from-top-4">
-
-                                                {/* SECTION 1: DADOS DO CLIENTE */}
-                                                <div>
-                                                    <h5 className="text-[10px] uppercase font-black text-primary tracking-widest mb-6 flex items-center gap-2">
-                                                        <span className="w-1 h-3 bg-primary inline-block"></span>
-                                                        DADOS DO CLIENTE
-                                                    </h5>
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME / EMPRESA</label>
-                                                            <input id={`client-name-${client.id}`} defaultValue={client.full_name} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">E-MAIL</label>
-                                                            <input id={`client-email-${client.id}`} defaultValue={client.email} className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TELEFONE</label>
-                                                            <input id={`client-phone-${client.id}`} defaultValue={client.phone || ''} placeholder="N/A" className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOVA SENHA</label>
-                                                            <input id={`client-pwd-${client.id}`} type="password" placeholder="Em branco para manter" className="w-full bg-background border border-white/5 p-3 text-white font-bold text-[10px] focus:border-primary focus:outline-none transition-colors placeholder:text-neutral-700" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex justify-end mt-4">
+                                            <div className="mt-8 pt-8 border-t border-white/5 animate-in fade-in slide-in-from-top-4">
+                                                {/* INNER TAB NAVIGATION */}
+                                                <div className="flex flex-wrap gap-2 mb-8 bg-black/20 p-1 rounded-none border border-white/5">
+                                                    {[
+                                                        { id: 'projects', label: 'PROJETOS & STATUS', icon: Layers },
+                                                        { id: 'finance', label: 'FINANCEIRO & CONTRATO', icon: CreditCard },
+                                                        { id: 'chat', label: 'COMUNICAÇÃO & ARQUIVOS', icon: MessageSquare },
+                                                        { id: 'settings', label: 'DADOS DO CLIENTE', icon: Settings },
+                                                    ].map(tab => (
                                                         <button
-                                                            onClick={() => saveClientData(client.id)}
-                                                            className="bg-primary/5 border border-primary/20 text-primary px-6 py-3 text-[10px] font-black tracking-widest uppercase hover:bg-primary hover:text-black transition-all"
+                                                            key={tab.id}
+                                                            onClick={(e) => { e.stopPropagation(); setClientInnerTabs(prev => ({ ...prev, [client.id]: tab.id as any })); }}
+                                                            className={`flex items-center gap-3 px-4 py-3 text-[9px] font-black tracking-widest uppercase transition-all ${clientInnerTabs[client.id] === tab.id || (!clientInnerTabs[client.id] && tab.id === 'projects')
+                                                                ? 'bg-primary text-black'
+                                                                : 'text-neutral-500 hover:text-white hover:bg-white/5'
+                                                                }`}
                                                         >
-                                                            SALVAR ALTERAÇÕES
+                                                            <tab.icon size={12} />
+                                                            {tab.label}
                                                         </button>
-                                                    </div>
+                                                    ))}
                                                 </div>
 
-                                                {/* SECTION 2: PROJETOS ATIVOS */}
-                                                <div>
-                                                    <h5 className="text-[10px] uppercase font-black text-primary tracking-widest mb-6 flex items-center gap-2">
-                                                        <span className="w-1 h-3 bg-primary inline-block"></span>
-                                                        PROJETOS E STATUS
-                                                    </h5>
-                                                    <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-                                                        {clientData[client.id]?.projects?.length > 0 ? clientData[client.id].projects.map((proj: any) => (
-                                                            <div key={proj.id} className="min-w-[320px] bg-background border border-white/5 p-6 shrink-0 relative group hover:border-primary/50 transition-colors">
-                                                                <span className="absolute top-0 right-0 bg-primary/10 text-primary border-b border-l border-primary/20 text-[8px] font-black px-3 py-1 uppercase tracking-widest">
-                                                                    {proj.status}
+                                                <div className="min-h-[400px]">
+                                                    {/* TAB 1: PROJETOS */}
+                                                    {(clientInnerTabs[client.id] === 'projects' || !clientInnerTabs[client.id]) && (
+                                                        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                            <div className="flex justify-between items-center mb-6">
+                                                                <h5 className="text-[10px] uppercase font-black text-primary tracking-widest flex items-center gap-2">
+                                                                    <span className="w-1 h-3 bg-primary inline-block"></span>
+                                                                    PROJETOS ATIVOS
+                                                                </h5>
+                                                                <span className="text-[9px] font-bold text-neutral-600 uppercase tracking-widest">
+                                                                    {clientData[client.id]?.projects?.length || 0} PROJETO(S) ENCONTRADO(S)
                                                                 </span>
-                                                                <h6 className="font-black text-white uppercase text-sm mb-1 pr-16 truncate">{proj.name}</h6>
-                                                                <p className="text-[9px] text-neutral-500 uppercase tracking-widest mb-8 line-clamp-2">{proj.description}</p>
-
-                                                                <div className="flex items-center justify-between mt-auto">
-                                                                    <div className="flex-1 mr-4">
-                                                                        <div className="h-[2px] w-full bg-white/5 rounded-none overflow-hidden relative">
-                                                                            <div className="absolute top-0 left-0 h-full bg-primary transition-all duration-1000" style={{ width: `${proj.current_step}%` }}></div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <span className="text-[10px] text-white font-bold tracking-widest">PROGRESSO: {proj.current_step}%</span>
-                                                                </div>
-
-                                                                <button
-                                                                    onClick={() => { setActiveTab('projects'); setExpandedProject(proj.id); }}
-                                                                    className="w-full mt-6 bg-white/5 border border-white/10 text-white py-3 text-[8px] font-black tracking-widest uppercase hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center justify-center gap-2"
-                                                                >
-                                                                    <Edit size={12} /> GERENCIAR ESTE PROJETO
-                                                                </button>
                                                             </div>
-                                                        )) : (
-                                                            <p className="text-[10px] text-neutral-600 uppercase font-black tracking-widest py-4 border border-dashed border-white/10 w-full text-center">NENHUM PROJETO ENCONTRADO</p>
-                                                        )}
-                                                    </div>
-                                                </div>
 
-                                                {/* SECTION 3: COMUNICAÇÃO E ARQUIVOS */}
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                    <div>
-                                                        <div className="flex justify-between items-center mb-6">
-                                                            <h5 className="text-[10px] uppercase font-black text-primary tracking-widest flex items-center gap-2">
-                                                                <span className="w-1 h-3 bg-primary inline-block"></span>
-                                                                ARQUIVOS DO PROJETO
-                                                            </h5>
-                                                            <label className="cursor-pointer bg-primary/10 text-primary p-2 hover:bg-primary hover:text-black transition-all">
-                                                                <Plus size={14} />
-                                                                <input
-                                                                    type="file"
-                                                                    className="hidden"
-                                                                    onChange={(e) => {
-                                                                        const pid = clientData[client.id]?.activeProjectId;
-                                                                        if (pid) handleAttachmentUpload(e, pid, client.id);
-                                                                        else toast.error("Selecione um projeto primeiro");
-                                                                    }}
-                                                                />
-                                                            </label>
-                                                        </div>
-                                                        <div className="bg-background border border-white/5 p-4 space-y-2 h-[280px] overflow-y-auto custom-scrollbar">
-                                                            {clientData[client.id]?.attachments?.filter((a: any) => a.project_id === clientData[client.id]?.activeProjectId).length > 0 ?
-                                                                clientData[client.id].attachments.filter((a: any) => a.project_id === clientData[client.id]?.activeProjectId).map((file: any) => (
-                                                                    <div key={file.id} className="flex justify-between items-center group p-3 border border-white/5 hover:border-primary/30 hover:bg-white/[0.02] transition-colors">
-                                                                        <div className="flex items-center gap-3 overflow-hidden">
-                                                                            <FileText size={14} className="text-neutral-500" />
-                                                                            <span className="text-[10px] text-neutral-300 uppercase font-bold truncate tracking-widest">{file.name}</span>
+                                                            <div className="grid grid-cols-1 gap-4">
+                                                                {clientData[client.id]?.projects?.length > 0 ? clientData[client.id].projects.map((proj: any) => (
+                                                                    <div key={proj.id} className="bg-background border border-white/5 p-6 relative group hover:border-primary/50 transition-all flex flex-col md:flex-row md:items-center gap-8">
+                                                                        {/* Info Section */}
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <h6 className="font-black text-white uppercase text-base mb-1 tracking-tight flex items-center gap-3">
+                                                                                <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                                                                                {proj.name}
+                                                                            </h6>
+                                                                            <p className="text-[9px] text-neutral-500 uppercase font-bold tracking-widest line-clamp-1 max-w-xl">
+                                                                                {proj.description}
+                                                                            </p>
                                                                         </div>
-                                                                        <div className="flex gap-2">
-                                                                            <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-primary transition-colors">
-                                                                                <Download size={14} />
-                                                                            </a>
-                                                                            <button onClick={() => deleteAttachment(file, client.id)} className="text-neutral-600 hover:text-red-500 transition-colors">
-                                                                                <Trash2 size={14} />
+
+                                                                        {/* Status Badge */}
+                                                                        <div className="shrink-0 flex flex-col items-start gap-2 hidden lg:flex">
+                                                                            <span className="text-[7px] font-black text-neutral-600 uppercase tracking-widest">ESTÁGIO ATUAL</span>
+                                                                            <span className="bg-primary/10 text-primary border border-primary/20 text-[8px] font-black px-4 py-2 uppercase tracking-[0.2em] min-w-[110px] text-center shadow-[0_0_15px_rgba(174,213,0,0.05)]">
+                                                                                {proj.status}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        {/* Progress Section */}
+                                                                        <div className="w-full md:w-64 space-y-2">
+                                                                            <div className="flex justify-between items-center mb-1">
+                                                                                <div className="flex flex-col lg:hidden">
+                                                                                    <span className="text-[6px] font-black text-neutral-600 uppercase tracking-tighter">STATUS: {proj.status}</span>
+                                                                                    <span className="text-[8px] font-black text-neutral-600 uppercase tracking-widest">PROGRESSO ATUAL</span>
+                                                                                </div>
+                                                                                <span className="hidden lg:block text-[8px] font-black text-neutral-600 uppercase tracking-widest">PROGRESSO ATUAL</span>
+                                                                                <span className="text-[10px] text-primary font-black tracking-widest">{proj.current_step}%</span>
+                                                                            </div>
+                                                                            <div className="h-[3.5px] w-full bg-white/5 rounded-none overflow-hidden relative">
+                                                                                <motion.div
+                                                                                    initial={{ width: 0 }}
+                                                                                    animate={{ width: `${proj.current_step}%` }}
+                                                                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                                                                    className="absolute top-0 left-0 h-full bg-primary shadow-[0_0_15px_rgba(174,213,0,0.5)]"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Action Section */}
+                                                                        <div className="flex items-center gap-3">
+                                                                            <button
+                                                                                onClick={() => { setActiveTab('projects'); setExpandedProject(proj.id); }}
+                                                                                className="px-6 py-4 bg-white/5 border border-white/10 text-white text-[9px] font-black tracking-[0.2em] uppercase hover:bg-primary hover:text-black hover:border-primary transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                                                                            >
+                                                                                <Edit size={12} /> GERENCIAR
                                                                             </button>
                                                                         </div>
                                                                     </div>
                                                                 )) : (
-                                                                    <div className="h-full flex flex-col items-center justify-center">
-                                                                        <AlertCircle className="text-neutral-800 w-8 h-8 mb-2" />
-                                                                        <p className="text-[9px] font-black text-neutral-700 uppercase tracking-widest">NENHUM ARQUIVO PARA ESTE PROJETO</p>
+                                                                    <div className="py-16 border border-dashed border-white/10 flex flex-col items-center justify-center grayscale opacity-50 bg-white/[0.01]">
+                                                                        <Briefcase className="w-12 h-12 mb-4 text-neutral-700" />
+                                                                        <p className="text-[10px] text-neutral-500 uppercase font-black tracking-[0.3em]">NENHUM PROJETO VINCULADO AO CLIENTE</p>
                                                                     </div>
                                                                 )}
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <h5 className="text-[10px] uppercase font-black text-primary tracking-widest mb-6 flex items-center gap-2">
-                                                            <span className="w-1 h-3 bg-primary inline-block"></span>
-                                                            DADOS DO CLIENTE
-                                                        </h5>
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">EMAIL</label>
-                                                                <div className="bg-background border border-white/5 p-3 text-neutral-400 font-bold text-[10px] uppercase">{client.email}</div>
                                                             </div>
-                                                            <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">SENHA ATUAL (ADMIN ONLY)</label>
-                                                                <div className="bg-background border border-white/5 p-3 text-primary font-black text-[10px] uppercase tracking-widest">
-                                                                    {client.plain_password || 'NÃO DISPONÍVEL'}
+                                                        </div>
+                                                    )}
+
+                                                    {/* TAB 2: FINANCEIRO */}
+                                                    {clientInnerTabs[client.id] === 'finance' && (
+                                                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                                                <div className="md:col-span-2 space-y-6">
+                                                                    <h5 className="text-[10px] uppercase font-black text-primary tracking-widest flex items-center gap-2">
+                                                                        <span className="w-1 h-3 bg-primary inline-block"></span>
+                                                                        CONTRATOS E FATURAMENTO
+                                                                    </h5>
+
+                                                                    <div className="bg-surface-container-high border border-white/5 overflow-hidden">
+                                                                        <table className="w-full text-left border-collapse">
+                                                                            <thead>
+                                                                                <tr className="border-b border-white/5">
+                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">PROJETO</th>
+                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">VALOR</th>
+                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase text-right">AÇÕES</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                {clientData[client.id]?.projects?.length > 0 ? clientData[client.id].projects.map((proj: any) => (
+                                                                                    <tr key={proj.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                                                                                        <td className="p-4">
+                                                                                            <div className="text-[10px] font-bold text-white uppercase">{proj.name}</div>
+                                                                                            <div className="text-[8px] text-neutral-500 uppercase mt-1">{proj.status}</div>
+                                                                                        </td>
+                                                                                        <td className="p-4">
+                                                                                            <div className="space-y-2">
+                                                                                                <div className="flex items-center gap-2">
+                                                                                                    <span className="text-[8px] text-neutral-600 font-black">R$</span>
+                                                                                                    <input
+                                                                                                        id={`proj-val-${proj.id}`}
+                                                                                                        defaultValue={proj.value}
+                                                                                                        placeholder="0.00"
+                                                                                                        className="bg-black/40 border border-white/5 p-2 text-[10px] text-primary font-black w-24 focus:border-primary outline-none"
+                                                                                                    />
+                                                                                                </div>
+                                                                                                <input
+                                                                                                    id={`proj-method-${proj.id}`}
+                                                                                                    defaultValue={proj.payment_method}
+                                                                                                    placeholder="FORMA DE PAGTO"
+                                                                                                    className="bg-black/40 border border-white/5 p-2 text-[8px] text-white w-full focus:border-primary outline-none uppercase"
+                                                                                                />
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td className="p-4 text-right">
+                                                                                            <div className="flex flex-col gap-2">
+                                                                                                <button
+                                                                                                    onClick={() => updateProjectFinance(
+                                                                                                        proj.id,
+                                                                                                        (document.getElementById(`proj-val-${proj.id}`) as HTMLInputElement)?.value,
+                                                                                                        (document.getElementById(`proj-method-${proj.id}`) as HTMLInputElement)?.value
+                                                                                                    )}
+                                                                                                    className="text-[8px] font-black text-neutral-400 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-2 transition-all hover:border-white"
+                                                                                                >
+                                                                                                    SALVAR DADOS
+                                                                                                </button>
+                                                                                                <button
+                                                                                                    onClick={() => setSelectedContractProject({ ...proj, client_owner: client })}
+                                                                                                    className="text-[9px] font-black text-primary hover:text-white uppercase tracking-widest bg-primary/10 px-3 py-2 transition-all"
+                                                                                                >
+                                                                                                    GERAR CONTRATO
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                )) : (
+                                                                                    <tr>
+                                                                                        <td colSpan={3} className="p-8 text-center text-[10px] text-neutral-600 uppercase font-black">NÃO HÁ PROJETOS PARA FATURAR</td>
+                                                                                    </tr>
+                                                                                )}
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="space-y-6">
+                                                                    <h5 className="text-[10px] uppercase font-black text-white/40 tracking-widest flex items-center gap-2">
+                                                                        TOTAL EM CONTRATOS
+                                                                    </h5>
+                                                                    <div className="bg-primary/5 border border-primary/20 p-6 rounded-none">
+                                                                        <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">SALDO ACORDADO</div>
+                                                                        <div className="text-4xl font-black text-white tracking-tighter">
+                                                                            R$ {clientData[client.id]?.projects?.reduce((acc: number, p: any) => acc + (parseFloat(p.value) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* TAB 3: COMUNICAÇÃO */}
+                                                    {clientInnerTabs[client.id] === 'chat' && (
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                                                             <div>
-                                                                <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CLIENTE DESDE</label>
-                                                                <div className="bg-background border border-white/5 p-3 text-neutral-400 font-bold text-[10px] uppercase">{new Date(client.created_at).toLocaleDateString()}</div>
+                                                                <h5 className="text-[10px] uppercase font-black text-primary tracking-widest mb-6 flex items-center gap-2">
+                                                                    <span className="w-1 h-3 bg-primary inline-block"></span>
+                                                                    ARQUIVOS RECENTES
+                                                                </h5>
+                                                                <div className="bg-background border border-white/5 p-4 space-y-2 h-[350px] overflow-y-auto custom-scrollbar">
+                                                                    {clientData[client.id]?.attachments?.length > 0 ?
+                                                                        clientData[client.id].attachments.map((file: any) => (
+                                                                            <div key={file.id} className="flex justify-between items-center group p-3 border border-white/5 hover:border-primary/30 hover:bg-white/[0.02] transition-colors">
+                                                                                <div className="flex items-center gap-3 overflow-hidden">
+                                                                                    <FileText size={14} className="text-neutral-500" />
+                                                                                    <span className="text-[10px] text-neutral-300 uppercase font-bold truncate tracking-widest">{file.name}</span>
+                                                                                </div>
+                                                                                <div className="flex gap-2">
+                                                                                    <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="text-neutral-600 hover:text-primary transition-colors">
+                                                                                        <Download size={14} />
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        )) : (
+                                                                            <div className="h-full flex items-center justify-center grayscale opacity-30">
+                                                                                <p className="text-[9px] font-black text-neutral-700 uppercase tracking-widest">NENHUM ARQUIVO</p>
+                                                                            </div>
+                                                                        )}
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <h5 className="text-[10px] uppercase font-black text-primary tracking-widest mb-6 flex items-center gap-2">
+                                                                    <span className="w-1 h-3 bg-primary inline-block"></span>
+                                                                    COMUNICAÇÃO
+                                                                </h5>
+                                                                <div className="bg-background border border-white/5 p-8 flex flex-col items-center justify-center h-[350px] text-center">
+                                                                    <MessageSquare className="w-8 h-8 text-neutral-800 mb-4" />
+                                                                    <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">
+                                                                        USE O CENTRO DE MENSAGENS PARA<br />FALAR COM ESTE CLIENTE
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    )}
+                                                    {/* TAB 4: CONFIGURAÇÕES / DADOS DO CLIENTE */}
+                                                    {clientInnerTabs[client.id] === 'settings' && (
+                                                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                            {/* 1. Identificação Principal */}
+                                                            <div className="space-y-6">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-10 h-10 bg-primary/10 flex items-center justify-center border border-primary/20">
+                                                                        <Users className="text-primary" size={18} />
+                                                                    </div>
+                                                                    <div>
+                                                                        <h5 className="text-[10px] uppercase font-black text-white tracking-[0.3em]">
+                                                                            1. IDENTIFICAÇÃO PRINCIPAL
+                                                                        </h5>
+                                                                        <p className="text-[8px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Dados fundamentais para documentos e contratos</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">NOME COMPLETO / TITULAR</label>
+                                                                        <input id={`client-name-${client.id}`} defaultValue={client.full_name} className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block border-l-2 border-primary/40 pl-3">CPF / CNPJ (USADO NO CONTRATO)</label>
+                                                                        <input id={`client-doc-${client.id}`} defaultValue={client.document || ''} placeholder="000.000.000-00" className="w-full bg-background border border-primary/20 p-4 text-primary font-black text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                    <div className="md:col-span-2">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">RAZÃO SOCIAL / EMPRESA</label>
+                                                                        <input id={`client-company-${client.id}`} defaultValue={client.company_name} className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* 2. Comunicação e Acesso */}
+                                                            <div className="space-y-6">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10">
+                                                                        <MessageSquare className="text-neutral-400" size={18} />
+                                                                    </div>
+                                                                    <div>
+                                                                        <h5 className="text-[10px] uppercase font-black text-white tracking-[0.3em]">
+                                                                            2. COMUNICAÇÃO E ACESSO
+                                                                        </h5>
+                                                                        <p className="text-[8px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Gestão de contato e credenciais de login</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">E-MAIL PRINCIPAL</label>
+                                                                        <input id={`client-email-${client.id}`} defaultValue={client.email} className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">TELEFONE / WHATSAPP</label>
+                                                                        <input id={`client-phone-${client.id}`} defaultValue={client.phone || ''} className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">ALTERAR SENHA (DEIXE VAZIO SE NÃO FOR MUDAR)</label>
+                                                                        <input id={`client-pwd-${client.id}`} type="password" placeholder="MÍNIMO 6 CARACTERES" className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* 3. Localização */}
+                                                            <div className="space-y-6">
+                                                                <div className="flex items-center gap-4">
+                                                                    <div className="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10">
+                                                                        <Briefcase className="text-neutral-400" size={18} />
+                                                                    </div>
+                                                                    <div>
+                                                                        <h5 className="text-[10px] uppercase font-black text-white tracking-[0.3em]">
+                                                                            3. LOCALIZAÇÃO E LOGRADOURO
+                                                                        </h5>
+                                                                        <p className="text-[8px] text-neutral-500 font-bold uppercase tracking-widest mt-1">Endereço para fins de faturamento e registro</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                                                    <div className="md:col-span-1">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">CEP</label>
+                                                                        <input id={`client-cep-${client.id}`} defaultValue={client.cep || ''} className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                    <div className="md:col-span-3">
+                                                                        <label className="text-[8px] font-black text-neutral-600 uppercase mb-2 block">ENDEREÇO COMPLETO</label>
+                                                                        <input id={`client-address-${client.id}`} defaultValue={client.address ? `${client.address.logradouro}, ${client.address.numero} - ${client.address.bairro}` : ''} placeholder="Rua exemplo, 123 - Bairro" className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[11px] focus:border-primary focus:outline-none transition-colors" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="flex justify-end pt-10 border-t border-white/5">
+                                                                <button
+                                                                    onClick={() => saveClientData(client.id)}
+                                                                    className="bg-primary text-black px-16 py-6 font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all shadow-[0_0_50px_rgba(174,213,0,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+                                                                >
+                                                                    SALVAR ALTERAÇÕES DO PERFIL
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
@@ -2546,6 +2824,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                             )}
                         </motion.div>
                     )}
+
                     {activeTab === 'briefings' && (
                         <motion.div
                             key="briefings"
@@ -2711,8 +2990,78 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                             )}
                         </motion.div>
                     )}
-                </AnimatePresence>
+                </AnimatePresence >
             </main >
+
+            <AnimatePresence>
+                {selectedContractProject && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-12"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            className="bg-surface-container-high border border-white/10 w-full max-w-4xl h-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"
+                        >
+                            <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-primary/10 flex items-center justify-center border border-primary/20">
+                                        <FileText className="text-primary" size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-black text-white uppercase tracking-widest">MINUTA DO CONTRATO</h3>
+                                        <p className="text-[9px] text-neutral-500 uppercase font-bold tracking-widest mt-1">
+                                            {selectedContractProject.client_owner?.full_name || 'CLIENTE'} · {selectedContractProject.name}
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setSelectedContractProject(null)}
+                                    className="p-2 hover:bg-white/5 text-neutral-500 hover:text-white transition-all border border-transparent hover:border-white/10"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar bg-white/5">
+                                <div className="max-w-2xl mx-auto bg-white p-12 shadow-inner text-black font-serif text-sm leading-relaxed whitespace-pre-wrap select-text">
+                                    {getContractTemplate(selectedContractProject.client_owner || {}, selectedContractProject)}
+                                </div>
+                            </div>
+
+                            <div className="p-6 border-t border-white/5 bg-black/40 flex justify-between items-center gap-4">
+                                <p className="text-[9px] text-neutral-600 uppercase font-black tracking-widest leading-relaxed">
+                                    ESTA É UMA MINUTA GERADA AUTOMATICAMENTE.<br />
+                                    REVISE TODOS OS DADOS ANTES DE ENVIAR.
+                                </p>
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={() => {
+                                            const text = getContractTemplate(selectedContractProject.client_owner || {}, selectedContractProject);
+                                            navigator.clipboard.writeText(text);
+                                            toast.success("Contrato copiado para a área de transferência!");
+                                        }}
+                                        className="px-6 py-4 border border-white/10 text-white font-black text-[10px] tracking-widest uppercase hover:bg-white/5 transition-all"
+                                    >
+                                        COPIAR TEXTO
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            toast.info("Função de exportação PDF em desenvolvimento. Use 'Copiar Texto' por enquanto.");
+                                        }}
+                                        className="bg-primary text-black px-10 py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all shadow-[0_0_30px_rgba(174,213,0,0.3)]"
+                                    >
+                                        EXPORTAR PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div >
     );
 }
