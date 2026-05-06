@@ -170,7 +170,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 duration: 1.5,
                 ease: "power2.inOut"
             })
-                .to(".progress-indicator, .mobile-progress", {
+                .to(".mobile-progress", {
                     opacity: 1,
                     x: 0,
                     duration: 1,
@@ -272,47 +272,49 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                             </div>
 
                             {/* Content Over Background */}
-                            <div className="project-content relative h-full w-full flex flex-col justify-end p-6 pb-36 md:p-12 lg:p-14 xl:p-16 2xl:p-32">
-                                <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10">
-                                    <div className="space-y-4">
-                                        <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
-                                            {project.category}
-                                        </span>
-                                        <h3 className="stagger-item font-headline text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
-                                            {project.title}
-                                        </h3>
-                                    </div>
-
-                                    <p className="stagger-item font-body text-sm md:text-base text-neutral-300 leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
-                                        {project.description}
-                                    </p>
-
-                                    <div className="stagger-item flex flex-wrap gap-8 pt-4">
-                                        {project.tags.map((tag) => (
-                                            <span key={tag} className="text-[10px] md:text-xs text-primary font-black tracking-[0.3em] uppercase drop-shadow-md">
-                                                #{tag}
+                            <div className="project-content relative h-full w-full flex flex-col justify-end pb-36 md:pb-20 lg:pb-24 xl:pb-32">
+                                <div className="max-w-grid mx-auto px-6 md:px-16 w-full">
+                                    <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10">
+                                        <div className="space-y-4">
+                                            <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
+                                                {project.category}
                                             </span>
-                                        ))}
-                                    </div>
-
-                                    {(project.url || project.href) && (
-                                        <div className="stagger-item pt-8 w-full md:w-auto">
-                                            <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="block md:inline-block w-full md:w-auto text-center group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                                                <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "VER ESTUDO DE CASO")}</span>
-                                                <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                                            </a>
+                                            <h3 className="stagger-item font-headline text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
+                                                {project.title}
+                                            </h3>
                                         </div>
-                                    )}
 
-                                    {/* Visual Stats overlay - bottom right */}
-                                    <div className="stagger-item pt-6 xl:pt-8 2xl:pt-12 flex gap-8 md:gap-12 border-t border-white/20">
-                                        <div>
-                                            <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
-                                            <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat1_label}</div>
+                                        <p className="stagger-item font-body text-sm md:text-base text-neutral-300 leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
+                                            {project.description}
+                                        </p>
+
+                                        <div className="stagger-item flex flex-wrap gap-8 pt-4">
+                                            {project.tags.map((tag) => (
+                                                <span key={tag} className="text-[10px] md:text-xs text-primary font-black tracking-[0.3em] uppercase drop-shadow-md">
+                                                    #{tag}
+                                                </span>
+                                            ))}
                                         </div>
-                                        <div>
-                                            <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
-                                            <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat2_label}</div>
+
+                                        {(project.url || project.href) && (
+                                            <div className="stagger-item pt-8 w-full md:w-auto">
+                                                <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="block md:inline-block w-full md:w-auto text-center group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                                                    <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "CONHECER PROJETO")}</span>
+                                                    <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {/* Visual Stats overlay - bottom right */}
+                                        <div className="stagger-item pt-6 xl:pt-8 2xl:pt-12 flex gap-8 md:gap-12 border-t border-white/20">
+                                            <div>
+                                                <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
+                                                <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat1_label}</div>
+                                            </div>
+                                            <div>
+                                                <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
+                                                <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat2_label}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -321,44 +323,8 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                     ))}
                 </div>
 
-                {/* 3. Refined Progress Indicator (Tactical HUD Style) - Desktop Only */}
-                <div className="progress-indicator absolute bottom-8 xl:bottom-12 2xl:bottom-20 left-6 md:left-12 z-[110] hidden md:flex flex-col items-start gap-4 opacity-0">
-                    {/* Top Marker */}
-                    <div className="flex flex-col gap-1">
-                        <span className="text-[7px] font-black text-primary tracking-[0.2em]">00_INIT</span>
-                        <div className="w-4 h-[1px] bg-primary/30" />
-                    </div>
-
-                    {/* Progress Track */}
-                    <div className="relative group">
-                        <div className="h-48 w-[1px] bg-white/5 relative overflow-hidden">
-                            <div
-                                id="scroll-progress-bar"
-                                className="absolute top-0 left-0 w-full bg-primary origin-top shadow-[0_0_15px_#aed500]"
-                                style={{ height: "0%" }}
-                            />
-                        </div>
-                        {/* Interactive scanning line (deco) */}
-                        <div className="absolute top-0 -left-1 w-3 h-[1px] bg-primary/50 blur-[1px] animate-pulse" />
-                    </div>
-
-                    {/* Bottom Marker & Label */}
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                            <div className="w-4 h-[1px] bg-white/20" />
-                            <span className="text-[7px] font-black text-white/30 tracking-[0.2em]">100_END</span>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black tracking-[0.5em] text-white/60 uppercase vertical-text py-2 border-l border-primary/20 pl-3">
-                                SCROLL TO <span className="text-primary">QUANTUM</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 4. Mobile Circular Progress Indicator */}
-                <div className="mobile-progress md:hidden absolute top-28 right-6 lg:right-8 z-[110] flex flex-col items-center justify-center opacity-0 rounded-full">
+                {/* 3. Circular Progress Indicator (All Devices) */}
+                < div className="mobile-progress absolute top-28 right-6 lg:right-16 2xl:right-24 z-[110] flex flex-col items-center justify-center opacity-0 rounded-full" >
                     <div className="relative w-14 h-14 flex items-center justify-center">
                         <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 36 36">
                             <path
