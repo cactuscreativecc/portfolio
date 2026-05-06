@@ -128,8 +128,9 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
+                        className="w-full md:w-auto"
                     >
-                        <a href="#services" className="group relative inline-block px-12 py-6 bg-white text-black font-bold text-xs tracking-[0.3em] uppercase overflow-hidden transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                        <a href="#services" className="group relative block md:inline-block w-full md:w-auto text-center px-12 py-6 bg-white text-black font-bold text-xs tracking-[0.3em] uppercase overflow-hidden transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                             <span className="relative z-10">{t.cta}</span>
                             <div className="absolute inset-0 translate-y-full bg-primary transition-transform duration-500 group-hover:translate-y-0" />
                         </a>

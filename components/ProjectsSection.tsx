@@ -153,6 +153,11 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                     onUpdate: (self) => {
                         // Manual update for progress bar if preferred, or include in timeline
                         gsap.set("#scroll-progress-bar", { height: `${self.progress * 100}%` });
+                        // Update mobile circular progress
+                        const percent = Math.round(self.progress * 100);
+                        const elements = document.querySelectorAll("#mobile-scroll-percent");
+                        elements.forEach(el => { el.textContent = `${percent}%`; });
+                        gsap.set("#mobile-progress-ring", { strokeDashoffset: 100 - (self.progress * 100) });
                     }
                 }
             });
@@ -165,7 +170,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 duration: 1.5,
                 ease: "power2.inOut"
             })
-                .to(".progress-indicator", {
+                .to(".progress-indicator, .mobile-progress", {
                     opacity: 1,
                     x: 0,
                     duration: 1,
@@ -260,14 +265,14 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                     src={project.image}
                                     alt={project.title}
                                     fill
-                                    className="object-cover grayscale brightness-[0.2] group-hover/project:grayscale-0 group-hover/project:brightness-100 transition-all duration-700 ease-in-out"
+                                    className="object-cover grayscale-0 brightness-[0.5] md:grayscale md:brightness-[0.2] group-hover/project:grayscale-0 group-hover/project:brightness-100 transition-all duration-700 ease-in-out"
                                     priority={idx === 0}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-100 group-hover/project:opacity-30 transition-opacity duration-700" />
                             </div>
 
                             {/* Content Over Background */}
-                            <div className="project-content relative h-full w-full flex flex-col justify-end p-8 md:p-12 lg:p-14 xl:p-16 2xl:p-32">
+                            <div className="project-content relative h-full w-full flex flex-col justify-end p-6 pb-36 md:p-12 lg:p-14 xl:p-16 2xl:p-32">
                                 <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10">
                                     <div className="space-y-4">
                                         <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
@@ -291,8 +296,8 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                     </div>
 
                                     {(project.url || project.href) && (
-                                        <div className="stagger-item pt-8">
-                                            <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="inline-block group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                                        <div className="stagger-item pt-8 w-full md:w-auto">
+                                            <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="block md:inline-block w-full md:w-auto text-center group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                                                 <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "VER ESTUDO DE CASO")}</span>
                                                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                                             </a>
@@ -316,8 +321,8 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                     ))}
                 </div>
 
-                {/* 3. Refined Progress Indicator (Tactical HUD Style) */}
-                <div className="progress-indicator absolute bottom-8 xl:bottom-12 2xl:bottom-20 left-6 md:left-12 z-[110] flex flex-col items-start gap-4 opacity-0">
+                {/* 3. Refined Progress Indicator (Tactical HUD Style) - Desktop Only */}
+                <div className="progress-indicator absolute bottom-8 xl:bottom-12 2xl:bottom-20 left-6 md:left-12 z-[110] hidden md:flex flex-col items-start gap-4 opacity-0">
                     {/* Top Marker */}
                     <div className="flex flex-col gap-1">
                         <span className="text-[7px] font-black text-primary tracking-[0.2em]">00_INIT</span>
@@ -349,6 +354,33 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                 SCROLL TO <span className="text-primary">QUANTUM</span>
                             </span>
                         </div>
+                    </div>
+                </div>
+
+                {/* 4. Mobile Circular Progress Indicator */}
+                <div className="mobile-progress md:hidden absolute top-28 right-6 lg:right-8 z-[110] flex flex-col items-center justify-center opacity-0 rounded-full">
+                    <div className="relative w-14 h-14 flex items-center justify-center">
+                        <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 36 36">
+                            <path
+                                className="text-white/10"
+                                strokeWidth="2"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                            <path
+                                id="mobile-progress-ring"
+                                className="text-primary"
+                                strokeWidth="2"
+                                strokeDasharray="100, 100"
+                                strokeDashoffset="100"
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                            />
+                        </svg>
+                        <span id="mobile-scroll-percent" className="relative z-10 text-[10px] font-black tracking-tighter text-white">0%</span>
                     </div>
                 </div>
             </div>
