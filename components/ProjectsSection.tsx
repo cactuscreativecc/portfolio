@@ -151,8 +151,6 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                     pin: true,
                     anticipatePin: 1,
                     onUpdate: (self) => {
-                        // Manual update for progress bar if preferred, or include in timeline
-                        gsap.set("#scroll-progress-bar", { height: `${self.progress * 100}%` });
                         // Update mobile circular progress
                         const percent = Math.round(self.progress * 100);
                         const elements = document.querySelectorAll("#mobile-scroll-percent");
@@ -324,7 +322,7 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                 </div>
 
                 {/* 3. Circular Progress Indicator (All Devices) */}
-                < div className="mobile-progress absolute top-28 right-6 lg:right-16 2xl:right-24 z-[110] flex flex-col items-center justify-center opacity-0 rounded-full" >
+                <div className="mobile-progress absolute top-28 right-6 lg:right-16 2xl:right-24 z-[110] flex flex-col items-center justify-center opacity-0 rounded-full">
                     <div className="relative w-14 h-14 flex items-center justify-center">
                         <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 36 36">
                             <path
@@ -357,6 +355,6 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                     text-orientation: mixed;
                 }
             `}</style>
-        </section >
+        </section>
     );
 }

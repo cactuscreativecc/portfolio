@@ -42,12 +42,12 @@ function WipeLine({
 
     return (
         <div className="relative overflow-hidden block w-fit max-w-[calc(100vw-3rem)] mx-auto px-4 py-1">
-            <motion.span
+            <motion.div
                 className={`block leading-none ${isAccent ? 'text-primary' : 'text-white'} text-center`}
                 style={{ opacity: textOpacity }}
             >
                 {children}
-            </motion.span>
+            </motion.div>
 
             {/* The single green sweep bar */}
             <motion.div

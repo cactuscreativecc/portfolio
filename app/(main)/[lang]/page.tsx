@@ -175,9 +175,9 @@ export default async function Home({
                                   }`}>{c.tag || "INFO"}</div>
                               </div>
                               <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-3 lg:mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
-                              <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-sm md:text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
+                              <div className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-sm md:text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
                                 {c.text || "Description not available."}
-                              </p>
+                              </div>
                             </div>
                             <div className="mt-6 lg:mt-8 translate-y-10 lg:translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
                               <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">

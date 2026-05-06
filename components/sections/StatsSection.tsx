@@ -164,9 +164,9 @@ export default function StatsSection({ t, siteContent, lang }: StatsSectionProps
                                 <AnimatedNumber value={item.val || item.value || '?'} delay={idx * 0.4} />
                             </div>
 
-                            <p className="font-label text-xs md:text-[13px] text-neutral-500 font-bold uppercase tracking-[0.3em] leading-relaxed pl-9 group-hover:text-neutral-300 transition-colors">
+                            <div className="font-label text-xs md:text-[13px] text-neutral-500 font-bold uppercase tracking-[0.3em] leading-relaxed pl-9 group-hover:text-neutral-300 transition-colors">
                                 <TextReveal text={item.label || "INFO"} />
-                            </p>
+                            </div>
 
                             <div className="absolute top-0 left-0 w-1/4 h-[1px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
                         </motion.div>

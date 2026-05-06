@@ -33,9 +33,9 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
 
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
                 <div className="flex-shrink-0 flex w-full md:w-auto items-center justify-center md:justify-start gap-4 md:gap-8 relative z-10 bg-background md:pr-10 py-4">
-                    <p className="font-label text-base tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
+                    <div className="font-label text-base tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
                         <TextReveal text={title} />
-                    </p>
+                    </div>
                     {/* Tactical Vertical Line */}
                     <div className="hidden md:block w-[1px] h-3 bg-white/20" />
                 </div>

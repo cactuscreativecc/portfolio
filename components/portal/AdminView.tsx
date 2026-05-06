@@ -2584,9 +2584,9 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                         const statusColor = b.status === 'aprovado' ? 'text-green-400 bg-green-400/10' : b.status === 'em_andamento' ? 'text-primary bg-primary/10' : 'text-neutral-400 bg-white/5';
                                         return (
                                             <div key={b.id} className="border border-white/5 bg-surface-container-high">
-                                                <button
+                                                <div
                                                     onClick={() => setExpandedBriefing(isOpen ? null : b.id)}
-                                                    className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/5 transition-all"
+                                                    className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/5 transition-all cursor-pointer"
                                                 >
                                                     <div className="flex items-center gap-6">
                                                         <div>
@@ -2622,7 +2622,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
                                                         )}
                                                         <ChevronRight size={14} className={`text-neutral-500 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
                                                     </div>
-                                                </button>
+                                                </div>
 
                                                 {isOpen && (
                                                     <div className="border-t border-white/5 px-6 py-6 space-y-6">
