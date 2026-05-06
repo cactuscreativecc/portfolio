@@ -32,8 +32,8 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
             <div className="max-w-grid mx-auto px-6 md:px-16 w-full flex flex-col md:flex-row items-center gap-6 md:gap-12">
 
                 {/* Labels Hub - Atomic Centering with Grid Alignment */}
-                <div className="flex-shrink-0 flex w-full md:w-auto items-center justify-center md:justify-start gap-4 md:gap-8 relative z-10 bg-background md:pr-10">
-                    <p className="font-label text-[9px] tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
+                <div className="flex-shrink-0 flex w-full md:w-auto items-center justify-center md:justify-start gap-4 md:gap-8 relative z-10 bg-background md:pr-10 py-4">
+                    <p className="font-label text-base tracking-[0.4em] text-neutral-500 uppercase font-bold whitespace-nowrap leading-none">
                         <TextReveal text={title} />
                     </p>
                     {/* Tactical Vertical Line */}
@@ -62,10 +62,10 @@ export default function ClientMarquee({ title, clients }: ClientMarqueeProps) {
                                     <img
                                         src={client.logoUrl}
                                         alt={client.name}
-                                        className="h-10 md:h-12 w-auto object-contain max-w-[150px] opacity-40 brightness-0 invert hover:opacity-100 transition-opacity duration-500"
+                                        className="h-16 md:h-20 w-auto object-contain max-w-[180px] opacity-40 brightness-0 invert hover:opacity-100 transition-opacity duration-500"
                                     />
                                 ) : (
-                                    <span className="font-headline text-xl md:text-2xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-white transition-colors duration-300 flex items-center">
+                                    <span className="font-headline text-3xl md:text-4xl font-black text-neutral-500 tracking-tighter uppercase cursor-default hover:text-white transition-colors duration-300 flex items-center">
                                         {client.name}
                                     </span>
                                 )}

@@ -77,7 +77,7 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
 
     return (
         <div ref={ref} className="flex items-baseline overflow-hidden select-none cursor-default group/num">
-            <motion.span className="font-headline text-4xl lg:text-5xl xl:text-[6.5rem] font-black text-white tracking-tighter leading-none transition-colors duration-300 group-hover/num:text-primary">
+            <motion.span className="font-headline text-5xl lg:text-5xl xl:text-[6.5rem] font-black text-white tracking-tighter leading-none transition-colors duration-300 group-hover/num:text-primary">
                 {display}
             </motion.span>
             <motion.span
@@ -87,7 +87,7 @@ function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number })
                     duration: 0.4,
                     ease: [0.23, 1, 0.32, 1]
                 }}
-                className="font-headline text-2xl lg:text-3xl xl:text-[4rem] font-black text-primary ml-1"
+                className="font-headline text-3xl lg:text-3xl xl:text-[4rem] font-black text-primary ml-1"
             >
                 {suffix}
             </motion.span>

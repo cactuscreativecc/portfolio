@@ -43,7 +43,7 @@ function WipeLine({
     return (
         <div className="relative overflow-hidden block w-fit max-w-[calc(100vw-3rem)] mx-auto px-4 py-1">
             <motion.span
-                className={`block leading-none ${isAccent ? 'text-primary' : 'text-white'} whitespace-nowrap text-center`}
+                className={`block leading-none ${isAccent ? 'text-primary' : 'text-white'} text-center`}
                 style={{ opacity: textOpacity }}
             >
                 {children}
@@ -110,14 +110,16 @@ export default function CTARevealSection({ t }: { t: any }) {
                 </div>
 
                 {/* Headline Wrap */}
-                <h2 className="font-headline font-black tracking-tighter uppercase mb-20 md:mb-28 flex flex-col items-center gap-2 md:gap-3 w-full px-4 text-center">
+                <h2 className="font-headline font-black tracking-tighter uppercase mb-20 md:mb-28 flex flex-col items-center justify-center gap-2 md:gap-3 w-full px-4 text-center">
                     {lines.map((line: string, i: number) => (
                         <WipeLine
                             key={i}
                             progress={lineProgresses[i]}
                             isAccent={i === accentLine}
                         >
-                            <TextReveal text={line} className="block leading-[0.95]" style={{ fontSize: 'clamp(28px, 6.5vw, 100px)' } as any} />
+                            <div className="flex justify-center text-center w-full">
+                                <TextReveal text={line} className="block leading-[0.95] text-center" style={{ fontSize: 'clamp(36px, 8vw, 60px)' } as any} />
+                            </div>
                         </WipeLine>
                     ))}
                 </h2>

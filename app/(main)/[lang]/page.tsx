@@ -76,7 +76,7 @@ export default async function Home({
               />
 
               <div className="mt-8 md:mt-10 lg:mt-14 xl:mt-16 2xl:mt-24 flex flex-col sm:flex-row gap-4 w-full flex-wrap xl:flex-nowrap">
-                <Link href={`/${lang}/start`} className="w-full sm:w-auto sm:flex-1 h-14 md:h-16 lg:h-20 group relative overflow-hidden bg-white text-black px-4 md:px-8 font-bold text-[10px] md:text-[11px] lg:text-sm tracking-[0.2em] md:tracking-[0.3em] transition-all flex items-center justify-center text-center shrink-0">
+                <Link href={`/${lang}/start`} className="w-full sm:w-auto sm:flex-1 h-14 md:h-16 lg:h-20 group relative overflow-hidden bg-white text-black px-4 md:px-8 font-bold text-xs md:text-[11px] lg:text-sm tracking-[0.2em] md:tracking-[0.3em] transition-all flex items-center justify-center text-center shrink-0">
                   <span className="relative z-10 uppercase whitespace-nowrap">{t.Hero.cta_primary}</span>
                   <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                 </Link>
@@ -87,10 +87,10 @@ export default async function Home({
                     <div className="relative w-1.5 h-1.5 bg-primary rounded-full" />
                   </div>
                   <div className="flex flex-col items-center sm:items-start gap-1">
-                    <span className="font-label text-[7px] md:text-[8px] lg:text-[9px] tracking-[0.2em] text-neutral-500 uppercase leading-none whitespace-nowrap">
+                    <span className="font-label text-[8px] md:text-[8px] lg:text-[9px] tracking-[0.2em] text-neutral-500 uppercase leading-none whitespace-nowrap">
                       {lang === 'en' ? "STATUS: OPERATIONAL" : "STATUS: OPERACIONAL"}
                     </span>
-                    <span className="font-headline font-bold text-[8px] md:text-[9.5px] lg:text-[12px] tracking-widest text-white uppercase leading-none whitespace-nowrap">
+                    <span className="font-headline font-bold text-[10px] md:text-[9.5px] lg:text-[12px] tracking-widest text-white uppercase leading-none whitespace-nowrap">
                       {lang === 'en'
                         ? Number(siteContent?.general?.project_slots ?? 1) === 1
                           ? 'WE HAVE ONLY 1 SLOT FOR NEW PROJECTS'
@@ -105,7 +105,7 @@ export default async function Home({
             </div>
           </div>
 
-          <div className="absolute bottom-8 left-0 w-full flex items-center justify-between px-8 gap-6 font-label text-[10px] tracking-[0.4em] text-neutral-800 uppercase pointer-events-none">
+          <div className="absolute bottom-8 left-0 w-full flex items-center justify-between px-8 gap-6 font-label text-[10px] tracking-[0.4em] text-white/50 uppercase pointer-events-none">
             <div className="flex-1 h-[1px] bg-white/10" />
             <span className="whitespace-nowrap">{t.Footer.scroll_hint}</span>
             <div className="flex-1 h-[1px] bg-white/10" />
@@ -162,10 +162,10 @@ export default async function Home({
                       const row2 = processedCaps.slice(3, 6);
 
                       const renderCard = (c: any) => (
-                        <div key={c.idx} className="bg-background lg:flex-1 p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
+                        <div key={c.idx} className="bg-background lg:flex-1 p-6 lg:p-8 group hover:lg:flex-[2.5] hover:bg-primary transition-all duration-700 ease-in-out relative overflow-hidden border border-white/5 lg:border-none">
                           <div className="relative z-10 flex flex-col h-full justify-between">
                             <div>
-                              <div className="flex justify-between items-start mb-6">
+                              <div className="flex justify-between items-start mb-4 lg:mb-6">
                                 <div className="text-4xl font-black text-white/5 group-hover:text-black/10 transition-colors leading-none font-headline">{c.number}</div>
                                 <div className={`px-2 py-0.5 border text-[9px] font-black tracking-widest uppercase transition-colors ${c.tag_color === 'neutral' ? "border-white/10 bg-white/5 text-neutral-500 group-hover:border-black/20 group-hover:text-black/40" :
                                   c.tag_color === 'yellow' ? "border-yellow-500/20 bg-yellow-500/5 text-yellow-500 group-hover:border-black/20 group-hover:text-black/60" :
@@ -174,12 +174,12 @@ export default async function Home({
                                         "border-primary/20 bg-primary/5 text-primary group-hover:border-black/20 group-hover:text-black/60"
                                   }`}>{c.tag || "INFO"}</div>
                               </div>
-                              <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
-                              <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
+                              <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-black uppercase mb-3 lg:mb-4 transition-colors leading-tight">{c.title || "CAPABILITY"}</h3>
+                              <p className="text-neutral-500 group-hover:text-black font-body uppercase leading-relaxed text-sm md:text-[12px] tracking-tight max-w-full opacity-60 group-hover:opacity-100 transition-opacity">
                                 {c.text || "Description not available."}
                               </p>
                             </div>
-                            <div className="mt-8 translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
+                            <div className="mt-6 lg:mt-8 translate-y-10 lg:translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
                               <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
                                 <span className="material-symbols-outlined text-sm">{c.icon}</span>
                               </div>
