@@ -115,7 +115,7 @@ export default async function Home({
 
         <div id="services">
           {/* Services - Technical Architecture Grid */}
-          <section className="py-16 md:py-24 lg:py-28 xl:py-32 2xl:py-40 bg-background border-y border-white/5 relative z-10 w-full">
+          <section className="pt-16 md:pt-24 lg:pt-28 xl:pt-32 2xl:pt-40 pb-0 bg-background border-t border-white/5 relative z-10 w-full">
             <div className="max-w-grid mx-auto px-6 md:px-16">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                 <div className="lg:col-span-12">

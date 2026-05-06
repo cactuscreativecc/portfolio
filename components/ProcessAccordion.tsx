@@ -37,9 +37,23 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
     ];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 xl:gap-24 items-start mt-8 md:mt-12 xl:mt-24 pt-8 md:pt-12 xl:pt-24 border-t border-white/5">
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 xl:gap-24 items-start mt-8 md:mt-12 xl:mt-24 pt-8 md:pt-12 xl:pt-24 pb-16 md:pb-24 lg:pb-28 xl:pb-32 2xl:pb-40 border-t border-white/5">
+            {/* Neon Background Canvas - Full Width Breakout and Extended Bottom */}
+            <div className="absolute top-0 bottom-0 left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen z-0 pointer-events-none opacity-[0.06]" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat'
+            }} />
+
+            {/* Left-Side Neon Glow (Top-Left spreading to Right) using pure CSS for exact control */}
+            <div
+                className="absolute top-0 bottom-0 left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen z-0 pointer-events-none"
+                style={{
+                    background: "radial-gradient(ellipse 80% 80% at left top, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 100%)"
+                }}
+            />
+
             {/* Left Side: Highlighted Text / Header */}
-            <div className="lg:col-span-5 lg:sticky lg:top-40">
+            <div className="relative z-10 lg:col-span-5 lg:sticky lg:top-40">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 mb-8">
                     <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                     <TextReveal as="span" text={isEn ? "METHODOLOGY" : "METODOLOGIA"} className="text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase leading-none" />
@@ -48,7 +62,7 @@ export default function ProcessAccordion({ lang }: { lang: string }) {
             </div>
 
             {/* Right Side: Accordion */}
-            <div className="lg:col-span-7 flex flex-col gap-4">
+            <div className="relative z-10 lg:col-span-7 flex flex-col gap-4">
                 {processes.map((proc, idx) => (
                     <div
                         key={idx}
