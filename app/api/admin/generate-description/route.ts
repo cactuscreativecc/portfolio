@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
 export async function POST(req: Request) {
     try {
@@ -14,27 +15,22 @@ export async function POST(req: Request) {
         const imageRes = await fetch(imageUrl);
         const imageBuffer = await imageRes.arrayBuffer();
         const base64Image = Buffer.from(imageBuffer).toString('base64');
-        const mimeType = (imageRes.headers.get('content-type') || 'image/jpeg') as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+        const mimeType = imageRes.headers.get('content-type') || 'image/jpeg';
 
-        const message = await client.messages.create({
-            model: "claude-haiku-4-5-20251001",
-            max_tokens: 256,
-            messages: [{
-                role: "user",
-                content: [
-                    {
-                        type: "image",
-                        source: { type: "base64", media_type: mimeType, data: base64Image }
-                    },
-                    {
-                        type: "text",
-                        text: "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico. Retorne APENAS a descrição, sem aspas."
-                    }
-                ]
-            }]
-        });
+        const result = await model.generateContent([
+            {
+                inlineData: {
+                    data: base64Image,
+                    mimeType: mimeType
+                }
+            },
+            {
+                text: "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico. Retorne APENAS a descrição, sem aspas."
+            }
+        ]);
 
-        const description = (message.content[0] as { type: string; text: string }).text?.trim() || "";
+        const response = await result.response;
+        const description = response.text().trim() || "";
 
         return NextResponse.json({ description });
     } catch (error: any) {

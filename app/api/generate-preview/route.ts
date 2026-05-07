@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
 export async function POST(req: Request) {
-    try {
-        const { briefing, selectedPalette } = await req.json();
+  try {
+    const { briefing, selectedPalette } = await req.json();
 
-        const prompt = `Based on this client briefing, generate a website design concept as JSON.
+    const prompt = `Based on this client briefing, generate a website design concept as JSON.
 
 Briefing:
 - Company: ${briefing.company}
@@ -68,30 +69,28 @@ Return ONLY valid JSON (no markdown, no explanation):
 Generate sections based on the pages requested: ${briefing.pages?.join(", ")}
 Make the content specific to ${briefing.company} — not generic.`;
 
-        const response = await client.messages.create({
-            model: "claude-sonnet-4-6",
-            max_tokens: 2048,
-            messages: [{ role: "user", content: prompt }],
-        });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text() ?? "{}";
 
-        const text = (response.content[0] as { type: string; text: string }).text ?? "{}";
-
-        let preview;
-        try {
-            preview = JSON.parse(text);
-        } catch {
-            const match = text.match(/\{[\s\S]*\}/);
-            preview = match ? JSON.parse(match[0]) : {};
-        }
-
-        // Override palette with user selection when provided
-        if (selectedPalette && typeof selectedPalette === "object") {
-            preview.palette = selectedPalette;
-        }
-
-        return NextResponse.json({ preview });
-    } catch (error: any) {
-        console.error("Generate preview error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    let preview;
+    try {
+      // Try to extract JSON if it's wrapped in markdown
+      const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+      preview = JSON.parse(cleanText);
+    } catch {
+      const match = text.match(/\{[\s\S]*\}/);
+      preview = match ? JSON.parse(match[0]) : {};
     }
+
+    // Override palette with user selection when provided
+    if (selectedPalette && typeof selectedPalette === "object") {
+      preview.palette = selectedPalette;
+    }
+
+    return NextResponse.json({ preview });
+  } catch (error: any) {
+    console.error("Generate preview error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
