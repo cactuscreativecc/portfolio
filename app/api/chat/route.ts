@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Anthropic } from "@anthropic-ai/sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-8b",
-    systemInstruction: `You are Cactus, the creative consultant at CactusCreative — a premium digital agency. You are NOT a bot, you are a human consultant having a real conversation.
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || "",
+});
+
+const SYSTEM_INSTRUCTION = `You are Cactus, the creative consultant at CactusCreative — a premium digital agency. You are NOT a bot, you are a human consultant having a real conversation.
 
 TONE & PERSONALITY:
 - Warm, curious, genuinely interested in the client's business
@@ -85,24 +86,23 @@ After the user provides their email:
 }
 [/BRIEFING_COMPLETE]
 
-Then add one warm closing line (e.g. "Give me a moment and I'll put together a visual concept for you based on everything you've shared.")`
-});
+Then add one warm closing line (e.g. "Give me a moment and I'll put together a visual concept for you based on everything you've shared.")`;
 
 export async function POST(req: Request) {
     try {
         const { messages } = await req.json();
 
-        // Convert messages to Gemini format
-        const history = messages.slice(0, -1).map((m: any) => ({
-            role: m.role === 'user' ? 'user' : 'model',
-            parts: [{ text: m.content }]
-        }));
-        const lastMessage = messages[messages.length - 1].content;
+        const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-6",
+            max_tokens: 4096,
+            system: SYSTEM_INSTRUCTION,
+            messages: messages.map((m: any) => ({
+                role: m.role === 'user' ? 'user' : 'assistant',
+                content: m.content
+            })),
+        });
 
-        const chat = model.startChat({ history });
-        const result = await chat.sendMessage(lastMessage);
-        const response = await result.response;
-        const text = response.text() || "";
+        const text = (response.content[0] as any).text || "";
 
         return NextResponse.json({ message: text });
     } catch (error: any) {

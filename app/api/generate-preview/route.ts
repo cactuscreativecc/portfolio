@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Anthropic } from "@anthropic-ai/sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
+});
 
 export async function POST(req: Request) {
   try {
@@ -69,9 +70,13 @@ Return ONLY valid JSON (no markdown, no explanation):
 Generate sections based on the pages requested: ${briefing.pages?.join(", ")}
 Make the content specific to ${briefing.company} — not generic.`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text() ?? "{}";
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = (response.content[0] as any).text ?? "{}";
 
     let preview;
     try {

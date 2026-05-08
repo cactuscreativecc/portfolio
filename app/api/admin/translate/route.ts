@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || "",
+});
 
 export async function POST(req: Request) {
     try {
@@ -16,9 +17,13 @@ export async function POST(req: Request) {
 
         const prompt = `Traduza o seguinte texto de ${direction}. Retorne APENAS a tradução, sem explicações ou textos extras.\n\nTexto:\n${text}`;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const translatedText = response.text().trim() || "";
+        const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-6",
+            max_tokens: 1000,
+            messages: [{ role: "user", content: prompt }],
+        });
+
+        const translatedText = (response.content[0] as any).text.trim() || "";
 
         return NextResponse.json({ translatedText });
     } catch (error: any) {

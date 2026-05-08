@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || "",
+});
 
 export async function POST(req: Request) {
     try {
@@ -17,20 +18,31 @@ export async function POST(req: Request) {
         const base64Image = Buffer.from(imageBuffer).toString('base64');
         const mimeType = imageRes.headers.get('content-type') || 'image/jpeg';
 
-        const result = await model.generateContent([
-            {
-                inlineData: {
-                    data: base64Image,
-                    mimeType: mimeType
+        const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-6",
+            max_tokens: 300,
+            messages: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            type: "image",
+                            source: {
+                                type: "base64",
+                                media_type: mimeType as any,
+                                data: base64Image,
+                            },
+                        },
+                        {
+                            type: "text",
+                            text: "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico. Retorne APENAS a descrição, sem aspas."
+                        }
+                    ],
                 }
-            },
-            {
-                text: "Você é um redator especializado em design e tecnologia. Descreva este projeto de portfólio de forma curta (máximo 150 caracteres), impactante e profissional em Português do Brasil. Foque no valor visual e técnico. Retorne APENAS a descrição, sem aspas."
-            }
-        ]);
+            ],
+        });
 
-        const response = await result.response;
-        const description = response.text().trim() || "";
+        const description = (response.content[0] as any).text.trim() || "";
 
         return NextResponse.json({ description });
     } catch (error: any) {
