@@ -40,7 +40,7 @@ interface AdminViewProps {
     profile: any;
 }
 
-type AdminTab = 'clients' | 'projects' | 'customization' | 'briefings';
+type AdminTab = 'clients' | 'projects' | 'customization' | 'briefings' | 'leads-capture';
 
 export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [activeTab, setActiveTab] = useState<AdminTab>('clients');
@@ -52,6 +52,18 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [activeCustomTab, setActiveCustomTab] = useState<'general' | 'capabilities' | 'projects' | 'stats' | 'stories' | 'clients'>('general');
     const [isGeneratingAI, setIsGeneratingAI] = useState<number | null>(null);
     const [isTranslating, setIsTranslating] = useState<Record<string, boolean>>({});
+
+    const LOCATION_DATA: Record<string, string[]> = {
+        'Brasil': ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'],
+        'USA': ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'],
+        'Portugal': ['Lisboa', 'Porto', 'Braga', 'Setúbal', 'Aveiro', 'Santarém', 'Leiria', 'Coimbra', 'Faro', 'Viseu', 'Viana do Castelo', 'Açores', 'Madeira'],
+        'Espanha': ['Madrid', 'Barcelona', 'Valência', 'Sevilha', 'Saragoça', 'Málaga', 'Múrcia', 'Palma', 'Bilbau', 'Alicante'],
+        'Reino Unido': ['London', 'Manchester', 'Birmingham', 'Glasgow', 'Liverpool', 'Edinburgh'],
+        'França': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes'],
+        'Alemanha': ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart'],
+        'Itália': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa'],
+        'Canadá': ['Toronto', 'Montreal', 'Vancouver', 'Ottawa', 'Calgary', 'Edmonton'],
+    };
 
     // Clients State
     const [clients, setClients] = useState<any[]>([]);
@@ -91,6 +103,60 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
     const [clientInnerTabs, setClientInnerTabs] = useState<Record<string, 'projects' | 'finance' | 'chat' | 'settings'>>({});
     const [selectedContractProject, setSelectedContractProject] = useState<any>(null);
 
+    // Leads Capture State
+    const [prospects, setProspects] = useState<any[]>([]);
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const [isSearchingLeads, setIsSearchingLeads] = useState(false);
+    const [searchForm, setSearchForm] = useState({ niche: '', region: '', country: 'Brasil' });
+
+    const fetchProspects = async () => {
+        try {
+            const { data } = await supabase
+                .from('prospects')
+                .select('*')
+                .order('created_at', { ascending: false });
+            setProspects(data ?? []);
+        } catch { /* noop */ }
+    };
+
+    const handleSearchLeads = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const toastId = toast.loading("Buscando empresas no Google...");
+        setIsSearchingLeads(true);
+        try {
+            const res = await fetch('/api/admin/leads-search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(searchForm)
+            });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            setSearchResults(data.results || []);
+            toast.success(`${data.results?.length || 0} empresas encontradas.`, { id: toastId });
+        } catch (err: any) {
+            toast.error("Erro na busca: " + err.message, { id: toastId });
+        } finally {
+            setIsSearchingLeads(false);
+        }
+    };
+
+    const saveProspect = async (lead: any) => {
+        const toastId = toast.loading("Salvando prospect...");
+        try {
+            const res = await fetch('/api/admin/prospects-save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...lead, ...searchForm })
+            });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            toast.success("Prospect salvo na sua lista!", { id: toastId });
+            fetchProspects();
+        } catch (err: any) {
+            toast.error("Erro ao salvar: " + err.message, { id: toastId });
+        }
+    };
+
     const fetchBriefings = async () => {
         setIsLoadingBriefings(true);
         try {
@@ -121,6 +187,7 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
     useEffect(() => {
         if (activeTab === 'briefings') fetchBriefings();
+        if (activeTab === 'leads-capture') fetchProspects();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab]);
 
@@ -1066,6 +1133,15 @@ ${client.full_name || 'CONTRATANTE'}`;
                 >
                     <FileText size={16} />
                     LEADS
+                </button>
+
+                <button
+                    onClick={() => setActiveTab('leads-capture')}
+                    className={`flex items-center gap-4 px-6 py-5 font-black text-[10px] tracking-[0.3em] uppercase transition-all cursor-pointer ${activeTab === 'leads-capture' ? 'bg-primary text-black' : 'bg-surface-container-high text-neutral-500 hover:text-white hover:bg-white/5'
+                        }`}
+                >
+                    <Search size={16} />
+                    {t.Portal.admin_leads_capture}
                 </button>
 
             </aside>
@@ -2990,8 +3066,192 @@ ${client.full_name || 'CONTRATANTE'}`;
                             )}
                         </motion.div>
                     )}
-                </AnimatePresence >
-            </main >
+                    {(activeTab as any) === 'leads-capture' && (
+                        <motion.div
+                            key="leads-capture"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-12"
+                        >
+                            {/* Search Section */}
+                            <section className="space-y-8">
+                                <div className="border-b border-white/5 pb-6">
+                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase flex items-center gap-4">
+                                        <span className="p-2 bg-primary/10 border border-primary/20">
+                                            <Search className="text-primary" size={20} />
+                                        </span>
+                                        BUSCADOR DE EMPRESAS (GOOGLE)
+                                    </h2>
+                                    <p className="text-[10px] font-bold tracking-widest text-neutral-500 uppercase mt-2">Encontre novos nichos e clientes no Brasil ou no exterior</p>
+                                </div>
+
+                                <form onSubmit={handleSearchLeads} className="bg-surface-container-high border border-white/5 p-8 grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-neutral-600 uppercase tracking-widest">NICHO / PALAVRA-CHAVE</label>
+                                        <input
+                                            required
+                                            value={searchForm.niche}
+                                            onChange={e => setSearchForm(p => ({ ...p, niche: e.target.value }))}
+                                            className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[10px] focus:border-primary outline-none"
+                                            placeholder="Ex: Restaurantes, Dentistas..."
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-neutral-600 uppercase tracking-widest">PAÍS</label>
+                                        <select
+                                            required
+                                            value={searchForm.country}
+                                            onChange={e => {
+                                                const country = e.target.value;
+                                                setSearchForm(p => ({
+                                                    ...p,
+                                                    country,
+                                                    region: LOCATION_DATA[country]?.[0] || ''
+                                                }));
+                                            }}
+                                            className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[10px] focus:border-primary outline-none cursor-pointer"
+                                        >
+                                            {Object.keys(LOCATION_DATA).map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                            ))}
+                                            <option value="Outro">Outro</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[8px] font-black text-neutral-600 uppercase tracking-widest">REGIÃO / ESTADO</label>
+                                        {searchForm.country === 'Outro' ? (
+                                            <input
+                                                value={searchForm.region}
+                                                onChange={e => setSearchForm(p => ({ ...p, region: e.target.value }))}
+                                                className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[10px] focus:border-primary outline-none"
+                                                placeholder="Digite a região..."
+                                            />
+                                        ) : (
+                                            <select
+                                                value={searchForm.region}
+                                                onChange={e => setSearchForm(p => ({ ...p, region: e.target.value }))}
+                                                className="w-full bg-background border border-white/5 p-4 text-white font-bold text-[10px] focus:border-primary outline-none cursor-pointer"
+                                            >
+                                                <option value="">Selecione...</option>
+                                                {LOCATION_DATA[searchForm.country]?.map(r => (
+                                                    <option key={r} value={r}>{r}</option>
+                                                ))}
+                                            </select>
+                                        )}
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={isSearchingLeads}
+                                        className="bg-primary text-black h-full py-4 font-black text-[10px] tracking-widest uppercase hover:bg-white transition-all disabled:opacity-50"
+                                    >
+                                        {isSearchingLeads ? 'BUSCANDO...' : 'PESQUISAR'}
+                                    </button>
+                                </form>
+
+                                {searchResults.length > 0 && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                        {searchResults.map((result: any, idx: number) => (
+                                            <div key={idx} className="bg-surface-container-high border border-white/5 overflow-hidden flex flex-col group hover:border-primary/50 transition-all">
+                                                <div className="p-6 flex-1 space-y-4">
+                                                    <div className="flex justify-between items-start">
+                                                        <h4 className="font-black text-white uppercase text-sm leading-tight max-w-[80%]">{result.name}</h4>
+                                                        <div className={`text-[8px] font-black px-2 py-1 ${result.rating >= 4 ? 'bg-error/20 text-error' : 'bg-primary/20 text-primary'}`}>
+                                                            TECH: {result.rating}/5
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-[9px] text-neutral-400 uppercase font-bold tracking-widest leading-relaxed">
+                                                        {result.tech}
+                                                    </p>
+                                                    <div className="space-y-1 pt-2">
+                                                        <p className="text-[8px] text-neutral-600 font-bold uppercase truncate">{result.address}</p>
+                                                        <p className="text-[8px] text-primary font-black uppercase">{result.phone || 'Sem Telefone'}</p>
+                                                        {result.website && (
+                                                            <a href={result.website} target="_blank" rel="noopener noreferrer" className="text-[8px] text-neutral-400 hover:text-white transition-colors flex items-center gap-1 group/link">
+                                                                WEBSITE <ChevronRight size={10} className="group-hover/link:translate-x-1 transition-transform" />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => saveProspect(result)}
+                                                    className="w-full bg-white/5 border-t border-white/5 py-3 font-black text-[8px] tracking-widest text-neutral-500 uppercase hover:bg-primary hover:text-black transition-all"
+                                                >
+                                                    SALVAR NA MINHA LISTA
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
+
+                            {/* Prospects List Section */}
+                            <section className="space-y-8 mt-12 bg-black/20 p-8 border border-white/5">
+                                <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                                    <div>
+                                        <h2 className="text-xl font-black tracking-tighter text-white uppercase">PROSPECTS SALVOS</h2>
+                                        <p className="text-[10px] font-bold tracking-widest text-neutral-600 uppercase mt-1">Sua lista de captação estratégica</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[8px] font-black text-neutral-700 uppercase">TOTAL</p>
+                                        <p className="text-xl font-black text-primary">{prospects.length}</p>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="border-b border-white/5">
+                                                <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">EMPRESA</th>
+                                                <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">NICHO / PAÍS</th>
+                                                <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">CONTATO</th>
+                                                <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">TECH SCORE</th>
+                                                <th className="p-4 text-[8px] font-black text-neutral-600 uppercase text-right">STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {prospects.length > 0 ? prospects.map((p) => (
+                                                <tr key={p.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                                                    <td className="p-4">
+                                                        <p className="text-[10px] font-black text-white uppercase">{p.name}</p>
+                                                        {p.website && <p className="text-[8px] text-neutral-500 lowercase mt-0.5">{p.website}</p>}
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <p className="text-[9px] font-bold text-neutral-400 uppercase">{p.niche}</p>
+                                                        <p className="text-[8px] text-neutral-600 uppercase">{p.country}</p>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <p className="text-[9px] font-bold text-neutral-400 uppercase">{p.phone || 'N/A'}</p>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div className="flex items-center gap-2">
+                                                            {[1, 2, 3, 4, 5].map(star => (
+                                                                <div key={star} className={`w-1.5 h-1.5 ${star <= p.rating ? 'bg-primary' : 'bg-neutral-800'}`} />
+                                                            ))}
+                                                        </div>
+                                                        <p className="text-[7px] text-neutral-600 uppercase mt-1">SCORE: {p.rating}/5</p>
+                                                    </td>
+                                                    <td className="p-4 text-right">
+                                                        <span className="inline-block px-3 py-1 bg-white/5 border border-white/10 text-[8px] font-black text-neutral-400 uppercase tracking-widest">
+                                                            {p.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )) : (
+                                                <tr>
+                                                    <td colSpan={5} className="p-12 text-center text-[10px] font-black text-neutral-700 uppercase tracking-[0.3em]">
+                                                        A SUA LISTA DE PROSPECTS ESTÁ VAZIA
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </main>
 
             <AnimatePresence>
                 {selectedContractProject && (

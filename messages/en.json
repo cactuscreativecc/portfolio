@@ -269,6 +269,7 @@
         "admin_clients": "CLIENTS",
         "admin_projects": "PROJECTS",
         "admin_customization": "CUSTOMIZATION",
+        "admin_leads_capture": "LEADS CAPTURE",
         "admin_notifications": "NOTIFICATIONS",
         "no_notifications": "NO NEW NOTIFICATIONS",
         "view_all": "VIEW ALL"
