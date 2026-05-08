@@ -189,19 +189,6 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             </nav>
 
                             <div className="mt-12 space-y-6 relative z-10 pb-8">
-                                <motion.div
-                                    variants={linkVariants}
-                                    custom={navLinks.length}
-                                >
-                                    <Link
-                                        href={`/${lang}/portal`}
-                                        onClick={() => setIsOpen(false)}
-                                        className="block w-full bg-primary text-black py-8 text-center font-black text-xs tracking-[0.4em] uppercase"
-                                    >
-                                        {t.Navigation.portal}
-                                    </Link>
-                                </motion.div>
-
                                 {/* Mobile Language & Meta */}
                                 <motion.div
                                     variants={linkVariants}
