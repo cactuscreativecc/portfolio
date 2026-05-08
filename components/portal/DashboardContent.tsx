@@ -24,6 +24,12 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
     const [notifications, setNotifications] = useState<any[]>([]);
     const [showNotifications, setShowNotifications] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const checkSession = async () => {
@@ -144,6 +150,23 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
                     </h1>
                 </div>
                 <div className="flex bg-surface-container-high border border-white/5 p-1 h-14 items-center">
+                    {/* Time & Date */}
+                    <div className="hidden lg:flex items-center px-6 gap-4 border-r border-white/5 h-full">
+                        <div className="flex flex-col items-end">
+                            <span className="text-[9px] font-black tracking-[0.2em] text-neutral-500 uppercase">
+                                {currentTime.toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', { weekday: 'long' })}
+                            </span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-[11px] font-black tracking-widest text-white">
+                                    {currentTime.toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                </span>
+                                <span className="text-[11px] font-black text-primary tabular-nums">
+                                    {currentTime.toLocaleTimeString(lang === 'pt' ? 'pt-BR' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Notificações no lado esquerdo */}
                     <div className="relative h-full">
                         <button
@@ -207,7 +230,7 @@ export default function DashboardContent({ lang, t }: DashboardContentProps) {
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-6 h-full font-black text-[10px] tracking-widest uppercase hover:bg-error hover:text-white transition-all text-neutral-400"
                     >
-                        <LogOut size={14} />
+                        <LogOut size={14} className="text-primary" />
                         <span className="hidden md:inline">{t.Portal.logout}</span>
                     </button>
                 </div>

@@ -643,19 +643,24 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
         }
     };
 
-    const updateProjectFinance = async (projId: string, value: string, paymentMethod: string) => {
+    const updateProjectFinance = async (projId: string, value: string, paymentMethod: string, installments: string) => {
         try {
             const { error } = await supabase
                 .from('projects')
                 .update({
                     value: value,
-                    payment_method: paymentMethod
+                    payment_method: paymentMethod,
+                    installments: installments
                 })
                 .eq('id', projId);
 
             if (error) {
-                if (error.message.includes('column "value"') || error.message.includes('column "payment_method"')) {
-                    toast.error('Erro: Colunas financeiras não encontradas. Adicione "value" e "payment_method" na tabela "projects" do Supabase.');
+                if (error.message.includes('column "installments"')) {
+                    toast.error('Erro: Coluna "installments" não encontrada no Supabase.');
+                    // Fallback para salvar sem parcelamento se a coluna não existir
+                    await supabase.from('projects').update({ value, payment_method: paymentMethod }).eq('id', projId);
+                } else if (error.message.includes('column "value"') || error.message.includes('column "payment_method"')) {
+                    toast.error('Erro: Colunas financeiras não encontradas.');
                     return;
                 }
                 throw error;
@@ -663,13 +668,12 @@ export default function AdminView({ lang, t, profile }: AdminViewProps) {
 
             toast.success('Dados financeiros atualizados!');
 
-            // Update local state
             setClientData(prev => {
                 const newData = { ...prev };
                 for (const clientId in newData) {
                     if (newData[clientId].projects) {
                         newData[clientId].projects = newData[clientId].projects.map((p: any) =>
-                            p.id === projId ? { ...p, value, payment_method: paymentMethod } : p
+                            p.id === projId ? { ...p, value, payment_method: paymentMethod, installments } : p
                         );
                     }
                 }
@@ -1415,88 +1419,124 @@ ${client.full_name || 'CONTRATANTE'}`;
                                                     {/* TAB 2: FINANCEIRO */}
                                                     {clientInnerTabs[client.id] === 'finance' && (
                                                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                                                <div className="md:col-span-2 space-y-6">
+                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                                                                <div className="md:col-span-2 space-y-6 flex flex-col">
                                                                     <h5 className="text-[10px] uppercase font-black text-primary tracking-widest flex items-center gap-2">
                                                                         <span className="w-1 h-3 bg-primary inline-block"></span>
                                                                         CONTRATOS E FATURAMENTO
                                                                     </h5>
 
-                                                                    <div className="bg-surface-container-high border border-white/5 overflow-hidden">
-                                                                        <table className="w-full text-left border-collapse">
-                                                                            <thead>
-                                                                                <tr className="border-b border-white/5">
-                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">PROJETO</th>
-                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase">VALOR</th>
-                                                                                    <th className="p-4 text-[8px] font-black text-neutral-600 uppercase text-right">AÇÕES</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                {clientData[client.id]?.projects?.length > 0 ? clientData[client.id].projects.map((proj: any) => (
-                                                                                    <tr key={proj.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                                                                                        <td className="p-4">
-                                                                                            <div className="text-[10px] font-bold text-white uppercase">{proj.name}</div>
-                                                                                            <div className="text-[8px] text-neutral-500 uppercase mt-1">{proj.status}</div>
-                                                                                        </td>
-                                                                                        <td className="p-4">
-                                                                                            <div className="space-y-2">
-                                                                                                <div className="flex items-center gap-2">
-                                                                                                    <span className="text-[8px] text-neutral-600 font-black">R$</span>
-                                                                                                    <input
-                                                                                                        id={`proj-val-${proj.id}`}
-                                                                                                        defaultValue={proj.value}
-                                                                                                        placeholder="0.00"
-                                                                                                        className="bg-black/40 border border-white/5 p-2 text-[10px] text-primary font-black w-24 focus:border-primary outline-none"
-                                                                                                    />
-                                                                                                </div>
+                                                                    <div className="space-y-4 flex-1">
+                                                                        {clientData[client.id]?.projects?.length > 0 ? clientData[client.id].projects.map((proj: any) => (
+                                                                            <div key={proj.id} className="bg-surface-container-highest/50 border border-white/5 p-6 group hover:border-primary/20 transition-all">
+                                                                                <div className="flex flex-col gap-6">
+                                                                                    {/* Linha 1: Identificação */}
+                                                                                    <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                                                                                        <div>
+                                                                                            <span className="text-[7px] font-black text-primary tracking-[0.2em] uppercase block mb-1">PROJETO</span>
+                                                                                            <h6 className="text-[11px] font-black text-white uppercase tracking-tight">{proj.name}</h6>
+                                                                                        </div>
+                                                                                        <div className="text-right">
+                                                                                            <span className="text-[7px] font-black text-neutral-600 tracking-[0.2em] uppercase block mb-1">STATUS ATUAL</span>
+                                                                                            <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest">{proj.status}</span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    {/* Linha 2: Campos Editáveis */}
+                                                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                                                        <div className="space-y-2">
+                                                                                            <label className="text-[8px] font-black text-neutral-500 uppercase tracking-widest block">VALOR INVESTIMENTO</label>
+                                                                                            <div className="flex items-center gap-3 bg-black/40 border border-white/5 p-3 focus-within:border-primary/40 transition-all">
+                                                                                                <span className="text-[10px] text-primary font-black">R$</span>
                                                                                                 <input
-                                                                                                    id={`proj-method-${proj.id}`}
-                                                                                                    defaultValue={proj.payment_method}
-                                                                                                    placeholder="FORMA DE PAGTO"
-                                                                                                    className="bg-black/40 border border-white/5 p-2 text-[8px] text-white w-full focus:border-primary outline-none uppercase"
+                                                                                                    id={`proj-val-${proj.id}`}
+                                                                                                    defaultValue={proj.value}
+                                                                                                    placeholder="0.00"
+                                                                                                    className="bg-transparent border-none p-0 text-[11px] text-white font-black w-full focus:outline-none placeholder:text-neutral-800"
                                                                                                 />
                                                                                             </div>
-                                                                                        </td>
-                                                                                        <td className="p-4 text-right">
-                                                                                            <div className="flex flex-col gap-2">
-                                                                                                <button
-                                                                                                    onClick={() => updateProjectFinance(
-                                                                                                        proj.id,
-                                                                                                        (document.getElementById(`proj-val-${proj.id}`) as HTMLInputElement)?.value,
-                                                                                                        (document.getElementById(`proj-method-${proj.id}`) as HTMLInputElement)?.value
-                                                                                                    )}
-                                                                                                    className="text-[8px] font-black text-neutral-400 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-2 transition-all hover:border-white"
-                                                                                                >
-                                                                                                    SALVAR DADOS
-                                                                                                </button>
-                                                                                                <button
-                                                                                                    onClick={() => setSelectedContractProject({ ...proj, client_owner: client })}
-                                                                                                    className="text-[9px] font-black text-primary hover:text-white uppercase tracking-widest bg-primary/10 px-3 py-2 transition-all"
-                                                                                                >
-                                                                                                    GERAR CONTRATO
-                                                                                                </button>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                )) : (
-                                                                                    <tr>
-                                                                                        <td colSpan={3} className="p-8 text-center text-[10px] text-neutral-600 uppercase font-black">NÃO HÁ PROJETOS PARA FATURAR</td>
-                                                                                    </tr>
-                                                                                )}
-                                                                            </tbody>
-                                                                        </table>
+                                                                                        </div>
+
+                                                                                        <div className="space-y-2">
+                                                                                            <label className="text-[8px] font-black text-neutral-500 uppercase tracking-widest block">FORMA DE PAGAMENTO</label>
+                                                                                            <select
+                                                                                                id={`proj-method-${proj.id}`}
+                                                                                                defaultValue={proj.payment_method}
+                                                                                                className="w-full bg-black/40 border border-white/5 p-3 text-[10px] text-white font-bold uppercase focus:border-primary/40 outline-none appearance-none cursor-pointer"
+                                                                                            >
+                                                                                                <option value="" disabled>SELECIONE A FORMA</option>
+                                                                                                <option value="PIX">PIX</option>
+                                                                                                <option value="CARTÃO DE CRÉDITO">CARTÃO DE CRÉDITO</option>
+                                                                                                <option value="BOLETO BANCÁRIO">BOLETO BANCÁRIO</option>
+                                                                                                <option value="TRANSFERÊNCIA">TRANSFERÊNCIA</option>
+                                                                                                <option value="50% INÍCIO / 50% ENTREGA">50% INÍCIO / 50% ENTREGA</option>
+                                                                                                <option value="A COMBINAR">A COMBINAR</option>
+                                                                                            </select>
+                                                                                        </div>
+
+                                                                                        <div className="space-y-2">
+                                                                                            <label className="text-[8px] font-black text-neutral-500 uppercase tracking-widest block">CONDIÇÃO / PARCELAS</label>
+                                                                                            <select
+                                                                                                id={`proj-installments-${proj.id}`}
+                                                                                                defaultValue={proj.installments || "À Vista"}
+                                                                                                className="w-full bg-black/40 border border-white/5 p-3 text-[10px] text-white font-bold uppercase focus:border-primary/40 outline-none appearance-none cursor-pointer text-primary"
+                                                                                            >
+                                                                                                <option value="À Vista">À VISTA (TOTAL)</option>
+                                                                                                <option value="Parcelado 2x">PARCELADO 2X</option>
+                                                                                                <option value="Parcelado 3x">PARCELADO 3X</option>
+                                                                                                <option value="Parcelado 4x">PARCELADO 4X</option>
+                                                                                                <option value="Parcelado 5x">PARCELADO 5X</option>
+                                                                                                <option value="Parcelado 6x">PARCELADO 6X</option>
+                                                                                                <option value="Parcelado 10x">PARCELADO 10X</option>
+                                                                                                <option value="Parcelado 12x">PARCELADO 12X</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    {/* Linha 3: Ações */}
+                                                                                    <div className="flex justify-end gap-3 pt-2">
+                                                                                        <button
+                                                                                            onClick={() => updateProjectFinance(
+                                                                                                proj.id,
+                                                                                                (document.getElementById(`proj-val-${proj.id}`) as HTMLInputElement)?.value,
+                                                                                                (document.getElementById(`proj-method-${proj.id}`) as HTMLSelectElement)?.value,
+                                                                                                (document.getElementById(`proj-installments-${proj.id}`) as HTMLSelectElement)?.value
+                                                                                            )}
+                                                                                            className="bg-primary/5 hover:bg-primary text-primary hover:text-black border border-primary/20 hover:border-primary px-6 py-3 text-[9px] font-black tracking-widest uppercase transition-all flex items-center gap-2"
+                                                                                        >
+                                                                                            SALVAR ALTERAÇÕES
+                                                                                        </button>
+                                                                                        <button
+                                                                                            onClick={() => setSelectedContractProject({ ...proj, client_owner: client })}
+                                                                                            className="bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 hover:border-white px-6 py-3 text-[9px] font-black tracking-widest uppercase transition-all"
+                                                                                        >
+                                                                                            GERAR CONTRATO (PDF)
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        )) : (
+                                                                            <div className="py-20 border border-dashed border-white/10 flex flex-col items-center justify-center grayscale opacity-50 bg-white/[0.01]">
+                                                                                <CreditCard className="w-12 h-12 mb-4 text-neutral-700" />
+                                                                                <p className="text-[10px] text-neutral-500 uppercase font-black tracking-[0.3em]">NÃO HÁ PROJETOS PARA FATURAR</p>
+                                                                            </div>
+                                                                        )}
                                                                     </div>
                                                                 </div>
 
-                                                                <div className="space-y-6">
+                                                                <div className="space-y-6 flex flex-col">
                                                                     <h5 className="text-[10px] uppercase font-black text-white/40 tracking-widest flex items-center gap-2">
                                                                         TOTAL EM CONTRATOS
                                                                     </h5>
-                                                                    <div className="bg-primary/5 border border-primary/20 p-6 rounded-none">
-                                                                        <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">SALDO ACORDADO</div>
+                                                                    <div className="bg-primary/5 border border-primary/20 p-6 flex-1 flex flex-col justify-center items-center text-center">
+                                                                        <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-4">TOTAL ACORDADO</div>
                                                                         <div className="text-4xl font-black text-white tracking-tighter">
                                                                             R$ {clientData[client.id]?.projects?.reduce((acc: number, p: any) => acc + (parseFloat(p.value) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                                         </div>
+                                                                        <div className="w-12 h-[1px] bg-primary/20 my-6" />
+                                                                        <p className="text-[8px] text-neutral-500 uppercase font-bold tracking-[0.2em] max-w-[150px]">
+                                                                            Soma de todos os projetos vinculados a este cliente
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </div>
