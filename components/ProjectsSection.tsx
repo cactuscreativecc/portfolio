@@ -255,48 +255,51 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                         <div
                             key={project.id || idx}
                             ref={(el) => { panelsRefs.current[idx] = el; }}
-                            className="absolute inset-0 w-full h-full opacity-0 invisible group/project"
+                            className="absolute inset-0 w-full h-full opacity-0 invisible group/project flex flex-col md:block pt-0 md:pt-0"
                         >
                             {/* Background Image with transitions */}
-                            <div className="project-bg absolute inset-0 w-full h-full transition-transform duration-1000 ease-out">
+                            <div className="project-bg relative h-[48%] md:absolute md:inset-0 md:h-full w-full transition-all duration-1000 ease-out order-1 md:order-none overflow-hidden">
                                 <Image
                                     src={project.image}
                                     alt={project.title}
                                     fill
-                                    className="object-cover grayscale-0 brightness-[0.5] md:grayscale md:brightness-[0.2] group-hover/project:grayscale-0 group-hover/project:brightness-100 transition-all duration-700 ease-in-out"
+                                    className="object-cover object-center grayscale-0 brightness-100 md:grayscale md:brightness-[0.2] group-hover/project:grayscale-0 group-hover/project:brightness-100 transition-all duration-700 ease-in-out"
                                     priority={idx === 0}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-100 group-hover/project:opacity-30 transition-opacity duration-700" />
+                                {/* Mobile transition effect - Bottom Fade */}
+                                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black via-black/50 to-transparent z-10 md:hidden" />
+
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-100 group-hover/project:opacity-30 transition-opacity duration-700 hidden md:block" />
                             </div>
 
                             {/* Content Over Background */}
-                            <div className="project-content relative h-full w-full flex flex-col justify-end pb-36 md:pb-20 lg:pb-24 xl:pb-32">
-                                <div className="max-w-grid mx-auto px-6 md:px-16 w-full">
-                                    <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10">
+                            <div className="project-content relative flex-1 md:h-full w-full flex flex-col justify-start md:justify-end pb-10 md:pb-20 lg:pb-24 xl:pb-32 pt-0 md:pt-0 order-2 md:order-none bg-black md:bg-transparent">
+                                <div className="max-w-grid mx-auto px-0 md:px-16 w-full">
+                                    <div className="max-w-4xl space-y-3 md:space-y-4 xl:space-y-6 2xl:space-y-10 px-6 md:px-0">
                                         <div className="space-y-4">
-                                            <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-xs font-black tracking-[0.5em] uppercase">
+                                            <span className="stagger-item inline-block px-3 py-1 border border-primary/30 bg-primary/10 text-primary text-[10px] md:text-xs font-black tracking-[0.5em] uppercase">
                                                 {project.category}
                                             </span>
-                                            <h3 className="stagger-item font-headline text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
+                                            <h3 className="stagger-item font-headline text-[28px] md:text-4xl lg:text-5xl 2xl:text-6xl font-black uppercase tracking-tighter text-white leading-[0.85] drop-shadow-2xl">
                                                 {project.title}
                                             </h3>
                                         </div>
 
-                                        <p className="stagger-item font-body text-sm md:text-base text-neutral-300 leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
+                                        <p className="stagger-item font-body text-sm md:text-sm text-neutral-300 leading-relaxed uppercase tracking-wide max-w-2xl drop-shadow-md">
                                             {project.description}
                                         </p>
 
-                                        <div className="stagger-item flex flex-wrap gap-8 pt-4">
+                                        <div className="stagger-item flex flex-wrap gap-4 md:gap-8 pt-2 md:pt-4">
                                             {project.tags.map((tag) => (
-                                                <span key={tag} className="text-[10px] md:text-xs text-primary font-black tracking-[0.3em] uppercase drop-shadow-md">
+                                                <span key={tag} className="text-[9px] md:text-xs text-primary font-black tracking-[0.3em] uppercase drop-shadow-md">
                                                     #{tag}
                                                 </span>
                                             ))}
                                         </div>
 
                                         {(project.url || project.href) && (
-                                            <div className="stagger-item pt-8 w-full md:w-auto">
-                                                <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="block md:inline-block w-full md:w-auto text-center group relative overflow-hidden bg-white text-black px-12 md:px-16 py-6 font-bold text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                                            <div className="stagger-item pt-4 md:pt-8 w-full md:w-auto">
+                                                <a href={project.url || project.href} target="_blank" rel="noopener noreferrer" className="block md:inline-block w-full md:w-auto text-center group relative overflow-hidden bg-white text-black px-8 md:px-16 py-4 md:py-6 font-bold text-[10px] md:text-xs tracking-[0.3em] uppercase transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                                                     <span className="relative z-10">{project.cta || (lang === 'en' ? "VIEW CASE STUDY" : "CONHECER PROJETO")}</span>
                                                     <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                                                 </a>
@@ -304,14 +307,14 @@ export default function ProjectsSection({ t, siteContent, lang }: { t: any; site
                                         )}
 
                                         {/* Visual Stats overlay - bottom right */}
-                                        <div className="stagger-item pt-6 xl:pt-8 2xl:pt-12 flex gap-8 md:gap-12 border-t border-white/20">
+                                        <div className="stagger-item pt-4 md:pt-6 xl:pt-8 2xl:pt-12 flex gap-8 md:gap-12 border-t border-white/20">
                                             <div>
-                                                <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
-                                                <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat1_label}</div>
+                                                <div className="text-2xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat1_val}</div>
+                                                <div className="text-[9px] text-white/70 uppercase tracking-[0.3em] font-black mt-1 md:mt-2 drop-shadow-md">{project.stat1_label}</div>
                                             </div>
                                             <div>
-                                                <div className="text-3xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
-                                                <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black mt-2 drop-shadow-md">{project.stat2_label}</div>
+                                                <div className="text-2xl md:text-4xl 2xl:text-5xl font-black text-primary leading-none tracking-tighter drop-shadow-md">{project.stat2_val}</div>
+                                                <div className="text-[9px] text-white/70 uppercase tracking-[0.3em] font-black mt-1 md:mt-2 drop-shadow-md">{project.stat2_label}</div>
                                             </div>
                                         </div>
                                     </div>
