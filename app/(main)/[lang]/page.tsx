@@ -179,7 +179,7 @@ export default async function Home({
                                 {c.text || "Description not available."}
                               </div>
                             </div>
-                            <div className="mt-6 lg:mt-8 translate-y-10 lg:translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
+                            <div className="mt-6 lg:mt-8 translate-y-0 md:translate-y-10 lg:translate-y-20 group-hover:translate-y-0 transition-transform duration-700">
                               <div className="w-10 h-10 border border-primary group-hover:border-black flex items-center justify-center text-primary group-hover:text-black">
                                 <span className="material-symbols-outlined text-sm">{c.icon}</span>
                               </div>
