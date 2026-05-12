@@ -81,6 +81,9 @@ export default function Navbar({ t, lang }: NavbarProps) {
                 className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${scrolled ? "py-4 bg-background/90 backdrop-blur-xl" : "py-8 bg-transparent"
                     }`}
             >
+                {/* Decorative Green Bar for Mobile */}
+                <div className="h-[3px] w-full bg-primary lg:hidden absolute top-0 left-0" />
+
                 <div className="max-w-grid mx-auto px-6 md:px-16 flex justify-between items-center">
                     {/* Logo */}
                     <motion.a
@@ -158,6 +161,9 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             exit="closed"
                             className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-24 pb-12 lg:hidden overflow-y-auto"
                         >
+                            {/* Decorative Green Bar for Mobile Menu Overlay */}
+                            <div className="h-[3px] w-full bg-primary absolute top-0 left-0 z-[120]" />
+
                             {/* Header Row para o Botão Fechar */}
                             <div className="w-full flex justify-end mb-8 relative z-50">
                                 <button
@@ -193,10 +199,10 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 <motion.div
                                     variants={linkVariants}
                                     custom={navLinks.length + 1}
-                                    className="flex justify-between items-center pt-8 border-t border-white/5"
+                                    className="flex flex-col items-center gap-8 pt-12 border-t border-white/5"
                                 >
-                                    <DictionarySwitcher currentLocale={lang} />
-                                    <div className="text-[10px] font-bold tracking-widest text-neutral-600 uppercase">
+                                    <DictionarySwitcher currentLocale={lang} className="text-[16px]" />
+                                    <div className="text-[16px] font-bold tracking-widest text-neutral-600 uppercase text-center">
                                         © 2026 CactusCreative
                                     </div>
                                 </motion.div>

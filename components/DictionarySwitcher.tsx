@@ -35,7 +35,7 @@ function LocalTimeInfo({ locale, isActive }: { locale: Locale, isActive: boolean
 
     return (
         <div className={`flex items-center gap-1.5 transition-all duration-500 ${isActive ? "text-primary" : "text-neutral-700"}`}>
-            <span className="material-symbols-outlined text-[12px] opacity-80">
+            <span className="material-symbols-outlined text-[1.25em] opacity-80">
                 {isDay ? 'sunny' : 'dark_mode'}
             </span>
             <span className="font-mono tabular-nums leading-none mb-[1px]">{time}</span>
@@ -43,7 +43,7 @@ function LocalTimeInfo({ locale, isActive }: { locale: Locale, isActive: boolean
     );
 }
 
-export default function DictionarySwitcher({ currentLocale }: { currentLocale: Locale }) {
+export default function DictionarySwitcher({ currentLocale, className }: { currentLocale: Locale, className?: string }) {
     const pathname = usePathname();
 
     const redirectedPathname = (locale: Locale) => {
@@ -54,7 +54,7 @@ export default function DictionarySwitcher({ currentLocale }: { currentLocale: L
     };
 
     return (
-        <div className="flex items-center gap-3 font-mono text-[10px] font-black tracking-widest">
+        <div className={`flex items-center gap-3 font-mono font-black tracking-widest ${className || "text-[10px]"}`}>
             {i18n.locales.map((locale, index) => {
                 const isActive = currentLocale === locale;
                 return (
