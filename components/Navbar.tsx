@@ -159,13 +159,13 @@ export default function Navbar({ t, lang }: NavbarProps) {
                             initial="closed"
                             animate="open"
                             exit="closed"
-                            className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-24 pb-12 lg:hidden overflow-y-auto"
+                            className="fixed inset-0 bg-background z-[105] flex flex-col px-8 pt-16 pb-12 lg:hidden overflow-y-auto"
                         >
                             {/* Decorative Green Bar for Mobile Menu Overlay */}
                             <div className="h-[3px] w-full bg-primary absolute top-0 left-0 z-[120]" />
 
                             {/* Header Row para o Botão Fechar */}
-                            <div className="w-full flex justify-end mb-8 relative z-50">
+                            <div className="w-full flex justify-end mb-2 relative z-50">
                                 <button
                                     onClick={() => setIsOpen(false)}
                                     className="p-2 -mr-2 text-white hover:text-primary transition-all duration-300 pointer-events-auto"
@@ -179,7 +179,7 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 <span className="text-[30vw] font-black font-headline rotate-90">MENU</span>
                             </div>
 
-                            <nav className="flex flex-col gap-6 relative z-10">
+                            <nav className="flex flex-col gap-4 relative z-10">
                                 {navLinks.map((link, i) => (
                                     <motion.a
                                         key={link.name}
@@ -194,12 +194,12 @@ export default function Navbar({ t, lang }: NavbarProps) {
                                 ))}
                             </nav>
 
-                            <div className="mt-12 space-y-6 relative z-10 pb-8">
+                            <div className="mt-6 space-y-4 relative z-10 pb-8">
                                 {/* Mobile Language & Meta */}
                                 <motion.div
                                     variants={linkVariants}
                                     custom={navLinks.length + 1}
-                                    className="flex flex-col items-center gap-8 pt-12 border-t border-white/5"
+                                    className="flex flex-col items-center gap-4 pt-6 border-t border-white/5"
                                 >
                                     <DictionarySwitcher currentLocale={lang} className="text-[16px]" />
                                     <div className="text-[16px] font-bold tracking-widest text-neutral-600 uppercase text-center">
